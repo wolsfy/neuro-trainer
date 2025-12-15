@@ -6,61 +6,74 @@
     <title>Математический Дождь</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        /* --- Стили для Math Rain --- */
         .game-area {
             position: relative;
             width: 95%;
-            height: 60vh;
+            height: 60vh; /* Высота поля - 60% от экрана */
             border-bottom: 3px solid var(--primary);
             overflow: hidden;
             background: linear-gradient(to bottom, #eef2f5, #e3f2fd);
             border-radius: 12px;
             margin-bottom: 20px;
+            touch-action: none; /* Защита от скролла */
         }
 
         .falling-item {
             position: absolute;
-            top: -50px;
+            top: -60px; /* Начинает за пределами экрана */
             background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.5rem;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1.6rem;
             color: var(--text);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border: 2px solid #fff;
+            z-index: 10;
         }
         
-        .falling-item.error { background: var(--error); color: white; }
-
         .controls-math {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            width: 100%;
-            max-width: 350px;
+            gap: 12px;
+            width: 95%;
+            max-width: 400px;
         }
 
         .btn-math {
             background: white;
             border: none;
-            padding: 15px;
-            font-size: 1.5rem;
-            border-radius: 12px;
+            padding: 20px 0;
+            font-size: 1.8rem;
+            border-radius: 16px;
             box-shadow: 0 4px 0 #dce0e6;
             cursor: pointer;
+            color: var(--primary);
+            font-weight: bold;
+            transition: transform 0.1s;
         }
-        .btn-math:active { transform: translateY(4px); box-shadow: none; }
+        .btn-math:active { 
+            transform: translateY(4px); 
+            box-shadow: none; 
+            background: #f5f5f5;
+        }
 
         /* Анимация прибавления денег */
         .coin-popup {
             position: absolute;
             color: #FFC107;
-            font-weight: bold;
-            font-size: 1.5rem;
-            animation: floatUp 1s forwards;
+            font-weight: 900;
+            font-size: 1.8rem;
+            animation: floatUp 0.8s forwards;
             pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 20;
         }
-        @keyframes floatUp { to { transform: translateY(-50px); opacity: 0; } }
+        @keyframes floatUp { 
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-80px) scale(1.2); opacity: 0; } 
+        }
 
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -82,17 +95,23 @@
         </div>
 
         <div class="controls-math">
-            <!-- Кнопки ответов (генерируются) -->
+            <!-- Кнопки 1-9 -->
             <button class="btn-math" onclick="checkAnswer(1)">1</button>
             <button class="btn-math" onclick="checkAnswer(2)">2</button>
             <button class="btn-math" onclick="checkAnswer(3)">3</button>
+            <button class="btn-math" onclick="checkAnswer(4)">4</button>
+            <button class="btn-math" onclick="checkAnswer(5)">5</button>
+            <button class="btn-math" onclick="checkAnswer(6)">6</button>
+            <button class="btn-math" onclick="checkAnswer(7)">7</button>
+            <button class="btn-math" onclick="checkAnswer(8)">8</button>
+            <button class="btn-math" onclick="checkAnswer(9)">9</button>
         </div>
         
-        <div style="margin-top:10px; color:#777;">Жизни: <span id="lives">❤️❤️❤️</span></div>
+        <div style="margin-top:15px; font-size: 1.2rem;">Жизни: <span id="lives">❤️❤️❤️</span></div>
     </div>
 
     <script>
-        // --- ЗВУКИ ---
+        // --- ЗВУКИ (Web Audio API) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -101,173 +120,163 @@
             osc.connect(gain); gain.connect(audioCtx.destination);
             
             if(type === 'pop') {
+                // Приятный "пуп"
                 osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if(type === 'crash') {
+                // Звук удара об пол
                 osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             }
         }
 
-        // --- ЛОГИКА ---
+        // --- ЛОГИКА ИГРЫ ---
         let score = 0;
         let lives = 3;
-        let gameLoop;
-        let spawnInterval;
-        let items = []; // Массив падающих объектов
-        let speed = 1.5; // Скорость падения
+        let animationFrameId; // ID анимации
+        let spawnIntervalId;
+        
+        // Главный массив объектов
+        // Структура: { el: DOMNode, y: number, val: number, speed: number }
+        let items = []; 
         let isPlaying = false;
         
         const area = document.getElementById('game-area');
-        
+
         function initGame() {
             score = 0;
             lives = 3;
-            speed = 1.5;
             items = [];
             area.innerHTML = '';
             isPlaying = true;
+            
             document.getElementById('score').innerText = score;
             document.getElementById('lives').innerText = '❤️❤️❤️';
             document.getElementById('earned-coins').innerText = 0;
-
-            generateButtons(); // Генерируем кнопки (для упрощения пока статик 1-9, можно улучшить)
             
-            // Основной цикл игры (движение)
-            gameLoop = setInterval(updateGame, 20);
+            // Запускаем игровой цикл (движение)
+            animationFrameId = requestAnimationFrame(gameLoop);
             
-            // Создание примеров
-            spawnInterval = setInterval(spawnItem, 2000);
-        }
-
-        function generateButtons() {
-            const container = document.querySelector('.controls-math');
-            container.innerHTML = '';
-            for(let i=1; i<=9; i++) {
-                container.innerHTML += `<button class="btn-math" onclick="checkAnswer(${i})">${i}</button>`;
-            }
+            // Запускаем создание врагов (каждые 2 сек)
+            spawnIntervalId = setInterval(spawnItem, 2000);
         }
 
         function spawnItem() {
             if(!isPlaying) return;
             
-            // Генерируем пример (результат от 1 до 9)
+            // Генерация примера (ответ 1-9)
             let result = Math.floor(Math.random() * 9) + 1;
             let a = Math.floor(Math.random() * result);
             let b = result - a;
-            
-            // Иногда делаем вычитание
-            if(Math.random() > 0.5 && result < 9) {
-                let tempRes = result;
-                a = Math.floor(Math.random() * 5) + result; // a больше результата
-                b = a - result; // a - b = result
-                // Текст будет "a - b"
-            }
-
             let text = `${a} + ${b}`;
-            // Если вычитание (простая логика для примера)
-            if(Math.random() > 0.5) { // 50% шанс простого сложения
-                 // Оставим пока только сложение для детей 8 лет, чтобы не усложнять код
-            }
 
-            let item = document.createElement('div');
-            item.className = 'falling-item';
-            item.innerText = text;
-            item.style.left = Math.random() * (area.clientWidth - 60) + 'px';
-            item.dataset.val = result; // Храним ответ внутри
+            // Создаем HTML элемент
+            let el = document.createElement('div');
+            el.className = 'falling-item';
+            el.innerText = text;
             
-            // Позиция Y
-            item.dataset.y = -50;
-            
-            area.appendChild(item);
-            items.push(item);
-            
-            // Усложнение
-            if(score > 5) speed = 2;
-            if(score > 15) speed = 3;
-        }
+            // Случайная позиция по X (с отступом от краев)
+            // area.clientWidth - 80, чтобы блок не вылез за правый край
+            el.style.left = Math.random() * (area.clientWidth - 90) + 'px'; 
+            area.appendChild(el);
 
-        function updateGame() {
-            if(!isPlaying) return;
+            // Рассчитываем скорость (усложнение от очков)
+            // Базовая 1.5 + 0.5 за каждые 10 очков
+            let currentSpeed = 1.5 + (Math.floor(score / 10) * 0.4); 
 
-            items.forEach((item, index) => {
-                let y = parseFloat(item.dataset.y);
-                y += speed;
-                item.dataset.y = y;
-                item.style.top = y + 'px';
-
-                // Проверка на падение на пол
-                if(y > area.clientHeight - 40) {
-                    loseLife();
-                    item.remove();
-                    items.splice(index, 1);
-                }
+            // Добавляем в массив
+            items.push({
+                el: el,
+                y: -60,       // Начальная высота (за краем)
+                val: result,  // Правильный ответ
+                speed: currentSpeed
             });
         }
 
-                function checkAnswer(val) {
+        // Главный цикл анимации (60 FPS)
+        function gameLoop() {
+            if (!isPlaying) return;
+
+            // Запрашиваем следующий кадр
+            animationFrameId = requestAnimationFrame(gameLoop);
+
+            // Обновляем позицию каждого элемента
+            // Идем с конца массива, чтобы безопасно удалять элементы
+            for (let i = items.length - 1; i >= 0; i--) {
+                let item = items[i];
+                
+                // Двигаем вниз
+                item.y += item.speed;
+                item.el.style.top = item.y + 'px';
+
+                // Проверка на падение на пол
+                // Высота поля минус высота блока (~50px)
+                if (item.y > area.clientHeight - 50) {
+                    loseLife();
+                    
+                    // Удаляем элемент
+                    item.el.remove();
+                    items.splice(i, 1);
+                }
+            }
+        }
+
+        function checkAnswer(val) {
             if(!isPlaying) return;
             
-            // Ищем индекс элемента, у которого ответ совпадает с нажатой кнопкой
-            // findIndex найдет ПЕРВЫЙ подходящий элемент (тот, что был создан раньше = ниже всех)
-            let foundIndex = items.findIndex(item => parseInt(item.dataset.val) === val);
+            // 1. Находим все падающие примеры с таким ответом
+            let candidates = [];
+            items.forEach((item, index) => {
+                if (item.val === val) {
+                    candidates.push({ index: index, y: item.y });
+                }
+            });
 
-            if(foundIndex !== -1) {
-                // ПРАВИЛЬНО!
+            if (candidates.length > 0) {
+                // 2. Сортируем их по высоте (Y). Нам нужен тот, у кого Y больше (он ниже)
+                candidates.sort((a, b) => b.y - a.y);
+                
+                // Берем самый нижний (первый в списке)
+                let target = candidates[0];
+                let itemToRemove = items[target.index];
+
+                // 3. Эффекты успеха
                 playSound('pop');
-                let item = items[foundIndex];
+                showCoinAnim(itemToRemove.el.style.left, itemToRemove.el.style.top);
                 
-                // Анимация +1 монеты в месте, где был пример
-                showCoinAnim(item.style.left, item.style.top);
+                // 4. Удаляем
+                itemToRemove.el.remove();
                 
-                // Удаляем элемент со сцены и из массива
-                item.remove();
-                items.splice(foundIndex, 1);
+                // Важно: удаляем из массива items по индексу
+                items.splice(target.index, 1); 
                 
-                // Начисляем очки
+                // 5. Очки
                 score++;
                 document.getElementById('score').innerText = score;
                 document.getElementById('earned-coins').innerText = score;
             } else {
-                // НЕПРАВИЛЬНО (или нет такого примера на экране)
-                // Можно добавить звук ошибки или вибрацию
+                // Ошибка (нет такого ответа на экране)
                 if (navigator.vibrate) navigator.vibrate(50);
                 
-                // Визуальный эффект ошибки (тряска экрана)
-                const gameArea = document.getElementById('game-area');
-                gameArea.style.borderBottom = "3px solid red";
-                setTimeout(() => gameArea.style.borderBottom = "3px solid var(--primary)", 200);
-            }
-        }
-
-            if(foundIndex !== -1) {
-                // Правильно!
-                playSound('pop');
-                let item = items[foundIndex];
-                
-                // Эффект монетки
-                showCoinAnim(item.style.left, item.style.top);
-                
-                item.remove();
-                items.splice(foundIndex, 1);
-                score++;
-                document.getElementById('score').innerText = score;
-                document.getElementById('earned-coins').innerText = score; // 1 очко = 1 монета
-            } else {
-                // Неправильно (можно штрафовать, но пока просто звук)
-                // navigator.vibrate(50);
+                // Красная вспышка границы
+                const ga = document.getElementById('game-area');
+                ga.style.borderBottom = "3px solid #FF5252";
+                setTimeout(() => ga.style.borderBottom = "3px solid var(--primary)", 200);
             }
         }
 
         function loseLife() {
             playSound('crash');
             lives--;
+            
+            // Обновляем сердца
             let hearts = '';
             for(let i=0; i<lives; i++) hearts += '❤️';
             document.getElementById('lives').innerText = hearts;
             
+            // Красный фон при уроне
             area.style.background = '#ffebee';
             setTimeout(()=> area.style.background = '', 200);
 
@@ -286,14 +295,14 @@
 
         function gameOver() {
             isPlaying = false;
-            clearInterval(gameLoop);
-            clearInterval(spawnInterval);
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(spawnIntervalId);
             
-            // СОХРАНЕНИЕ МОНЕТ В ГЛОБАЛЬНЫЙ БАНК
+            // Сохраняем монеты
             saveCoinsToBank(score);
             
             confetti();
-            alert(`Игра окончена!\nЗаработано монет: ${score}`);
+            alert(`Игра окончена!\nВы заработали: ${score} монет`);
             window.location.href = '../index.html';
         }
 
@@ -303,11 +312,14 @@
             localStorage.setItem('neuroCoins', newBalance);
         }
 
-        // Старт
-        document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
-        initGame();
+        // Инициализация звука (требование браузеров)
+        document.body.addEventListener('click', () => { 
+            if (audioCtx.state === 'suspended') audioCtx.resume(); 
+        }, { once: true });
+        
+        // Запуск игры с небольшой задержкой (чтобы стили прогрузились)
+        setTimeout(initGame, 100);
 
     </script>
 </body>
 </html>
-
