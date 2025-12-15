@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Нейро-Тренер</title>
-    
-    <!-- ПОДКЛЮЧЕНИЕ СТИЛЕЙ (Важный момент!) -->
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- Иконки для телефона (PWA) -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/brain--v1.png">
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/brain--v1.png">
     <meta name="theme-color" content="#2196F3">
@@ -18,9 +14,20 @@
 
     <div class="screen active">
         <div class="menu-title">🧠 Нейро-Тренер</div>
+
+        <!-- ПРОФИЛЬ ИГРОКА (НОВОЕ) -->
+        <div class="profile-bar">
+            <div class="profile-info">
+                <span class="profile-name">Мой счет:</span>
+                <span class="coin-balance">
+                    <span id="user-coins">0</span> 💰
+                </span>
+            </div>
+            <!-- Тут потом будет кнопка магазина -->
+            <div style="font-size: 2rem;">😎</div>
+        </div>
         
         <div class="menu-grid">
-            <!-- Ссылки ведут в папку games -->
             <a href="games/schulte.html" class="menu-btn">
                 <span class="menu-icon">🔢</span>
                 <span>Таблица Шульте</span>
@@ -40,10 +47,21 @@
                 <span class="menu-icon">🎨</span>
                 <span>Цвета</span>
             </a>
+
+            <!-- НОВАЯ ИГРА -->
+            <a href="games/math.html" class="menu-btn">
+                <span class="menu-icon">🧮</span>
+                <span>Математика</span>
+            </a>
         </div>
 
-        <div class="footer">Версия 2.0 (Pro)</div>
+        <div class="footer">Версия 3.0 (Economy)</div>
     </div>
 
+    <script>
+        // При загрузке меню проверяем баланс
+        const savedCoins = localStorage.getItem('neuroCoins') || 0;
+        document.getElementById('user-coins').innerText = savedCoins;
+    </script>
 </body>
 </html>
