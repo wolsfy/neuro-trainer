@@ -207,23 +207,40 @@
             });
         }
 
-        function checkAnswer(val) {
+                function checkAnswer(val) {
             if(!isPlaying) return;
             
-            // Ищем, есть ли падающий элемент с таким ответом
-            // Берем самый нижний (близкий к падению)
-            let foundIndex = -1;
-            let maxY = -100;
+            // Ищем индекс элемента, у которого ответ совпадает с нажатой кнопкой
+            // findIndex найдет ПЕРВЫЙ подходящий элемент (тот, что был создан раньше = ниже всех)
+            let foundIndex = items.findIndex(item => parseInt(item.dataset.val) === val);
 
-            items.forEach((item, index) => {
-                if(parseInt(item.dataset.val) === val) {
-                    let y = parseFloat(item.dataset.y);
-                    if(y > maxY) {
-                        maxY = y;
-                        foundIndex = index;
-                    }
-                }
-            });
+            if(foundIndex !== -1) {
+                // ПРАВИЛЬНО!
+                playSound('pop');
+                let item = items[foundIndex];
+                
+                // Анимация +1 монеты в месте, где был пример
+                showCoinAnim(item.style.left, item.style.top);
+                
+                // Удаляем элемент со сцены и из массива
+                item.remove();
+                items.splice(foundIndex, 1);
+                
+                // Начисляем очки
+                score++;
+                document.getElementById('score').innerText = score;
+                document.getElementById('earned-coins').innerText = score;
+            } else {
+                // НЕПРАВИЛЬНО (или нет такого примера на экране)
+                // Можно добавить звук ошибки или вибрацию
+                if (navigator.vibrate) navigator.vibrate(50);
+                
+                // Визуальный эффект ошибки (тряска экрана)
+                const gameArea = document.getElementById('game-area');
+                gameArea.style.borderBottom = "3px solid red";
+                setTimeout(() => gameArea.style.borderBottom = "3px solid var(--primary)", 200);
+            }
+        }
 
             if(foundIndex !== -1) {
                 // Правильно!
@@ -293,3 +310,4 @@
     </script>
 </body>
 </html>
+
