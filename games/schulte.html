@@ -293,10 +293,26 @@
             isPlaying = false;
             clearInterval(timerInterval);
             playSound('win');
-            confetti(); // Салют!
+            confetti();
+
+            // --- НОВОЕ: Награда за прохождение ---
+            let reward = 15; // Фиксированная награда
+            saveCoins(reward);
+            // -------------------------------------
 
             const finalTime = parseFloat(timerElement.innerText);
-            checkRecord(finalTime);
+            
+            // Сообщение теперь говорит про монеты
+            setTimeout(() => {
+                alert(`Победа! Время: ${finalTime} с\nВы получили ${reward} монет!`);
+                checkRecord(finalTime);
+            }, 500);
+        }
+
+        // Добавьте в самый низ скрипта:
+        function saveCoins(amount) {
+            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
+            localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
         function checkRecord(time) {
@@ -329,3 +345,4 @@
     </script>
 </body>
 </html>
+
