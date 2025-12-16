@@ -82,6 +82,7 @@
             border: 2px solid #ddd;
         }
     </style>
+    
     <!-- Библиотека конфетти -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -115,127 +116,7 @@
         <div style="height: 50px;"></div>
     </div>
 
-    <script>
-        // --- БАЗА ДАННЫХ ТОВАРОВ ---
-        const THEMES = [
-            { id: 'theme-default', name: 'Стандарт', price: 0, color: '#2196F3' },
-            { id: 'theme-hacker', name: 'Хакер', price: 100, color: '#000000' },
-            { id: 'theme-unicorn', name: 'Единорог', price: 150, color: '#F3E5F5' },
-            { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
-        ];
-
-const SKINS = [
-    { id: 'skin-bot', name: 'Наш Робот', price: 0, img: 'mascot.png' },
-            { id: 'skin-bot', name: 'Обычный', price: 0, img: 'https://img.icons8.com/color/480/bot.png' },
-            { id: 'skin-transformer', name: 'Трансформер', price: 100, img: 'https://img.icons8.com/color/480/transformer.png' },
-            { id: 'skin-android', name: 'Кибер-Панк', price: 250, img: 'https://img.icons8.com/color/480/android.png' },
-            { id: 'skin-retro', name: 'Ретро-Бот', price: 500, img: 'https://img.icons8.com/color/480/retro-robot.png' }
-        ];
-
-        // --- ЛОГИКА ---
-        let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-        let ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'skin-bot'];
-        
-        let currentTheme = localStorage.getItem('neuroTheme') || '';
-        let currentSkin = localStorage.getItem('neuroSkin') || SKINS[0].img;
-
-        // Применяем тему сразу
-        if(currentTheme) document.body.className = currentTheme;
-
-        function renderShop() {
-            document.getElementById('user-coins').innerText = coins;
-
-            // 1. Рендер ТЕМ
-            const themesContainer = document.getElementById('themes-list');
-            themesContainer.innerHTML = '';
-            THEMES.forEach(item => {
-                let status = getItemStatus(item.id, item.price, currentTheme === item.id || (item.id === 'theme-default' && !currentTheme));
-                
-                themesContainer.innerHTML += `
-                    <div class="shop-item">
-                        <div class="color-preview" style="background:${item.color}"></div>
-                        <div class="item-details" style="margin-left:15px;">
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-desc">${item.price > 0 ? item.price + ' монет' : 'Бесплатно'}</span>
-                        </div>
-                        <button class="btn-price ${status.class}" onclick="handleItemClick('${item.id}', 'theme', ${item.price}, '${item.color}')">
-                            ${status.text}
-                        </button>
-                    </div>
-                `;
-            });
-
-            // 2. Рендер СКИНОВ
-            const skinsContainer = document.getElementById('skins-list');
-            skinsContainer.innerHTML = '';
-            SKINS.forEach(item => {
-                let isEquipped = currentSkin === item.img;
-                let status = getItemStatus(item.id, item.price, isEquipped);
-
-                skinsContainer.innerHTML += `
-                    <div class="shop-item">
-                        <img src="${item.img}" class="item-icon">
-                        <div class="item-details">
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-desc">${item.price > 0 ? item.price + ' монет' : 'Бесплатно'}</span>
-                        </div>
-                        <button class="btn-price ${status.class}" onclick="handleItemClick('${item.id}', 'skin', ${item.price}, '${item.img}')">
-                            ${status.text}
-                        </button>
-                    </div>
-                `;
-            });
-        }
-
-        function getItemStatus(id, price, isEquipped) {
-            if (isEquipped) return { class: 'equipped', text: 'Выбрано' };
-            if (ownedItems.includes(id)) return { class: 'owned', text: 'Выбрать' };
-            if (coins >= price) return { class: 'buy', text: 'Купить' };
-            return { class: 'locked', text: price + ' 💰' };
-        }
-
-        function handleItemClick(id, type, price, value) {
-            // Если уже выбрано - ничего не делаем
-            if ((type === 'theme' && currentTheme === id) || (type === 'skin' && currentSkin === value)) return;
-
-            // Если уже куплено - просто надеваем
-            if (ownedItems.includes(id)) {
-                equipItem(id, type, value);
-                return;
-            }
-
-            // Покупка
-            if (coins >= price) {
-                if(confirm(`Купить "${id}" за ${price} монет?`)) {
-                    coins -= price;
-                    ownedItems.push(id);
-                    
-                    // Сохраняем
-                    localStorage.setItem('neuroCoins', coins);
-                    localStorage.setItem('neuroOwned', JSON.stringify(ownedItems));
-                    
-                    confetti();
-                    equipItem(id, type, value);
-                }
-            } else {
-                alert("Не хватает монет! Поиграй еще.");
-            }
-        }
-
-        function equipItem(id, type, value) {
-            if (type === 'theme') {
-                currentTheme = id === 'theme-default' ? '' : id;
-                document.body.className = currentTheme;
-                localStorage.setItem('neuroTheme', currentTheme);
-            } else {
-                currentSkin = value;
-                localStorage.setItem('neuroSkin', currentSkin);
-            }
-            renderShop();
-        }
-
-        // Запуск
-        renderShop();
-    </script>
+    <!-- Подключение внешнего JS -->
+    <script src="js/shop.js"></script>
 </body>
 </html>
