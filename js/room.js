@@ -5,14 +5,19 @@ const PHRASES = [
 
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
 let coins = 0;
-let currentSkin = '';
 let currentTheme = '';
+let equippedItems = {
+    body: 'clothes-none',
+    accessory: 'acc-none'
+};
 let audioCtx = null;
 
 // ===== ЭЛЕМЕНТЫ DOM =====
 let robotImg = null;
 let thoughtBubble = null;
 let coinsDisplay = null;
+let clothesOverlay = null;
+let accessoryOverlay = null;
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 function initRoom() {
@@ -20,14 +25,16 @@ function initRoom() {
     robotImg = document.getElementById('robot-img');
     thoughtBubble = document.getElementById('bubble');
     coinsDisplay = document.getElementById('coins');
+    clothesOverlay = document.getElementById('clothes-overlay');
+    accessoryOverlay = document.getElementById('accessory-overlay');
     
     // Загружаем данные
     loadRoomState();
     
     // Применяем настройки
     applyTheme();
-    applySkin();
     updateCoinsDisplay();
+    updateRobotAppearance();
     
     // Инициализируем аудио
     initAudio();
@@ -40,12 +47,17 @@ function initRoom() {
 function loadRoomState() {
     try {
         coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-        currentSkin = localStorage.getItem('neuroSkin') || 'mascot.png';
         currentTheme = localStorage.getItem('neuroTheme') || '';
+        
+        // Загружаем экипированные предметы
+        const savedEquipped = localStorage.getItem('neuroEquipped');
+        if (savedEquipped) {
+            equippedItems = JSON.parse(savedEquipped);
+        }
     } catch (e) {
         console.error('Ошибка загрузки данных комнаты:', e);
         // Используем значения по умолчанию
-        currentSkin = 'mascot.png';
+        equippedItems = { body: 'clothes-none', accessory: 'acc-none' };
     }
 }
 
@@ -56,16 +68,61 @@ function applyTheme() {
     }
 }
 
-function applySkin() {
-    if (robotImg && currentSkin) {
-        robotImg.src = currentSkin;
-    }
-}
-
 function updateCoinsDisplay() {
     if (coinsDisplay) {
         coinsDisplay.innerText = coins;
     }
+}
+
+function updateRobotAppearance() {
+    // Получаем данные о предметах из shop.js
+    const clothesData = getClothesImage(equippedItems.body);
+    const accessoryData = getAccessoryImage(equippedItems.accessory);
+    
+    // Обновляем изображения оверлеев
+    if (clothesOverlay) {
+        if (clothesData && equippedItems.body !== 'clothes-none') {
+            clothesOverlay.src = clothesData;
+            clothesOverlay.style.display = 'block';
+        } else {
+            clothesOverlay.style.display = 'none';
+        }
+    }
+    
+    if (accessoryOverlay) {
+        if (accessoryData && equippedItems.accessory !== 'acc-none') {
+            accessoryOverlay.src = accessoryData;
+            accessoryOverlay.style.display = 'block';
+        } else {
+            accessoryOverlay.style.display = 'none';
+        }
+    }
+}
+
+// Получение URL изображений из данных магазина
+function getClothesImage(id) {
+    const clothes = [
+        { id: 'clothes-none', img: '' },
+        { id: 'clothes-tshirt', img: 'https://img.icons8.com/color/96/t-shirt.png' },
+        { id: 'clothes-hoodie', img: 'https://img.icons8.com/color/96/hoodie.png' },
+        { id: 'clothes-jacket', img: 'https://img.icons8.com/color/96/jacket.png' },
+        { id: 'clothes-suit', img: 'https://img.icons8.com/color/96/business-shirt.png' }
+    ];
+    const item = clothes.find(c => c.id === id);
+    return item ? item.img : '';
+}
+
+function getAccessoryImage(id) {
+    const accessories = [
+        { id: 'acc-none', img: '' },
+        { id: 'acc-glasses', img: 'https://img.icons8.com/color/96/glasses.png' },
+        { id: 'acc-hat', img: 'https://img.icons8.com/color/96/top-hat.png' },
+        { id: 'acc-headphones', img: 'https://img.icons8.com/color/96/headphones.png' },
+        { id: 'acc-crown', img: 'https://img.icons8.com/color/96/crown.png' },
+        { id: 'acc-bow', img: 'https://img.icons8.com/color/96/bow-tie.png' }
+    ];
+    const item = accessories.find(a => a.id === id);
+    return item ? item.img : '';
 }
 
 // ===== АУДИО =====
@@ -149,6 +206,14 @@ function attachEventListeners() {
     // Клик по роботу
     if (robotImg) {
         robotImg.addEventListener('click', pokeRobot);
+    }
+    
+    // Клик по оверлеям тоже считается как клик по роботу
+    if (clothesOverlay) {
+        clothesOverlay.addEventListener('click', pokeRobot);
+    }
+    if (accessoryOverlay) {
+        accessoryOverlay.addEventListener('click', pokeRobot);
     }
     
     // Кнопки управления (используем event delegation)
