@@ -27,20 +27,57 @@
             justify-content: center;
             width: 100%;
             position: relative;
-            z-index: 1; /* Чтобы был под кнопками меню */
+            z-index: 1;
+        }
+
+        /* Контейнер для слоев робота */
+        .robot-wrapper {
+            position: relative;
+            width: 85%; 
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .big-robot-img {
-            width: 85%; 
-            max-width: 350px;
+            width: 100%;
             height: auto;
-            /* Тень под ногами */
             filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2)); 
             transition: transform 0.1s;
             cursor: pointer;
-            
-            /* Анимация парения */
             animation: floatBig 5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Оверлеи для одежды и аксессуаров */
+        .robot-overlay {
+            position: absolute;
+            width: 40%;
+            height: auto;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #clothes-overlay {
+            /* Одежда на теле робота */
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        #accessory-overlay {
+            /* Аксессуары на голове */
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            cursor: pointer;
+            pointer-events: auto;
         }
         
         @keyframes floatBig {
@@ -49,8 +86,9 @@
         }
 
         /* Эффект клика (сжатие) */
-        .big-robot-img:active {
-            transform: scale(0.95) translateY(0) !important;
+        .big-robot-img:active,
+        .robot-overlay:active {
+            transform: scale(0.95) translateY(0) translateX(-50%) !important;
             transition: 0.05s;
         }
 
@@ -100,7 +138,7 @@
             max-width: 160px;
             text-align: center;
             z-index: 5;
-            opacity: 0; /* Скрыто по умолчанию */
+            opacity: 0;
         }
         
         @keyframes popIn {
@@ -116,7 +154,6 @@
 
     <!-- Верхняя панель -->
     <div class="top-bar">
-        <!-- Кнопка ДОМОЙ с высоким z-index -->
         <a href="index.html" class="btn-back" style="text-decoration: none; z-index: 100; font-size: 1.5rem;">🏠</a>
         
         <div class="game-info">Комната</div>
@@ -129,11 +166,20 @@
 
     <div class="room-screen">
         
-        <!-- Робот -->
+        <!-- Робот с оверлеями -->
         <div class="big-robot-container">
             <div class="thought-bubble" id="bubble">Я тут!</div>
-            <!-- Сюда подгрузится купленный скин или дефолтный -->
-            <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот">
+            
+            <div class="robot-wrapper">
+                <!-- Основной робот -->
+                <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот">
+                
+                <!-- Оверлей одежды -->
+                <img id="clothes-overlay" class="robot-overlay" style="display: none;" alt="Одежда">
+                
+                <!-- Оверлей аксессуаров -->
+                <img id="accessory-overlay" class="robot-overlay" style="display: none;" alt="Аксессуар">
+            </div>
         </div>
 
         <!-- Кнопки управления -->
