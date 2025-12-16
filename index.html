@@ -54,11 +54,13 @@
         // Загрузка темы (если куплена)
         const savedTheme = localStorage.getItem('neuroTheme');
         if(savedTheme) document.body.className = savedTheme;
+        // Загрузка выбранного скина
+const savedSkin = localStorage.getItem('neuroSkin') || 'mascot.png'; // <-- Ваше новое имя файла
+document.getElementById('mascot-img').src = savedSkin;
     </script>
 </body>
 </html>
-// Загрузка выбранного скина
-const savedSkin = localStorage.getItem('neuroSkin') || 'mascot.png'; // <-- Ваше новое имя файла
-document.getElementById('mascot-img').src = savedSkin;
+
+
 
 
