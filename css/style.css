@@ -93,14 +93,84 @@ a { text-decoration: none; }
     100% { transform: scale(1); }
 }
 .coin-anim { animation: coin-pop 0.3s; }
-/* --- ПЕРСОНАЖ (MASCOT) --- */
+/* --- ЖИВОЙ ПЕРСОНАЖ (MASCOT) --- */
 .character-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin: 30px 0; /* Больше отступа */
     position: relative;
+    width: 100%;
 }
+
+.mascot-container {
+    position: relative;
+    width: 220px;       /* Увеличенный контейнер */
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mascot-img {
+    width: 200px;       /* Робот стал БОЛЬШИМ */
+    height: 200px;
+    object-fit: cover;  /* Чтобы картинка заполняла круг */
+    border-radius: 50%; /* Делаем круглую аватарку */
+    border: 5px solid white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Мягкая тень */
+    
+    /* Анимация жизни (Дыхание + Парение) */
+    animation: breathe 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Эффект дыхания */
+@keyframes breathe {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.03); } /* Чуть вверх и чуть больше */
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* Облачко с текстом (Сдвигаем вбок) */
+.mascot-speech {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px; /* Хвостик слева внизу */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-size: 1rem;
+    font-weight: bold;
+    color: #444;
+    
+    /* Позиционирование */
+    position: absolute;
+    top: 0;
+    right: 10%; /* Сдвигаем правее от центра */
+    z-index: 2; /* Поверх робота */
+    
+    /* Анимация появления */
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom left;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Ссылка на магазин (кнопка) */
+.shop-link-btn {
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+    transition: transform 0.1s;
+}
+.shop-link-btn:active { transform: scale(0.95); }
 
 .mascot-img {
     width: 120px;
@@ -134,6 +204,7 @@ a { text-decoration: none; }
     font-weight: bold;
     font-size: 0.9rem;
 }
+
 
 
 
