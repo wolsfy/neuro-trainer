@@ -34,10 +34,14 @@
             width: 85%; 
             max-width: 350px;
             height: auto;
-            filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2)); 
+            filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2));
             transition: transform 0.1s;
             cursor: pointer;
             animation: floatBig 5s ease-in-out infinite;
+            /* Убираем любой фон */
+            background: transparent !important;
+            /* Используем object-fit для корректного отображения */
+            object-fit: contain;
         }
         
         @keyframes floatBig {
