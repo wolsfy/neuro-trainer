@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Нейро-Тренер</title>
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Иконки для PWA -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/brain--v1.png">
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/brain--v1.png">
     <meta name="theme-color" content="#2196F3">
@@ -13,7 +15,8 @@
 <body>
 
     <div class="screen active">
-        <!-- БАЛАНС И КНОПКА МАГАЗИНА -->
+        
+        <!-- БАЛАНС И МАГАЗИН -->
         <div class="profile-bar">
             <div class="profile-info">
                 <span class="profile-name">Мой баланс:</span>
@@ -21,48 +24,64 @@
                     <span id="user-coins">0</span> 💰
                 </span>
             </div>
-            <!-- Ссылка на магазин -->
             <a href="shop.html" class="shop-link-btn">🛒 Магазин</a>
         </div>
-                <!-- ПЕРСОНАЖ (РОБОТ) -->
+
+        <!-- ПЕРСОНАЖ (MASCOT) -->
+        <!-- Клик по нему ведет в Комнату (room.html) -->
         <div class="character-area">
             <div class="mascot-container">
-                <img id="mascot-img" src="mascot.png" alt="Robot" class="mascot-img">
-                <div class="mascot-speech">Привет! Потренируемся?</div>
+                <a href="room.html" style="display: block;">
+                    <img id="mascot-img" src="mascot.png" alt="Наш Робот" class="mascot-img">
+                </a>
+                <div class="mascot-speech">Привет! Жми на меня!</div>
             </div>
         </div>
         
+        <!-- МЕНЮ ИГР -->
         <div class="menu-grid">
-            <a href="games/schulte.html" class="menu-btn"><span class="menu-icon">🔢</span><span>Шульте</span></a>
-            <a href="games/decoder.html" class="menu-btn"><span class="menu-icon">🧩</span><span>Шифр</span></a>
-            <a href="games/memory.html" class="menu-btn"><span class="menu-icon">💡</span><span>Память</span></a>
-            <a href="games/stroop.html" class="menu-btn"><span class="menu-icon">🎨</span><span>Цвета</span></a>
-            <a href="games/math.html" class="menu-btn"><span class="menu-icon">🧮</span><span>Математика</span></a>
+            <a href="games/schulte.html" class="menu-btn">
+                <span class="menu-icon">🔢</span>
+                <span>Шульте</span>
+            </a>
+            
+            <a href="games/decoder.html" class="menu-btn">
+                <span class="menu-icon">🧩</span>
+                <span>Шифр</span>
+            </a>
+            
+            <a href="games/memory.html" class="menu-btn">
+                <span class="menu-icon">💡</span>
+                <span>Память</span>
+            </a>
+            
+            <a href="games/stroop.html" class="menu-btn">
+                <span class="menu-icon">🎨</span>
+                <span>Цвета</span>
+            </a>
+
+            <a href="games/math.html" class="menu-btn">
+                <span class="menu-icon">🧮</span>
+                <span>Математика</span>
+            </a>
         </div>
 
-        <div class="footer">Версия 4.0 (Mascot)</div>
+        <div class="footer">Версия 4.2 (Room Link)</div>
     </div>
 
     <script>
-        // Загрузка баланса
+        // 1. Загрузка баланса
         const savedCoins = parseInt(localStorage.getItem('neuroCoins')) || 0;
         document.getElementById('user-coins').innerText = savedCoins;
 
-        // Загрузка выбранного скина робота
-        const savedSkin = localStorage.getItem('neuroSkin') || 'https://img.icons8.com/color/480/bot.png';
+        // 2. Загрузка выбранного скина робота
+        // Если картинки нет, ставим дефолтную (убедитесь, что файл mascot.png есть в репозитории)
+        const savedSkin = localStorage.getItem('neuroSkin') || 'mascot.png';
         document.getElementById('mascot-img').src = savedSkin;
 
-        // Загрузка темы (если куплена)
+        // 3. Загрузка темы оформления
         const savedTheme = localStorage.getItem('neuroTheme');
         if(savedTheme) document.body.className = savedTheme;
-        // Загрузка выбранного скина
-const savedSkin = localStorage.getItem('neuroSkin') || 'mascot.png'; // <-- Ваше новое имя файла
-document.getElementById('mascot-img').src = savedSkin;
     </script>
 </body>
 </html>
-
-
-
-
-
