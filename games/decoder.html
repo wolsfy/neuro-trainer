@@ -186,7 +186,6 @@
             document.getElementById('timer').innerText = timeLeft;
             
             // 1. Создаем ключ (шифр)
-            // Перемешиваем символы, чтобы в каждой игре ключ был разный
             let shuffled = [...SYMBOLS_POOL].sort(() => Math.random() - 0.5);
             
             decoderMap = shuffled.map((symbol, index) => ({
@@ -253,15 +252,25 @@
         function endGame() {
             isPlaying = false;
             clearInterval(timerInterval);
-            confetti();
-            alert(`Время вышло!\nВаш результат: ${score} символов`);
             
-            // Можно предложить сыграть еще раз
+            // --- СОХРАНЕНИЕ МОНЕТ ---
+            saveCoins(score);
+            // -----------------------
+
+            confetti();
+            alert(`Время вышло!\nВаш результат: ${score} символов\nЗаработано монет: ${score} 💰`);
+            
             if(confirm("Сыграть еще раз?")) {
                 initGame();
             } else {
                 window.location.href = '../index.html';
             }
+        }
+
+        // Функция работы с банком
+        function saveCoins(amount) {
+            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
+            localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
         // Запуск
