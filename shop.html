@@ -81,6 +81,15 @@
             width: 50px; height: 50px; border-radius: 50%;
             border: 2px solid #ddd;
         }
+
+        /* Сетка товаров */
+        .shop-grid {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
     </style>
     
     <!-- Библиотека конфетти -->
@@ -107,9 +116,15 @@
             <!-- Генерируется JS -->
         </div>
 
-        <!-- Раздел: Скины Робота -->
-        <div class="section-title">🤖 Скины для Робота</div>
-        <div class="shop-grid" id="skins-list">
+        <!-- Раздел: Одежда -->
+        <div class="section-title">👕 Одежда для Робота</div>
+        <div class="shop-grid" id="clothes-list">
+            <!-- Генерируется JS -->
+        </div>
+
+        <!-- Раздел: Аксессуары -->
+        <div class="section-title">👑 Аксессуары</div>
+        <div class="shop-grid" id="accessories-list">
             <!-- Генерируется JS -->
         </div>
 
