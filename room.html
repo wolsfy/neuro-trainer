@@ -15,7 +15,8 @@
             height: 100vh;
             padding: 20px;
             box-sizing: border-box;
-            background: radial-gradient(circle at center, #fff, var(--bg)); /* Эффект свечения */
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
+            overflow: hidden;
         }
 
         /* Большой робот */
@@ -26,29 +27,31 @@
             justify-content: center;
             width: 100%;
             position: relative;
+            z-index: 1; /* Чтобы был под кнопками меню */
         }
 
         .big-robot-img {
-            width: 80%; /* Очень большой! */
-            max-width: 400px;
+            width: 85%; 
+            max-width: 350px;
             height: auto;
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2)); /* Глубокая тень */
-            transition: transform 0.2s;
+            /* Тень под ногами */
+            filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2)); 
+            transition: transform 0.1s;
             cursor: pointer;
             
             /* Анимация парения */
-            animation: floatBig 4s ease-in-out infinite;
+            animation: floatBig 5s ease-in-out infinite;
         }
         
         @keyframes floatBig {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-15px); }
         }
 
         /* Эффект клика (сжатие) */
         .big-robot-img:active {
             transform: scale(0.95) translateY(0) !important;
-            transition: 0.1s;
+            transition: 0.05s;
         }
 
         /* Панель управления (внизу) */
@@ -57,60 +60,77 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            z-index: 10;
         }
 
         .room-btn {
-            background: white;
+            background: var(--card-bg);
             border: none;
-            padding: 20px;
+            padding: 15px;
             border-radius: 20px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: var(--text);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
+            transition: transform 0.1s;
         }
-        .room-btn:active { transform: scale(0.98); }
+        .room-btn:active { transform: scale(0.95); }
 
         .btn-icon { font-size: 2rem; }
 
         /* Облачко мыслей */
         .thought-bubble {
             position: absolute;
-            top: 10%;
-            right: 10%;
+            top: 5%;
+            right: 5%;
             background: white;
-            padding: 15px 25px;
-            border-radius: 30px;
+            padding: 12px 20px;
+            border-radius: 25px;
             border-bottom-left-radius: 0;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             font-weight: bold;
-            color: #555;
+            color: #444;
             animation: popIn 0.5s forwards;
-            max-width: 150px;
+            max-width: 160px;
             text-align: center;
+            z-index: 5;
+            opacity: 0; /* Скрыто по умолчанию */
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
+    <!-- Верхняя панель -->
     <div class="top-bar">
-        <a href="index.html" class="btn-back">🏠</a>
+        <!-- Кнопка ДОМОЙ с высоким z-index -->
+        <a href="index.html" class="btn-back" style="text-decoration: none; z-index: 100; font-size: 1.5rem;">🏠</a>
+        
         <div class="game-info">Комната</div>
-        <div class="balance-badge" style="font-size:1rem;"><span id="coins">0</span> 💰</div>
+        
+        <!-- Баланс -->
+        <div class="balance-badge" style="font-size:1rem; background: var(--card-bg); padding: 5px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <span id="coins">0</span> 💰
+        </div>
     </div>
 
     <div class="room-screen">
         
         <!-- Робот -->
         <div class="big-robot-container">
-            <div class="thought-bubble" id="bubble">Я хочу учиться!</div>
+            <div class="thought-bubble" id="bubble">Я тут!</div>
+            <!-- Сюда подгрузится купленный скин или дефолтный -->
             <img id="robot-img" src="mascot.png" class="big-robot-img" onclick="pokeRobot()">
         </div>
 
@@ -129,14 +149,20 @@
     </div>
 
     <script>
-        // Загрузка данных
+        // --- ЗАГРУЗКА ДАННЫХ ---
         const coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
         document.getElementById('coins').innerText = coins;
 
+        // Загрузка скина (прозрачного робота)
+        // Если ничего не выбрано, используем 'mascot.png'
         const skin = localStorage.getItem('neuroSkin') || 'mascot.png';
         document.getElementById('robot-img').src = skin;
+        
+        // Загрузка темы (чтобы комната была в том же цвете, что и приложение)
+        const savedTheme = localStorage.getItem('neuroTheme');
+        if(savedTheme) document.body.className = savedTheme;
 
-        // Звук
+        // --- ЗВУКИ ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -145,6 +171,7 @@
             osc.connect(gain); gain.connect(audioCtx.destination);
             
             if (type === 'poke') {
+                // Веселый писк
                 osc.frequency.setValueAtTime(800, audioCtx.currentTime);
                 osc.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
@@ -152,9 +179,9 @@
             }
         }
 
-        // Взаимодействие
+        // --- ВЗАИМОДЕЙСТВИЕ ---
         const PHRASES = [
-            "Привет!", "Как дела?", "Поиграем?", "Я умный!", "Бзз-бзз...", "Хочу монетки!", "Ты супер!"
+            "Привет!", "Как дела?", "Поиграем?", "Я умный!", "Бзз-бзз...", "Хочу монетки!", "Ты супер!", "Заряди меня!"
         ];
 
         function pokeRobot() {
@@ -164,21 +191,30 @@
             const text = PHRASES[Math.floor(Math.random() * PHRASES.length)];
             const bubble = document.getElementById('bubble');
             bubble.innerText = text;
+            bubble.style.opacity = 1;
             
-            // Анимация текста (перезапуск)
+            // Перезапуск анимации облачка
             bubble.style.animation = 'none';
             bubble.offsetHeight; /* trigger reflow */
             bubble.style.animation = 'popIn 0.3s forwards';
             
-            confetti({ particleCount: 5, spread: 30, origin: { y: 0.5 } });
+            // Немного конфетти из робота
+            confetti({ 
+                particleCount: 5, 
+                spread: 40, 
+                origin: { y: 0.5 },
+                colors: ['#FFC107', '#2196F3'] 
+            });
         }
 
         function feedRobot() {
-            // Заглушка для будущей механики
-            alert("Ням-ням! Спасибо за энергию (скоро это будет стоить монет).");
-            pokeRobot();
+            // Пока просто заглушка, но с эффектом
+            pokeRobot(); 
+            const bubble = document.getElementById('bubble');
+            bubble.innerText = "Ням-ням! ⚡";
         }
 
+        // Активация звука по первому клику
         document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
     </script>
 </body>
