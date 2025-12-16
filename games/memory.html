@@ -231,15 +231,24 @@
                 isInputLocked = true;
                 statusElement.innerText = "Ошибка!";
                 
-                // Вибрация (если поддерживается телефоном)
                 if (navigator.vibrate) navigator.vibrate(200);
 
                 setTimeout(() => {
-                    alert(`Игра окончена!\nВы дошли до уровня ${currentLevel}`);
-                    // Перезагрузка
+                    // --- НАЧИСЛЕНИЕ МОНЕТ ---
+                    // Даем 5 монет за каждый ПОЛНОСТЬЮ пройденный уровень
+                    let reward = (currentLevel - 1) * 5;
+                    if(reward > 0) saveCoins(reward);
+                    // -----------------------
+
+                    alert(`Игра окончена!\nВы дошли до уровня ${currentLevel}\nЗаработано: ${reward} монет 💰`);
                     initGame();
                 }, 500);
             }
+        }
+
+        function saveCoins(amount) {
+            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
+            localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
         document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
@@ -250,4 +259,3 @@
     </script>
 </body>
 </html>
-
