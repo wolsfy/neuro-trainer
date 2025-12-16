@@ -293,56 +293,53 @@
             isPlaying = false;
             clearInterval(timerInterval);
             playSound('win');
-            confetti();
+            confetti(); // Салют!
 
-            // --- НОВОЕ: Награда за прохождение ---
+            // --- НАЧИСЛЕНИЕ МОНЕТ ---
             let reward = 15; // Фиксированная награда
             saveCoins(reward);
-            // -------------------------------------
+            // -----------------------
 
             const finalTime = parseFloat(timerElement.innerText);
-            
-            // Сообщение теперь говорит про монеты
+            checkRecord(finalTime, reward);
+        }
+
+        function checkRecord(time, reward) {
+            const key = `schulte_best_${currentGridSize}`;
+            const oldRecord = parseFloat(localStorage.getItem(key)) || 9999;
+
+            // Небольшая задержка перед алертом
             setTimeout(() => {
-                alert(`Победа! Время: ${finalTime} с\nВы получили ${reward} монет!`);
-                checkRecord(finalTime);
+                let msg = `Победа! Время: ${time} с\nВы получили ${reward} монет! 💰`;
+                
+                if (time < oldRecord) {
+                    localStorage.setItem(key, time);
+                    msg += `\n🎉 НОВЫЙ РЕКОРД!`;
+                    updateBestScoreDisplay();
+                }
+                
+                alert(msg);
+                
+                // Возврат в меню или рестарт (по желанию)
+                // window.location.href = '../index.html'; 
             }, 500);
         }
 
-        // Добавьте в самый низ скрипта:
         function saveCoins(amount) {
             let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
             localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
-        function checkRecord(time) {
-            const key = `schulte_best_${currentGridSize}`;
-            const oldRecord = parseFloat(localStorage.getItem(key)) || 9999;
-
-            if (time < oldRecord) {
-                localStorage.setItem(key, time);
-                alert(`🎉 НОВЫЙ РЕКОРД!\nВремя: ${time} сек`);
-                updateBestScoreDisplay();
-            } else {
-                // Небольшая задержка перед алертом, чтобы увидеть салют
-                setTimeout(() => alert(`Победа! Время: ${time} с`), 500);
-            }
-        }
-
         // --- СТАРТ ПРИ ЗАГРУЗКЕ ---
-        // Запускаем AudioContext при первом клике (требование браузеров)
         document.body.addEventListener('click', function() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }, { once: true });
 
-        // Запрет зума по двойному тапу
         document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
-        // Инициализация
         updateBestScoreDisplay();
         restartGame();
 
     </script>
 </body>
 </html>
-
