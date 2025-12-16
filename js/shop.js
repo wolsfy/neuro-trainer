@@ -6,19 +6,33 @@ const THEMES = [
     { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
 ];
 
-const SKINS = [
-    { id: 'skin-bot', name: 'Наш Робот', price: 0, img: 'mascot.png' },
-    { id: 'skin-default', name: 'Обычный', price: 0, img: 'https://img.icons8.com/color/480/bot.png' },
-    { id: 'skin-transformer', name: 'Трансформер', price: 100, img: 'https://img.icons8.com/color/480/transformer.png' },
-    { id: 'skin-android', name: 'Кибер-Панк', price: 250, img: 'https://img.icons8.com/color/480/android.png' },
-    { id: 'skin-retro', name: 'Ретро-Бот', price: 500, img: 'https://img.icons8.com/color/480/retro-robot.png' }
+// Одежда для робота
+const CLOTHES = [
+    { id: 'clothes-none', name: 'Без одежды', price: 0, img: 'https://img.icons8.com/color/96/nothing.png', slot: 'body' },
+    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'https://img.icons8.com/color/96/t-shirt.png', slot: 'body' },
+    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'https://img.icons8.com/color/96/hoodie.png', slot: 'body' },
+    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'https://img.icons8.com/color/96/jacket.png', slot: 'body' },
+    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'https://img.icons8.com/color/96/business-shirt.png', slot: 'body' }
+];
+
+// Аксессуары для робота
+const ACCESSORIES = [
+    { id: 'acc-none', name: 'Без аксессуаров', price: 0, img: 'https://img.icons8.com/color/96/nothing.png', slot: 'accessory' },
+    { id: 'acc-glasses', name: 'Очки', price: 75, img: 'https://img.icons8.com/color/96/glasses.png', slot: 'accessory' },
+    { id: 'acc-hat', name: 'Шляпа', price: 100, img: 'https://img.icons8.com/color/96/top-hat.png', slot: 'accessory' },
+    { id: 'acc-headphones', name: 'Наушники', price: 125, img: 'https://img.icons8.com/color/96/headphones.png', slot: 'accessory' },
+    { id: 'acc-crown', name: 'Корона', price: 200, img: 'https://img.icons8.com/color/96/crown.png', slot: 'accessory' },
+    { id: 'acc-bow', name: 'Бантик', price: 150, img: 'https://img.icons8.com/color/96/bow-tie.png', slot: 'accessory' }
 ];
 
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
 let coins = 0;
 let ownedItems = [];
 let currentTheme = '';
-let currentSkin = '';
+let equippedItems = {
+    body: 'clothes-none',
+    accessory: 'acc-none'
+};
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 function initShop() {
@@ -32,14 +46,19 @@ function initShop() {
 function loadState() {
     try {
         coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-        ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'skin-bot'];
+        ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'clothes-none', 'acc-none'];
         currentTheme = localStorage.getItem('neuroTheme') || '';
-        currentSkin = localStorage.getItem('neuroSkin') || SKINS[0].img;
+        
+        // Загружаем экипированные предметы
+        const savedEquipped = localStorage.getItem('neuroEquipped');
+        if (savedEquipped) {
+            equippedItems = JSON.parse(savedEquipped);
+        }
     } catch (e) {
         console.error('Ошибка загрузки данных:', e);
         // Используем значения по умолчанию
-        ownedItems = ['theme-default', 'skin-bot'];
-        currentSkin = SKINS[0].img;
+        ownedItems = ['theme-default', 'clothes-none', 'acc-none'];
+        equippedItems = { body: 'clothes-none', accessory: 'acc-none' };
     }
 }
 
@@ -55,8 +74,8 @@ function saveTheme() {
     localStorage.setItem('neuroTheme', currentTheme);
 }
 
-function saveSkin() {
-    localStorage.setItem('neuroSkin', currentSkin);
+function saveEquippedItems() {
+    localStorage.setItem('neuroEquipped', JSON.stringify(equippedItems));
 }
 
 // ===== ПРИМЕНЕНИЕ ТЕМЫ =====
@@ -70,7 +89,8 @@ function applyTheme() {
 function renderShop() {
     updateBalance();
     renderThemes();
-    renderSkins();
+    renderClothes();
+    renderAccessories();
 }
 
 function updateBalance() {
@@ -93,16 +113,29 @@ function renderThemes() {
     });
 }
 
-function renderSkins() {
-    const container = document.getElementById('skins-list');
+function renderClothes() {
+    const container = document.getElementById('clothes-list');
     if (!container) return;
     
     container.innerHTML = '';
-    SKINS.forEach(item => {
-        const isEquipped = currentSkin === item.img;
+    CLOTHES.forEach(item => {
+        const isEquipped = equippedItems.body === item.id;
         const status = getItemStatus(item.id, item.price, isEquipped);
         
-        container.innerHTML += createSkinItemHTML(item, status);
+        container.innerHTML += createItemHTML(item, status, 'clothes');
+    });
+}
+
+function renderAccessories() {
+    const container = document.getElementById('accessories-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    ACCESSORIES.forEach(item => {
+        const isEquipped = equippedItems.accessory === item.id;
+        const status = getItemStatus(item.id, item.price, isEquipped);
+        
+        container.innerHTML += createItemHTML(item, status, 'accessory');
     });
 }
 
@@ -119,26 +152,26 @@ function createThemeItemHTML(item, status) {
                     data-id="${item.id}" 
                     data-type="theme" 
                     data-price="${item.price}" 
-                    data-value="${item.color}">
+                    data-slot="theme">
                 ${status.text}
             </button>
         </div>
     `;
 }
 
-function createSkinItemHTML(item, status) {
+function createItemHTML(item, status, type) {
     return `
         <div class="shop-item">
-            <img src="${item.img}" class="item-icon" alt="${item.name}">
+            <img src="${item.img}" class="item-icon" alt="${item.name}" onerror="this.style.display='none'">
             <div class="item-details">
                 <span class="item-name">${item.name}</span>
                 <span class="item-desc">${item.price > 0 ? item.price + ' монет' : 'Бесплатно'}</span>
             </div>
             <button class="btn-price ${status.class}" 
                     data-id="${item.id}" 
-                    data-type="skin" 
+                    data-type="${type}" 
                     data-price="${item.price}" 
-                    data-value="${item.img}">
+                    data-slot="${item.slot}">
                 ${status.text}
             </button>
         </div>
@@ -148,10 +181,10 @@ function createSkinItemHTML(item, status) {
 // ===== ЛОГИКА СТАТУСОВ =====
 function getItemStatus(id, price, isEquipped) {
     if (isEquipped) {
-        return { class: 'equipped', text: 'Выбрано' };
+        return { class: 'equipped', text: 'Надето' };
     }
     if (ownedItems.includes(id)) {
-        return { class: 'owned', text: 'Выбрать' };
+        return { class: 'owned', text: 'Надеть' };
     }
     if (coins >= price) {
         return { class: 'buy', text: 'Купить' };
@@ -162,13 +195,17 @@ function getItemStatus(id, price, isEquipped) {
 // ===== ОБРАБОТКА СОБЫТИЙ =====
 function attachEventListeners() {
     const themesContainer = document.getElementById('themes-list');
-    const skinsContainer = document.getElementById('skins-list');
+    const clothesContainer = document.getElementById('clothes-list');
+    const accessoriesContainer = document.getElementById('accessories-list');
     
     if (themesContainer) {
         themesContainer.addEventListener('click', handleShopClick);
     }
-    if (skinsContainer) {
-        skinsContainer.addEventListener('click', handleShopClick);
+    if (clothesContainer) {
+        clothesContainer.addEventListener('click', handleShopClick);
+    }
+    if (accessoriesContainer) {
+        accessoriesContainer.addEventListener('click', handleShopClick);
     }
 }
 
@@ -176,35 +213,45 @@ function handleShopClick(e) {
     const btn = e.target.closest('.btn-price');
     if (!btn) return;
     
-    const { id, type, price, value } = btn.dataset;
-    handleItemClick(id, type, Number(price), value);
+    const { id, type, price, slot } = btn.dataset;
+    handleItemClick(id, type, Number(price), slot);
 }
 
-function handleItemClick(id, type, price, value) {
-    // Проверка, что предмет уже выбран
-    if ((type === 'theme' && currentTheme === id) || 
-        (type === 'skin' && currentSkin === value)) {
-        return;
-    }
+function handleItemClick(id, type, price, slot) {
+    // Проверка, что предмет уже экипирован
+    if (type === 'theme' && currentTheme === id) return;
+    if (slot === 'body' && equippedItems.body === id) return;
+    if (slot === 'accessory' && equippedItems.accessory === id) return;
 
     // Если уже куплено - просто экипируем
     if (ownedItems.includes(id)) {
-        equipItem(id, type, value);
+        equipItem(id, type, slot);
         return;
     }
 
     // Покупка
     if (coins >= price) {
-        if (confirm(`Купить "${id}" за ${price} монет?`)) {
-            purchaseItem(id, price, type, value);
+        const itemName = getItemName(id, type);
+        if (confirm(`Купить "${itemName}" за ${price} монет?`)) {
+            purchaseItem(id, price, type, slot);
         }
     } else {
         alert("Не хватает монет! Поиграй еще.");
     }
 }
 
+function getItemName(id, type) {
+    let allItems = [];
+    if (type === 'theme') allItems = THEMES;
+    else if (type === 'clothes') allItems = CLOTHES;
+    else if (type === 'accessory') allItems = ACCESSORIES;
+    
+    const item = allItems.find(i => i.id === id);
+    return item ? item.name : id;
+}
+
 // ===== ЛОГИКА ПОКУПКИ И ЭКИПИРОВКИ =====
-function purchaseItem(id, price, type, value) {
+function purchaseItem(id, price, type, slot) {
     coins -= price;
     ownedItems.push(id);
     
@@ -216,17 +263,20 @@ function purchaseItem(id, price, type, value) {
         confetti();
     }
     
-    equipItem(id, type, value);
+    equipItem(id, type, slot);
 }
 
-function equipItem(id, type, value) {
+function equipItem(id, type, slot) {
     if (type === 'theme') {
         currentTheme = id === 'theme-default' ? '' : id;
         document.body.className = currentTheme;
         saveTheme();
-    } else if (type === 'skin') {
-        currentSkin = value;
-        saveSkin();
+    } else if (slot === 'body') {
+        equippedItems.body = id;
+        saveEquippedItems();
+    } else if (slot === 'accessory') {
+        equippedItems.accessory = id;
+        saveEquippedItems();
     }
     
     renderShop();
