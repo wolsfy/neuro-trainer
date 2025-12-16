@@ -3,21 +3,36 @@ const PHRASES = [
     "Привет!", "Как дела?", "Поиграем?", "Я умный!", "Бзз-бзз...", "Хочу монетки!", "Ты супер!", "Заряди меня!"
 ];
 
+// Данные об одежде (полные изображения роботов)
+const CLOTHES_IMAGES = {
+    'clothes-none': 'mascot.png',
+    'clothes-tshirt': 'robot-tshirt.png',
+    'clothes-hoodie': 'robot-hoodie.png',
+    'clothes-jacket': 'robot-jacket.png',
+    'clothes-suit': 'robot-suit.png'
+};
+
+// Данные об аксессуарах (пока пусто, можно добавить позже)
+const ACCESSORY_IMAGES = {
+    'acc-none': '',
+    'acc-glasses': 'robot-glasses.png',
+    'acc-hat': '',
+    'acc-headphones': '',
+    'acc-crown': '',
+    'acc-bow': ''
+};
+
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
 let coins = 0;
 let currentTheme = '';
-let equippedItems = {
-    body: 'clothes-none',
-    accessory: 'acc-none'
-};
+let equippedClothes = 'clothes-none';
+let equippedAccessory = 'acc-none';
 let audioCtx = null;
 
 // ===== ЭЛЕМЕНТЫ DOM =====
 let robotImg = null;
 let thoughtBubble = null;
 let coinsDisplay = null;
-let clothesOverlay = null;
-let accessoryOverlay = null;
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 function initRoom() {
@@ -25,8 +40,6 @@ function initRoom() {
     robotImg = document.getElementById('robot-img');
     thoughtBubble = document.getElementById('bubble');
     coinsDisplay = document.getElementById('coins');
-    clothesOverlay = document.getElementById('clothes-overlay');
-    accessoryOverlay = document.getElementById('accessory-overlay');
     
     // Загружаем данные
     loadRoomState();
@@ -48,16 +61,12 @@ function loadRoomState() {
     try {
         coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
         currentTheme = localStorage.getItem('neuroTheme') || '';
-        
-        // Загружаем экипированные предметы
-        const savedEquipped = localStorage.getItem('neuroEquipped');
-        if (savedEquipped) {
-            equippedItems = JSON.parse(savedEquipped);
-        }
+        equippedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
+        equippedAccessory = localStorage.getItem('neuroAccessory') || 'acc-none';
     } catch (e) {
         console.error('Ошибка загрузки данных комнаты:', e);
-        // Используем значения по умолчанию
-        equippedItems = { body: 'clothes-none', accessory: 'acc-none' };
+        equippedClothes = 'clothes-none';
+        equippedAccessory = 'acc-none';
     }
 }
 
@@ -75,61 +84,27 @@ function updateCoinsDisplay() {
 }
 
 function updateRobotAppearance() {
-    // Получаем данные о предметах из shop.js
-    const clothesData = getClothesImage(equippedItems.body);
-    const accessoryData = getAccessoryImage(equippedItems.accessory);
+    if (!robotImg) return;
     
-    // Обновляем изображения оверлеев
-    if (clothesOverlay) {
-        if (clothesData && equippedItems.body !== 'clothes-none') {
-            clothesOverlay.src = clothesData;
-            clothesOverlay.style.display = 'block';
-        } else {
-            clothesOverlay.style.display = 'none';
-        }
-    }
+    // Получаем изображение робота в одежде
+    const clothesImage = CLOTHES_IMAGES[equippedClothes] || 'mascot.png';
     
-    if (accessoryOverlay) {
-        if (accessoryData && equippedItems.accessory !== 'acc-none') {
-            accessoryOverlay.src = accessoryData;
-            accessoryOverlay.style.display = 'block';
-        } else {
-            accessoryOverlay.style.display = 'none';
-        }
-    }
-}
-
-// Получение URL изображений из данных магазина
-function getClothesImage(id) {
-    const clothes = [
-        { id: 'clothes-none', img: '' },
-        { id: 'clothes-tshirt', img: 'https://img.icons8.com/color/96/t-shirt.png' },
-        { id: 'clothes-hoodie', img: 'https://img.icons8.com/color/96/hoodie.png' },
-        { id: 'clothes-jacket', img: 'https://img.icons8.com/color/96/jacket.png' },
-        { id: 'clothes-suit', img: 'https://img.icons8.com/color/96/business-shirt.png' }
-    ];
-    const item = clothes.find(c => c.id === id);
-    return item ? item.img : '';
-}
-
-function getAccessoryImage(id) {
-    const accessories = [
-        { id: 'acc-none', img: '' },
-        { id: 'acc-glasses', img: 'https://img.icons8.com/color/96/glasses.png' },
-        { id: 'acc-hat', img: 'https://img.icons8.com/color/96/top-hat.png' },
-        { id: 'acc-headphones', img: 'https://img.icons8.com/color/96/headphones.png' },
-        { id: 'acc-crown', img: 'https://img.icons8.com/color/96/crown.png' },
-        { id: 'acc-bow', img: 'https://img.icons8.com/color/96/bow-tie.png' }
-    ];
-    const item = accessories.find(a => a.id === id);
-    return item ? item.img : '';
+    // Если есть изображение с аксессуаром - используем его
+    // Пока у нас нет комбинированных изображений, просто отображаем одежду
+    robotImg.src = clothesImage;
+    
+    // Если изображение не загрузилось, возвращаемся к дефолтному
+    robotImg.onerror = function() {
+        console.warn('Не удалось загрузить:', clothesImage);
+        robotImg.src = 'mascot.png';
+    };
 }
 
 // ===== АУДИО =====
 function initAudio() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Активация звука по первому клику (требование браузеров)
+    // Активация звука по первому клику
     document.body.addEventListener('click', () => {
         if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume();
@@ -208,15 +183,7 @@ function attachEventListeners() {
         robotImg.addEventListener('click', pokeRobot);
     }
     
-    // Клик по оверлеям тоже считается как клик по роботу
-    if (clothesOverlay) {
-        clothesOverlay.addEventListener('click', pokeRobot);
-    }
-    if (accessoryOverlay) {
-        accessoryOverlay.addEventListener('click', pokeRobot);
-    }
-    
-    // Кнопки управления (используем event delegation)
+    // Кнопки управления
     const roomControls = document.querySelector('.room-controls');
     if (roomControls) {
         roomControls.addEventListener('click', handleControlClick);
