@@ -246,9 +246,19 @@
         function endGame() {
             isPlaying = false;
             clearInterval(timerInterval);
+            
+            // --- СОХРАНЕНИЕ МОНЕТ ---
+            saveCoins(score);
+            // -----------------------
+
             confetti();
-            alert(`Время вышло!\nСчет: ${score}`);
+            alert(`Время вышло!\nСчет: ${score}\nВы заработали ${score} монет! 💰`);
             if(confirm("Еще раз?")) initGame(); else window.location.href = '../index.html';
+        }
+
+        function saveCoins(amount) {
+            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
+            localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
         document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
