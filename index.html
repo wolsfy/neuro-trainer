@@ -13,56 +13,47 @@
 <body>
 
     <div class="screen active">
-        <div class="menu-title">🧠 Нейро-Тренер</div>
-
-        <!-- ПРОФИЛЬ ИГРОКА (НОВОЕ) -->
+        <!-- БАЛАНС И КНОПКА МАГАЗИНА -->
         <div class="profile-bar">
             <div class="profile-info">
-                <span class="profile-name">Мой счет:</span>
+                <span class="profile-name">Мой баланс:</span>
                 <span class="coin-balance">
                     <span id="user-coins">0</span> 💰
                 </span>
             </div>
-            <!-- Тут потом будет кнопка магазина -->
-            <div style="font-size: 2rem;">😎</div>
+            <!-- Ссылка на магазин -->
+            <a href="shop.html" class="shop-link-btn">🛒 Магазин</a>
+        </div>
+
+        <!-- ПЕРСОНАЖ (РОБОТ) -->
+        <div class="character-area">
+            <img id="mascot-img" src="https://img.icons8.com/color/480/bot.png" alt="Robot" class="mascot-img">
+            <div class="mascot-speech">Привет! Потренируемся?</div>
         </div>
         
         <div class="menu-grid">
-            <a href="games/schulte.html" class="menu-btn">
-                <span class="menu-icon">🔢</span>
-                <span>Таблица Шульте</span>
-            </a>
-            
-            <a href="games/decoder.html" class="menu-btn">
-                <span class="menu-icon">🧩</span>
-                <span>Шифр</span>
-            </a>
-            
-            <a href="games/memory.html" class="menu-btn">
-                <span class="menu-icon">💡</span>
-                <span>Память</span>
-            </a>
-            
-            <a href="games/stroop.html" class="menu-btn">
-                <span class="menu-icon">🎨</span>
-                <span>Цвета</span>
-            </a>
-
-            <!-- НОВАЯ ИГРА -->
-            <a href="games/math.html" class="menu-btn">
-                <span class="menu-icon">🧮</span>
-                <span>Математика</span>
-            </a>
+            <a href="games/schulte.html" class="menu-btn"><span class="menu-icon">🔢</span><span>Шульте</span></a>
+            <a href="games/decoder.html" class="menu-btn"><span class="menu-icon">🧩</span><span>Шифр</span></a>
+            <a href="games/memory.html" class="menu-btn"><span class="menu-icon">💡</span><span>Память</span></a>
+            <a href="games/stroop.html" class="menu-btn"><span class="menu-icon">🎨</span><span>Цвета</span></a>
+            <a href="games/math.html" class="menu-btn"><span class="menu-icon">🧮</span><span>Математика</span></a>
         </div>
 
-        <div class="footer">Версия 3.0 (Economy)</div>
+        <div class="footer">Версия 4.0 (Mascot)</div>
     </div>
 
     <script>
-        // При загрузке меню проверяем баланс
-        const savedCoins = localStorage.getItem('neuroCoins') || 0;
+        // Загрузка баланса
+        const savedCoins = parseInt(localStorage.getItem('neuroCoins')) || 0;
         document.getElementById('user-coins').innerText = savedCoins;
+
+        // Загрузка выбранного скина робота
+        const savedSkin = localStorage.getItem('neuroSkin') || 'https://img.icons8.com/color/480/bot.png';
+        document.getElementById('mascot-img').src = savedSkin;
+
+        // Загрузка темы (если куплена)
+        const savedTheme = localStorage.getItem('neuroTheme');
+        if(savedTheme) document.body.className = savedTheme;
     </script>
 </body>
 </html>
- 
