@@ -6,33 +6,31 @@ const THEMES = [
     { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
 ];
 
-// Одежда для робота
+// Одежда для робота (теперь это полные изображения)
 const CLOTHES = [
-    { id: 'clothes-none', name: 'Без одежды', price: 0, img: 'https://img.icons8.com/color/96/nothing.png', slot: 'body' },
-    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'https://img.icons8.com/color/96/t-shirt.png', slot: 'body' },
-    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'https://img.icons8.com/color/96/hoodie.png', slot: 'body' },
-    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'https://img.icons8.com/color/96/jacket.png', slot: 'body' },
-    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'https://img.icons8.com/color/96/business-shirt.png', slot: 'body' }
+    { id: 'clothes-none', name: 'Без одежды', price: 0, img: 'mascot.png', preview: 'https://img.icons8.com/color/96/nothing.png' },
+    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'robot-tshirt.png', preview: 'https://img.icons8.com/color/96/t-shirt.png' },
+    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'robot-hoodie.png', preview: 'https://img.icons8.com/color/96/hoodie.png' },
+    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'robot-jacket.png', preview: 'https://img.icons8.com/color/96/jacket.png' },
+    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'robot-suit.png', preview: 'https://img.icons8.com/color/96/business-shirt.png' }
 ];
 
-// Аксессуары для робота
+// Аксессуары для робота (пока оставляем как иконки, потом можно добавить полные изображения)
 const ACCESSORIES = [
-    { id: 'acc-none', name: 'Без аксессуаров', price: 0, img: 'https://img.icons8.com/color/96/nothing.png', slot: 'accessory' },
-    { id: 'acc-glasses', name: 'Очки', price: 75, img: 'https://img.icons8.com/color/96/glasses.png', slot: 'accessory' },
-    { id: 'acc-hat', name: 'Шляпа', price: 100, img: 'https://img.icons8.com/color/96/top-hat.png', slot: 'accessory' },
-    { id: 'acc-headphones', name: 'Наушники', price: 125, img: 'https://img.icons8.com/color/96/headphones.png', slot: 'accessory' },
-    { id: 'acc-crown', name: 'Корона', price: 200, img: 'https://img.icons8.com/color/96/crown.png', slot: 'accessory' },
-    { id: 'acc-bow', name: 'Бантик', price: 150, img: 'https://img.icons8.com/color/96/bow-tie.png', slot: 'accessory' }
+    { id: 'acc-none', name: 'Без аксессуаров', price: 0, img: '', preview: 'https://img.icons8.com/color/96/nothing.png' },
+    { id: 'acc-glasses', name: 'Очки', price: 75, img: 'robot-glasses.png', preview: 'https://img.icons8.com/color/96/glasses.png' },
+    { id: 'acc-hat', name: 'Шляпа', price: 100, img: '', preview: 'https://img.icons8.com/color/96/top-hat.png' },
+    { id: 'acc-headphones', name: 'Наушники', price: 125, img: '', preview: 'https://img.icons8.com/color/96/headphones.png' },
+    { id: 'acc-crown', name: 'Корона', price: 200, img: '', preview: 'https://img.icons8.com/color/96/crown.png' },
+    { id: 'acc-bow', name: 'Бантик', price: 150, img: '', preview: 'https://img.icons8.com/color/96/bow-tie.png' }
 ];
 
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
 let coins = 0;
 let ownedItems = [];
 let currentTheme = '';
-let equippedItems = {
-    body: 'clothes-none',
-    accessory: 'acc-none'
-};
+let equippedClothes = 'clothes-none';
+let equippedAccessory = 'acc-none';
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 function initShop() {
@@ -48,17 +46,13 @@ function loadState() {
         coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
         ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'clothes-none', 'acc-none'];
         currentTheme = localStorage.getItem('neuroTheme') || '';
-        
-        // Загружаем экипированные предметы
-        const savedEquipped = localStorage.getItem('neuroEquipped');
-        if (savedEquipped) {
-            equippedItems = JSON.parse(savedEquipped);
-        }
+        equippedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
+        equippedAccessory = localStorage.getItem('neuroAccessory') || 'acc-none';
     } catch (e) {
         console.error('Ошибка загрузки данных:', e);
-        // Используем значения по умолчанию
         ownedItems = ['theme-default', 'clothes-none', 'acc-none'];
-        equippedItems = { body: 'clothes-none', accessory: 'acc-none' };
+        equippedClothes = 'clothes-none';
+        equippedAccessory = 'acc-none';
     }
 }
 
@@ -74,8 +68,12 @@ function saveTheme() {
     localStorage.setItem('neuroTheme', currentTheme);
 }
 
-function saveEquippedItems() {
-    localStorage.setItem('neuroEquipped', JSON.stringify(equippedItems));
+function saveClothes() {
+    localStorage.setItem('neuroClothes', equippedClothes);
+}
+
+function saveAccessory() {
+    localStorage.setItem('neuroAccessory', equippedAccessory);
 }
 
 // ===== ПРИМЕНЕНИЕ ТЕМЫ =====
@@ -119,7 +117,7 @@ function renderClothes() {
     
     container.innerHTML = '';
     CLOTHES.forEach(item => {
-        const isEquipped = equippedItems.body === item.id;
+        const isEquipped = equippedClothes === item.id;
         const status = getItemStatus(item.id, item.price, isEquipped);
         
         container.innerHTML += createItemHTML(item, status, 'clothes');
@@ -132,7 +130,7 @@ function renderAccessories() {
     
     container.innerHTML = '';
     ACCESSORIES.forEach(item => {
-        const isEquipped = equippedItems.accessory === item.id;
+        const isEquipped = equippedAccessory === item.id;
         const status = getItemStatus(item.id, item.price, isEquipped);
         
         container.innerHTML += createItemHTML(item, status, 'accessory');
@@ -151,8 +149,7 @@ function createThemeItemHTML(item, status) {
             <button class="btn-price ${status.class}" 
                     data-id="${item.id}" 
                     data-type="theme" 
-                    data-price="${item.price}" 
-                    data-slot="theme">
+                    data-price="${item.price}">
                 ${status.text}
             </button>
         </div>
@@ -162,7 +159,7 @@ function createThemeItemHTML(item, status) {
 function createItemHTML(item, status, type) {
     return `
         <div class="shop-item">
-            <img src="${item.img}" class="item-icon" alt="${item.name}" onerror="this.style.display='none'">
+            <img src="${item.preview}" class="item-icon" alt="${item.name}" onerror="this.style.display='none'">
             <div class="item-details">
                 <span class="item-name">${item.name}</span>
                 <span class="item-desc">${item.price > 0 ? item.price + ' монет' : 'Бесплатно'}</span>
@@ -170,8 +167,7 @@ function createItemHTML(item, status, type) {
             <button class="btn-price ${status.class}" 
                     data-id="${item.id}" 
                     data-type="${type}" 
-                    data-price="${item.price}" 
-                    data-slot="${item.slot}">
+                    data-price="${item.price}">
                 ${status.text}
             </button>
         </div>
@@ -213,19 +209,19 @@ function handleShopClick(e) {
     const btn = e.target.closest('.btn-price');
     if (!btn) return;
     
-    const { id, type, price, slot } = btn.dataset;
-    handleItemClick(id, type, Number(price), slot);
+    const { id, type, price } = btn.dataset;
+    handleItemClick(id, type, Number(price));
 }
 
-function handleItemClick(id, type, price, slot) {
+function handleItemClick(id, type, price) {
     // Проверка, что предмет уже экипирован
     if (type === 'theme' && currentTheme === id) return;
-    if (slot === 'body' && equippedItems.body === id) return;
-    if (slot === 'accessory' && equippedItems.accessory === id) return;
+    if (type === 'clothes' && equippedClothes === id) return;
+    if (type === 'accessory' && equippedAccessory === id) return;
 
     // Если уже куплено - просто экипируем
     if (ownedItems.includes(id)) {
-        equipItem(id, type, slot);
+        equipItem(id, type);
         return;
     }
 
@@ -233,7 +229,7 @@ function handleItemClick(id, type, price, slot) {
     if (coins >= price) {
         const itemName = getItemName(id, type);
         if (confirm(`Купить "${itemName}" за ${price} монет?`)) {
-            purchaseItem(id, price, type, slot);
+            purchaseItem(id, price, type);
         }
     } else {
         alert("Не хватает монет! Поиграй еще.");
@@ -251,7 +247,7 @@ function getItemName(id, type) {
 }
 
 // ===== ЛОГИКА ПОКУПКИ И ЭКИПИРОВКИ =====
-function purchaseItem(id, price, type, slot) {
+function purchaseItem(id, price, type) {
     coins -= price;
     ownedItems.push(id);
     
@@ -263,20 +259,20 @@ function purchaseItem(id, price, type, slot) {
         confetti();
     }
     
-    equipItem(id, type, slot);
+    equipItem(id, type);
 }
 
-function equipItem(id, type, slot) {
+function equipItem(id, type) {
     if (type === 'theme') {
         currentTheme = id === 'theme-default' ? '' : id;
         document.body.className = currentTheme;
         saveTheme();
-    } else if (slot === 'body') {
-        equippedItems.body = id;
-        saveEquippedItems();
-    } else if (slot === 'accessory') {
-        equippedItems.accessory = id;
-        saveEquippedItems();
+    } else if (type === 'clothes') {
+        equippedClothes = id;
+        saveClothes();
+    } else if (type === 'accessory') {
+        equippedAccessory = id;
+        saveAccessory();
     }
     
     renderShop();
