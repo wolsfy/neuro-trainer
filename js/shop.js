@@ -45,58 +45,11 @@ const CLOTHES = [
     }
 ];
 
-// Аксессуары для робота
-const ACCESSORIES = [
-    { 
-        id: 'acc-none', 
-        name: 'Без аксессуаров', 
-        price: 0, 
-        img: '', 
-        emoji: '❌'
-    },
-    { 
-        id: 'acc-glasses', 
-        name: 'Очки', 
-        price: 75, 
-        img: 'robot-glasses.png', 
-        emoji: '👓'
-    },
-    { 
-        id: 'acc-hat', 
-        name: 'Шляпа', 
-        price: 100, 
-        img: '', 
-        emoji: '🎩'
-    },
-    { 
-        id: 'acc-headphones', 
-        name: 'Наушники', 
-        price: 125, 
-        img: '', 
-        emoji: '🎧'
-    },
-    { 
-        id: 'acc-crown', 
-        name: 'Корона', 
-        price: 200, 
-        img: '', 
-        emoji: '👑'
-    },
-    { 
-        id: 'acc-bow', 
-        name: 'Бантик', 
-        price: 150, 
-        img: '', 
-        emoji: '🎀'
-    }
-];
-
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
 let coins = 0;
 let ownedItems = [];
 let currentTheme = '';
 let equippedClothes = 'clothes-none';
-let equippedAccessory = 'acc-none';
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 function initShop() {
@@ -110,15 +63,13 @@ function initShop() {
 function loadState() {
     try {
         coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-        ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'clothes-none', 'acc-none'];
+        ownedItems = JSON.parse(localStorage.getItem('neuroOwned')) || ['theme-default', 'clothes-none'];
         currentTheme = localStorage.getItem('neuroTheme') || '';
         equippedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
-        equippedAccessory = localStorage.getItem('neuroAccessory') || 'acc-none';
     } catch (e) {
         console.error('Ошибка загрузки данных:', e);
-        ownedItems = ['theme-default', 'clothes-none', 'acc-none'];
+        ownedItems = ['theme-default', 'clothes-none'];
         equippedClothes = 'clothes-none';
-        equippedAccessory = 'acc-none';
     }
 }
 
@@ -138,10 +89,6 @@ function saveClothes() {
     localStorage.setItem('neuroClothes', equippedClothes);
 }
 
-function saveAccessory() {
-    localStorage.setItem('neuroAccessory', equippedAccessory);
-}
-
 // ===== ПРИМЕНЕНИЕ ТЕМЫ =====
 function applyTheme() {
     if (currentTheme) {
@@ -154,7 +101,6 @@ function renderShop() {
     updateBalance();
     renderThemes();
     renderClothes();
-    renderAccessories();
 }
 
 function updateBalance() {
@@ -187,19 +133,6 @@ function renderClothes() {
         const status = getItemStatus(item.id, item.price, isEquipped);
         
         container.innerHTML += createItemHTML(item, status, 'clothes');
-    });
-}
-
-function renderAccessories() {
-    const container = document.getElementById('accessories-list');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    ACCESSORIES.forEach(item => {
-        const isEquipped = equippedAccessory === item.id;
-        const status = getItemStatus(item.id, item.price, isEquipped);
-        
-        container.innerHTML += createItemHTML(item, status, 'accessory');
     });
 }
 
@@ -258,16 +191,12 @@ function getItemStatus(id, price, isEquipped) {
 function attachEventListeners() {
     const themesContainer = document.getElementById('themes-list');
     const clothesContainer = document.getElementById('clothes-list');
-    const accessoriesContainer = document.getElementById('accessories-list');
     
     if (themesContainer) {
         themesContainer.addEventListener('click', handleShopClick);
     }
     if (clothesContainer) {
         clothesContainer.addEventListener('click', handleShopClick);
-    }
-    if (accessoriesContainer) {
-        accessoriesContainer.addEventListener('click', handleShopClick);
     }
 }
 
@@ -283,7 +212,6 @@ function handleItemClick(id, type, price) {
     // Проверка, что предмет уже экипирован
     if (type === 'theme' && currentTheme === id) return;
     if (type === 'clothes' && equippedClothes === id) return;
-    if (type === 'accessory' && equippedAccessory === id) return;
 
     // Если уже куплено - просто экипируем
     if (ownedItems.includes(id)) {
@@ -306,7 +234,6 @@ function getItemName(id, type) {
     let allItems = [];
     if (type === 'theme') allItems = THEMES;
     else if (type === 'clothes') allItems = CLOTHES;
-    else if (type === 'accessory') allItems = ACCESSORIES;
     
     const item = allItems.find(i => i.id === id);
     return item ? item.name : id;
@@ -336,9 +263,6 @@ function equipItem(id, type) {
     } else if (type === 'clothes') {
         equippedClothes = id;
         saveClothes();
-    } else if (type === 'accessory') {
-        equippedAccessory = id;
-        saveAccessory();
     }
     
     renderShop();
