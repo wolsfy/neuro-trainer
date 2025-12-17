@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таблица Шульте</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/robot-animations.css">
     
     <style>
         .schulte-grid {
@@ -80,6 +81,7 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/achievements.js"></script>
+    <script src="../js/game-robot.js"></script>
 </head>
 <body>
 
@@ -108,6 +110,7 @@
         let currentTarget = 1;
         let timerInterval;
         let isPlaying = false;
+        let correctStreak = 0;
 
         const gridElement = document.getElementById('grid');
         const targetElement = document.getElementById('target-num');
@@ -178,8 +181,11 @@
         function restartGame() {
             isPlaying = true;
             currentTarget = 1;
+            correctStreak = 0;
             targetElement.innerText = "1";
             timerElement.innerText = "00.00";
+            
+            if (window.gameRobot) window.gameRobot.onGameStart();
             
             clearInterval(timerInterval);
             let startTime = Date.now();
@@ -219,6 +225,16 @@
             if (number === currentTarget) {
                 playSound('click');
                 cell.classList.add('correct-anim');
+                correctStreak++;
+                
+                if (window.gameRobot) {
+                    if (correctStreak % 5 === 0 && correctStreak > 0) {
+                        window.gameRobot.onCombo(correctStreak);
+                    } else if (Math.random() < 0.3) {
+                        window.gameRobot.onCorrect();
+                    }
+                }
+                
                 currentTarget++;
 
                 if (currentTarget > maxNumber) {
@@ -228,8 +244,12 @@
                 }
             } else {
                 playSound('error');
+                correctStreak = 0;
                 cell.style.backgroundColor = '#FF5252';
                 cell.style.color = 'white';
+                if (window.gameRobot && Math.random() < 0.5) {
+                    window.gameRobot.onWrong();
+                }
                 setTimeout(() => {
                     cell.style.backgroundColor = '';
                     cell.style.color = '';
@@ -247,28 +267,34 @@
             let reward = 15;
             saveCoins(reward);
             
-            // Обновление статистики для достижений
             updateGameStats(finalTime);
             
-            checkRecord(finalTime, reward);
+            const key = `schulte_best_${currentGridSize}`;
+            const oldRecord = parseFloat(localStorage.getItem(key)) || 9999;
+            const isNewRecord = finalTime < oldRecord;
+            
+            if (isNewRecord) {
+                localStorage.setItem(key, finalTime);
+                if (window.gameRobot) window.gameRobot.onNewRecord();
+            } else {
+                if (window.gameRobot) window.gameRobot.onGameOver();
+            }
+            
+            checkRecord(finalTime, reward, isNewRecord);
         }
 
         function updateGameStats(time) {
-            // Общая статистика
             let totalGames = parseInt(localStorage.getItem('neuroTotalGames')) || 0;
             localStorage.setItem('neuroTotalGames', totalGames + 1);
             
-            // Статистика Шульте
             let schultePlayed = parseInt(localStorage.getItem('neuroSchultePlayed')) || 0;
             localStorage.setItem('neuroSchultePlayed', schultePlayed + 1);
             
-            // Лучшее время
             let bestTime = parseFloat(localStorage.getItem('neuroSchulteBestTime')) || 9999;
             if (time < bestTime) {
                 localStorage.setItem('neuroSchulteBestTime', time);
             }
             
-            // Проверка достижений
             if (window.AchievementsSystem) {
                 const newAchievements = window.AchievementsSystem.check();
                 newAchievements.forEach(ach => {
@@ -277,21 +303,18 @@
             }
         }
 
-        function checkRecord(time, reward) {
-            const key = `schulte_best_${currentGridSize}`;
-            const oldRecord = parseFloat(localStorage.getItem(key)) || 9999;
-
+        function checkRecord(time, reward, isNewRecord) {
+            updateBestScoreDisplay();
+            
             setTimeout(() => {
                 let msg = `Победа! Время: ${time} с\nВы получили ${reward} монет! 💰`;
                 
-                if (time < oldRecord) {
-                    localStorage.setItem(key, time);
+                if (isNewRecord) {
                     msg += `\n🎉 НОВЫЙ РЕКОРД!`;
-                    updateBestScoreDisplay();
                 }
                 
                 alert(msg);
-            }, 500);
+            }, 800);
         }
 
         function saveCoins(amount) {
