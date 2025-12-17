@@ -4,26 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таблица Шульте</title>
-    <!-- Подключаем общий стиль из родительской папки -->
     <link rel="stylesheet" href="../css/style.css">
     
-    <!-- Индивидуальные стили для этой игры -->
     <style>
-        /* Сетка игры */
         .schulte-grid {
             display: grid;
             gap: 10px;
             width: 92vw;
             max-width: 400px;
-            aspect-ratio: 1; /* Делает сетку квадратной */
+            aspect-ratio: 1;
             margin-top: 20px;
         }
-
-        /* Режимы сетки */
         .schulte-grid.size-3 { grid-template-columns: repeat(3, 1fr); }
         .schulte-grid.size-5 { grid-template-columns: repeat(5, 1fr); }
         
-        /* Ячейка с числом */
         .cell {
             background: white;
             border-radius: 12px;
@@ -32,18 +26,15 @@
             justify-content: center;
             font-weight: bold;
             color: #333;
-            box-shadow: 0 4px 0 #dce0e6; /* Объемная кнопка */
+            box-shadow: 0 4px 0 #dce0e6;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s;
         }
-
         .cell:active {
-            transform: translateY(4px); /* Эффект нажатия */
+            transform: translateY(4px);
             box-shadow: none;
         }
-
-        /* Цель (кого ищем) */
         .target-display {
             font-size: 1.2rem;
             color: #666;
@@ -56,14 +47,11 @@
             font-weight: bold;
             margin-left: 10px;
         }
-
-        /* Панель управления (внизу) */
         .controls {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
-
         .btn-mode {
             border: none;
             padding: 12px 24px;
@@ -74,18 +62,15 @@
             font-size: 1rem;
             cursor: pointer;
         }
-
         .btn-mode.active {
             background: var(--primary);
             color: white;
             box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
         }
-
         .btn-restart {
-            background: #FF9800; /* Оранжевый */
+            background: #FF9800;
             color: white;
         }
-        
         .best-score {
             font-size: 0.9rem;
             color: #FF9800;
@@ -93,12 +78,11 @@
             text-align: right;
         }
     </style>
-    <!-- Библиотека для салюта -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="../js/achievements.js"></script>
 </head>
 <body>
 
-    <!-- Верхняя панель: Кнопка назад и Таймер -->
     <div class="top-bar">
         <a href="../index.html" class="btn-back">←</a>
         <div>
@@ -107,16 +91,11 @@
         </div>
     </div>
 
-    <!-- Основной экран игры -->
     <div class="screen">
         <div class="target-display">
             Ищи число: <span id="target-num" class="target-number">1</span>
         </div>
-
-        <div id="grid" class="schulte-grid size-5">
-            <!-- Ячейки будут созданы через JavaScript -->
-        </div>
-
+        <div id="grid" class="schulte-grid size-5"></div>
         <div class="controls">
             <button class="btn-mode" id="mode-3" onclick="setMode(3)">3x3</button>
             <button class="btn-mode active" id="mode-5" onclick="setMode(5)">5x5</button>
@@ -125,31 +104,26 @@
     </div>
 
     <script>
-        // --- ПЕРЕМЕННЫЕ ---
-        let currentGridSize = 5; // По умолчанию 5x5
-        let currentTarget = 1;   // Какое число ищем сейчас
-        let timerInterval;       // ID таймера для остановки
-        let isPlaying = false;   // Идет ли игра
+        let currentGridSize = 5;
+        let currentTarget = 1;
+        let timerInterval;
+        let isPlaying = false;
 
-        // Элементы интерфейса
         const gridElement = document.getElementById('grid');
         const targetElement = document.getElementById('target-num');
         const timerElement = document.getElementById('timer');
         const bestScoreElement = document.getElementById('best-score');
 
-        // --- ЗВУКИ (Web Audio API) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             if (type === 'click') {
-                // Приятный "клик"
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
@@ -159,7 +133,6 @@
                 osc.stop(audioCtx.currentTime + 0.15);
             } 
             else if (type === 'error') {
-                // Низкий звук ошибки
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
                 osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
@@ -169,7 +142,6 @@
                 osc.stop(audioCtx.currentTime + 0.2);
             } 
             else if (type === 'win') {
-                // Аккорд победы
                 [440, 554, 659].forEach((freq, i) => {
                     const o = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
@@ -184,19 +156,11 @@
             }
         }
 
-        // --- ЛОГИКА ИГРЫ ---
-
-        // Смена режима (3x3 или 5x5)
         function setMode(size) {
             currentGridSize = size;
-            
-            // Обновляем визуальные кнопки
             document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`mode-${size}`).classList.add('active');
-            
-            // Меняем класс сетки для CSS
             gridElement.className = `schulte-grid size-${size}`;
-            
             updateBestScoreDisplay();
             restartGame();
         }
@@ -217,7 +181,6 @@
             targetElement.innerText = "1";
             timerElement.innerText = "00.00";
             
-            // Сброс и запуск таймера
             clearInterval(timerInterval);
             let startTime = Date.now();
             timerInterval = setInterval(() => {
@@ -230,32 +193,22 @@
 
         function renderGrid() {
             gridElement.innerHTML = '';
-            const count = currentGridSize * currentGridSize; // 9 или 25
-            
-            // Создаем массив чисел [1, 2, 3...]
+            const count = currentGridSize * currentGridSize;
             let numbers = [];
             for (let i = 1; i <= count; i++) {
                 numbers.push(i);
             }
-            
-            // Перемешиваем массив (алгоритм Фишера-Йейтса)
             numbers.sort(() => Math.random() - 0.5);
 
-            // Создаем кнопки
             numbers.forEach(num => {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.innerText = num;
-                
-                // Размер шрифта зависит от размера сетки
                 cell.style.fontSize = currentGridSize === 3 ? '3rem' : '2rem';
-
-                // Обработка нажатия (pointerdown работает быстрее click на мобильных)
                 cell.onpointerdown = (e) => {
-                    e.preventDefault(); // Чтобы не выделялся текст
+                    e.preventDefault();
                     handleCellClick(cell, num, count);
                 };
-
                 gridElement.appendChild(cell);
             });
         }
@@ -264,10 +217,8 @@
             if (!isPlaying) return;
 
             if (number === currentTarget) {
-                // Правильный клик
                 playSound('click');
-                cell.classList.add('correct-anim'); // Зеленая вспышка
-                
+                cell.classList.add('correct-anim');
                 currentTarget++;
 
                 if (currentTarget > maxNumber) {
@@ -276,12 +227,9 @@
                     targetElement.innerText = currentTarget;
                 }
             } else {
-                // Ошибка
                 playSound('error');
-                cell.style.backgroundColor = '#FF5252'; // Красный
+                cell.style.backgroundColor = '#FF5252';
                 cell.style.color = 'white';
-                
-                // Возврат цвета через 300мс
                 setTimeout(() => {
                     cell.style.backgroundColor = '';
                     cell.style.color = '';
@@ -293,22 +241,46 @@
             isPlaying = false;
             clearInterval(timerInterval);
             playSound('win');
-            confetti(); // Салют!
-
-            // --- НАЧИСЛЕНИЕ МОНЕТ ---
-            let reward = 15; // Фиксированная награда
-            saveCoins(reward);
-            // -----------------------
+            confetti();
 
             const finalTime = parseFloat(timerElement.innerText);
+            let reward = 15;
+            saveCoins(reward);
+            
+            // Обновление статистики для достижений
+            updateGameStats(finalTime);
+            
             checkRecord(finalTime, reward);
+        }
+
+        function updateGameStats(time) {
+            // Общая статистика
+            let totalGames = parseInt(localStorage.getItem('neuroTotalGames')) || 0;
+            localStorage.setItem('neuroTotalGames', totalGames + 1);
+            
+            // Статистика Шульте
+            let schultePlayed = parseInt(localStorage.getItem('neuroSchultePlayed')) || 0;
+            localStorage.setItem('neuroSchultePlayed', schultePlayed + 1);
+            
+            // Лучшее время
+            let bestTime = parseFloat(localStorage.getItem('neuroSchulteBestTime')) || 9999;
+            if (time < bestTime) {
+                localStorage.setItem('neuroSchulteBestTime', time);
+            }
+            
+            // Проверка достижений
+            if (window.AchievementsSystem) {
+                const newAchievements = window.AchievementsSystem.check();
+                newAchievements.forEach(ach => {
+                    setTimeout(() => window.AchievementsSystem.showNotification(ach), 1000);
+                });
+            }
         }
 
         function checkRecord(time, reward) {
             const key = `schulte_best_${currentGridSize}`;
             const oldRecord = parseFloat(localStorage.getItem(key)) || 9999;
 
-            // Небольшая задержка перед алертом
             setTimeout(() => {
                 let msg = `Победа! Время: ${time} с\nВы получили ${reward} монет! 💰`;
                 
@@ -319,18 +291,17 @@
                 }
                 
                 alert(msg);
-                
-                // Возврат в меню или рестарт (по желанию)
-                // window.location.href = '../index.html'; 
             }, 500);
         }
 
         function saveCoins(amount) {
             let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
             localStorage.setItem('neuroCoins', currentBank + amount);
+            
+            let totalEarned = parseInt(localStorage.getItem('neuroTotalCoinsEarned')) || 0;
+            localStorage.setItem('neuroTotalCoinsEarned', totalEarned + amount);
         }
 
-        // --- СТАРТ ПРИ ЗАГРУЗКЕ ---
         document.body.addEventListener('click', function() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }, { once: true });
@@ -339,7 +310,6 @@
 
         updateBestScoreDisplay();
         restartGame();
-
     </script>
 </body>
 </html>
