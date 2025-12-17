@@ -205,7 +205,102 @@ a { text-decoration: none; }
     font-size: 0.9rem;
 }
 
+/* ===== ТЕМЫ ОФОРМЛЕНИЯ ===== */
 
+/* Тема Хакер - темный режим */
+body.theme-hacker {
+    --primary: #00FF41;
+    --accent: #39FF14;
+    --bg: #0a0e27;
+    --card-bg: #1a1f3a;
+    --text: #00FF41;
+    --success: #00FF41;
+    --error: #FF0040;
+}
 
+body.theme-hacker .top-bar,
+body.theme-hacker .game-info {
+    color: var(--primary);
+}
 
+body.theme-hacker .btn-back {
+    background: #1a1f3a;
+    color: #00FF41;
+}
 
+body.theme-hacker .menu-btn,
+body.theme-hacker .room-btn,
+body.theme-hacker .shop-item {
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid #00FF41;
+}
+
+body.theme-hacker .balance-badge {
+    background: var(--card-bg);
+    color: #00FF41;
+    border: 1px solid #00FF41;
+}
+
+/* Тема Единорог - нежные розово-фиолетовые тона */
+body.theme-unicorn {
+    --primary: #E91E63;
+    --accent: #9C27B0;
+    --bg: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text: #880E4F;
+    --success: #E91E63;
+    --error: #D81B60;
+}
+
+body.theme-unicorn {
+    background: linear-gradient(135deg, #F3E5F5 0%, #FCE4EC 100%);
+}
+
+body.theme-unicorn .menu-btn,
+body.theme-unicorn .room-btn,
+body.theme-unicorn .shop-item {
+    background: var(--card-bg);
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+}
+
+body.theme-unicorn .balance-badge {
+    background: linear-gradient(135deg, #E91E63, #9C27B0);
+    color: white;
+}
+
+/* Тема Космос - темно-синий с звездами */
+body.theme-space {
+    --primary: #64B5F6;
+    --accent: #FFD54F;
+    --bg: #0D1B2A;
+    --card-bg: #1B263B;
+    --text: #E0E1DD;
+    --success: #64B5F6;
+    --error: #EF476F;
+}
+
+body.theme-space {
+    background: radial-gradient(circle at 20% 50%, rgba(29, 78, 216, 0.15), transparent),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15), transparent),
+                #0D1B2A;
+}
+
+body.theme-space .menu-btn,
+body.theme-space .room-btn,
+body.theme-space .shop-item {
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid rgba(100, 181, 246, 0.3);
+}
+
+body.theme-space .balance-badge {
+    background: var(--card-bg);
+    color: #FFD54F;
+    border: 1px solid rgba(255, 213, 79, 0.5);
+}
+
+body.theme-space .btn-back {
+    background: #1B263B;
+    color: #64B5F6;
+}
