@@ -6,7 +6,7 @@ const THEMES = [
     { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
 ];
 
-// Одежда для робота (с эмодзи вместо иконок)
+// Одежда для робота
 const CLOTHES = [
     { 
         id: 'clothes-none', 
@@ -34,18 +34,18 @@ const CLOTHES = [
         name: 'Куртка', 
         price: 150, 
         img: 'robot-jacket.png', 
-        emoji: '🧥'
+        emoji: '🦺'
     },
     { 
         id: 'clothes-suit', 
         name: 'Костюм', 
         price: 300, 
         img: 'robot-suit.png', 
-        emoji: '🤵'
+        emoji: '👔'
     }
 ];
 
-// Аксессуары для робота (с эмодзи)
+// Аксессуары для робота
 const ACCESSORIES = [
     { 
         id: 'acc-none', 
