@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Достижения</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .achievements-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-badge {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 900;
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 1rem;
+        }
+
+        .section-title {
+            width: 90%; 
+            max-width: 400px;
+            text-align: left;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .achievement-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.5;
+            filter: grayscale(80%);
+        }
+        
+        .achievement-item.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.1));
+            pointer-events: none;
+        }
+
+        .achievement-icon {
+            width: 60px; 
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: #f5f5f5;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .achievement-item.unlocked .achievement-icon {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+        }
+
+        .achievement-details { 
+            flex-grow: 1; 
+            z-index: 1;
+        }
+        
+        .achievement-name { 
+            font-weight: bold; 
+            color: var(--text); 
+            display: block; 
+            margin-bottom: 4px;
+        }
+        
+        .achievement-desc { 
+            font-size: 0.85rem; 
+            color: #888; 
+        }
+        
+        .achievement-reward {
+            background: var(--accent);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .achievement-item.locked .achievement-reward {
+            background: #ddd;
+            color: #999;
+        }
+
+        .achievements-grid {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">←</a>
+        <div class="game-info">Достижения</div>
+    </div>
+
+    <div class="screen" style="justify-content: flex-start; padding-top: 80px; overflow-y: auto;">
+        
+        <!-- Статистика -->
+        <div class="achievements-header">
+            <div style="font-weight:bold; color:#777;">Получено:</div>
+            <div class="stats-badge">
+                <span id="unlocked-count">0</span> / <span id="total-count">0</span> 🏆
+            </div>
+        </div>
+
+        <!-- Раздел: Базовые достижения -->
+        <div class="section-title">⭐ Первые шаги</div>
+        <div class="achievements-grid" id="basic-achievements">
+            <!-- Генерируется JS -->
+        </div>
+
+        <!-- Раздел: Мастерство -->
+        <div class="section-title">🔥 Мастерство</div>
+        <div class="achievements-grid" id="mastery-achievements">
+            <!-- Генерируется JS -->
+        </div>
+
+        <!-- Раздел: Коллекционер -->
+        <div class="section-title">💎 Коллекционер</div>
+        <div class="achievements-grid" id="collector-achievements">
+            <!-- Генерируется JS -->
+        </div>
+
+        <div style="height: 50px;"></div>
+    </div>
+
+    <script src="js/achievements.js"></script>
+</body>
+</html>
