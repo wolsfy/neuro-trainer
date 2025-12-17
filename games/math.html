@@ -6,9 +6,6 @@
     <title>Математический Дождь</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* --- Стили для Math Rain --- */
-        
-        /* Улучшенная верхняя панель */
         .top-bar {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -20,13 +17,11 @@
             align-items: center;
             z-index: 100;
         }
-        
         .score-container {
             display: flex;
             gap: 20px;
             align-items: center;
         }
-        
         .score-box {
             background: linear-gradient(135deg, #2196F3, #1976D2);
             color: white;
@@ -38,7 +33,6 @@
             min-width: 60px;
             text-align: center;
         }
-        
         .coins-box {
             background: linear-gradient(135deg, #FFC107, #FF9800);
             color: white;
@@ -51,7 +45,6 @@
             align-items: center;
             gap: 5px;
         }
-        
         .game-area {
             position: relative;
             width: 95%;
@@ -63,7 +56,6 @@
             margin-bottom: 15px;
             touch-action: none;
         }
-
         .falling-item {
             position: absolute;
             top: -60px;
@@ -77,7 +69,6 @@
             border: 2px solid #fff;
             z-index: 10;
         }
-        
         .controls-math {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -86,7 +77,6 @@
             max-width: 400px;
             margin-bottom: 12px;
         }
-
         .btn-math {
             background: white;
             border: none;
@@ -104,7 +94,6 @@
             box-shadow: none; 
             background: #f5f5f5;
         }
-
         .coin-popup {
             position: absolute;
             color: #FFC107;
@@ -119,16 +108,16 @@
             0% { transform: translateY(0) scale(1); opacity: 1; }
             100% { transform: translateY(-80px) scale(1.2); opacity: 0; } 
         }
-        
         .lives-display {
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--text);
             padding-bottom: 20px;
         }
-
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="../js/achievements.js"></script>
+    <script src="../js/game-stats.js"></script>
 </head>
 <body>
 
@@ -144,13 +133,8 @@
     </div>
 
     <div class="screen" style="justify-content: flex-start; padding-top: 85px; padding-bottom: 10px;">
-        
-        <div class="game-area" id="game-area">
-            <!-- Сюда падают примеры -->
-        </div>
-
+        <div class="game-area" id="game-area"></div>
         <div class="controls-math">
-            <!-- Кнопки 1-9 -->
             <button class="btn-math" onclick="checkAnswer(1)">1</button>
             <button class="btn-math" onclick="checkAnswer(2)">2</button>
             <button class="btn-math" onclick="checkAnswer(3)">3</button>
@@ -161,12 +145,10 @@
             <button class="btn-math" onclick="checkAnswer(8)">8</button>
             <button class="btn-math" onclick="checkAnswer(9)">9</button>
         </div>
-        
         <div class="lives-display">Жизни: <span id="lives">❤️❤️❤️</span></div>
     </div>
 
     <script>
-        // --- ЗВУКИ (Web Audio API) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -175,32 +157,31 @@
             osc.connect(gain); gain.connect(audioCtx.destination);
             
             if(type === 'pop') {
-                // Приятный "пуп"
                 osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if(type === 'crash') {
-                // Звук удара об пол
                 osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             }
         }
 
-        // --- ЛОГИКА ИГРЫ ---
         let score = 0;
         let lives = 3;
+        let perfectStreak = 0;
+        let maxPerfectStreak = 0;
         let animationFrameId;
         let spawnIntervalId;
-        
         let items = []; 
         let isPlaying = false;
-        
         const area = document.getElementById('game-area');
 
         function initGame() {
             score = 0;
             lives = 3;
+            perfectStreak = 0;
+            maxPerfectStreak = 0;
             items = [];
             area.innerHTML = '';
             isPlaying = true;
@@ -248,6 +229,7 @@
 
                 if (item.y > area.clientHeight - 50) {
                     loseLife();
+                    perfectStreak = 0;
                     item.el.remove();
                     items.splice(i, 1);
                 }
@@ -276,9 +258,13 @@
                 items.splice(target.index, 1); 
                 
                 score++;
+                perfectStreak++;
+                if (perfectStreak > maxPerfectStreak) maxPerfectStreak = perfectStreak;
+                
                 document.getElementById('score').innerText = score;
                 document.getElementById('earned-coins').innerText = score;
             } else {
+                perfectStreak = 0;
                 if (navigator.vibrate) navigator.vibrate(50);
                 const ga = document.getElementById('game-area');
                 ga.style.borderBottom = "3px solid #FF5252";
@@ -315,17 +301,12 @@
             cancelAnimationFrame(animationFrameId);
             clearInterval(spawnIntervalId);
             
-            saveCoinsToBank(score);
+            window.GameStats.addCoins(score);
+            window.GameStats.updateMath(maxPerfectStreak);
             
             confetti();
-            alert(`Игра окончена!\nВы заработали: ${score} монет`);
+            alert(`Игра окончена!\nВы заработали: ${score} монет\nМакс. серия: ${maxPerfectStreak}`);
             window.location.href = '../index.html';
-        }
-
-        function saveCoinsToBank(amount) {
-            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
-            let newBalance = currentBank + amount;
-            localStorage.setItem('neuroCoins', newBalance);
         }
 
         document.body.addEventListener('click', () => { 
@@ -333,7 +314,6 @@
         }, { once: true });
         
         setTimeout(initGame, 100);
-
     </script>
 </body>
 </html>
