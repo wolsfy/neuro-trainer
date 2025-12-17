@@ -11,8 +11,6 @@
             justify-content: flex-start;
             padding-top: 20px;
         }
-
-        /* --- Слово (Задание) --- */
         .word-container {
             flex-grow: 1;
             display: flex;
@@ -21,7 +19,6 @@
             justify-content: center;
             width: 100%;
         }
-
         .stroop-word {
             font-size: 3.5rem;
             font-weight: 900;
@@ -29,15 +26,12 @@
             letter-spacing: 2px;
             transition: transform 0.1s;
         }
-
         .instruction {
             margin-top: 15px;
             color: #777;
             font-size: 1rem;
             text-align: center;
         }
-
-        /* --- Комбо (очки) --- */
         .combo-box {
             font-size: 1.2rem;
             font-weight: bold;
@@ -47,8 +41,6 @@
             transition: opacity 0.2s;
         }
         .combo-box.visible { opacity: 1; }
-
-        /* --- Кнопки ответов --- */
         .buttons-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -57,7 +49,6 @@
             max-width: 350px;
             margin-bottom: 40px;
         }
-
         .color-btn {
             border: none;
             padding: 25px 10px;
@@ -70,18 +61,16 @@
             transition: transform 0.1s, filter 0.1s;
             text-transform: uppercase;
         }
-
         .color-btn:active {
             transform: scale(0.96);
             filter: brightness(0.9);
         }
-
-        /* Анимация ошибки */
         .shake-screen { animation: shake 0.4s; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
-
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="../js/achievements.js"></script>
+    <script src="../js/game-stats.js"></script>
 </head>
 <body>
 
@@ -94,24 +83,15 @@
     </div>
 
     <div class="screen" id="game-screen">
-        
-        <!-- Комбо счетчик -->
         <div class="combo-box" id="combo">COMBO x2!</div>
-
-        <!-- Слово -->
         <div class="word-container">
             <div class="stroop-word" id="word">СЛОВО</div>
             <div class="instruction">Жми на <b style="color:black">ЦВЕТ</b> букв!</div>
         </div>
-
-        <!-- Кнопки -->
-        <div class="buttons-grid" id="buttons-area">
-            <!-- Кнопки создаются JS -->
-        </div>
+        <div class="buttons-grid" id="buttons-area"></div>
     </div>
 
     <script>
-        // --- КОНФИГУРАЦИЯ ---
         const COLORS = [
             { name: 'КРАСНЫЙ', hex: '#FF5252' },
             { name: 'СИНИЙ',   hex: '#2196F3' },
@@ -120,15 +100,14 @@
         ];
         const GAME_TIME = 60;
 
-        // --- ПЕРЕМЕННЫЕ ---
         let score = 0;
         let timeLeft = GAME_TIME;
         let combo = 1;
+        let maxCombo = 1;
         let isPlaying = false;
-        let correctColorHex = ''; // Правильный ответ (цвет чернил)
+        let correctColorHex = '';
         let timerInterval;
 
-        // --- ЗВУКИ ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -137,27 +116,24 @@
             osc.connect(gain); gain.connect(audioCtx.destination);
             
             if (type === 'good') {
-                // Высокий пик
-                osc.frequency.setValueAtTime(600 + (combo * 100), audioCtx.currentTime); // Тон выше с комбо
+                osc.frequency.setValueAtTime(600 + (combo * 100), audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else {
-                // Ошибка
                 osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             }
         }
 
-        // --- ЛОГИКА ---
         function initGame() {
             score = 0;
             timeLeft = GAME_TIME;
             combo = 1;
+            maxCombo = 1;
             isPlaying = true;
             updateScoreUI();
 
-            // Создаем кнопки (один раз)
             const area = document.getElementById('buttons-area');
             area.innerHTML = '';
             COLORS.forEach(c => {
@@ -169,7 +145,6 @@
                 area.appendChild(btn);
             });
 
-            // Таймер
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -181,20 +156,14 @@
         }
 
         function nextTurn() {
-            // Генерируем задачу
-            // 1. Какое слово написано? (Смысл)
             let wordObj = COLORS[Math.floor(Math.random() * COLORS.length)];
-            
-            // 2. Каким цветом написано? (Ответ)
             let colorObj = COLORS[Math.floor(Math.random() * COLORS.length)];
             correctColorHex = colorObj.hex;
 
-            // Отображаем
             const wordEl = document.getElementById('word');
             wordEl.innerText = wordObj.name;
             wordEl.style.color = correctColorHex;
             
-            // Анимация "удара"
             wordEl.style.transform = 'scale(0.8)';
             setTimeout(() => wordEl.style.transform = 'scale(1)', 50);
         }
@@ -203,25 +172,19 @@
             if (!isPlaying) return;
 
             if (hex === correctColorHex) {
-                // Правильно
                 playSound('good');
-                
-                // Очки с учетом комбо
                 let points = 1 * combo;
                 score += points;
                 
-                // Увеличиваем комбо (макс х5)
                 if (combo < 5) combo++;
+                if (combo > maxCombo) maxCombo = combo;
                 showComboUI();
-                
                 nextTurn();
             } else {
-                // Ошибка
                 playSound('bad');
-                combo = 1; // Сброс комбо
+                combo = 1;
                 showComboUI();
                 
-                // Тряска экрана
                 const screen = document.getElementById('game-screen');
                 screen.classList.add('shake-screen');
                 setTimeout(() => screen.classList.remove('shake-screen'), 400);
@@ -247,18 +210,12 @@
             isPlaying = false;
             clearInterval(timerInterval);
             
-            // --- СОХРАНЕНИЕ МОНЕТ ---
-            saveCoins(score);
-            // -----------------------
+            window.GameStats.addCoins(score);
+            window.GameStats.updateStroop(maxCombo);
 
             confetti();
-            alert(`Время вышло!\nСчет: ${score}\nВы заработали ${score} монет! 💰`);
+            alert(`Время вышло!\nСчет: ${score}\nМакс. комбо: ${maxCombo}\nВы заработали ${score} монет! 💰`);
             if(confirm("Еще раз?")) initGame(); else window.location.href = '../index.html';
-        }
-
-        function saveCoins(amount) {
-            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
-            localStorage.setItem('neuroCoins', currentBank + amount);
         }
 
         document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
