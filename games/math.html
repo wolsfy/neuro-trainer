@@ -8,51 +8,65 @@
     <style>
         /* --- Стили для Math Rain --- */
         
-        /* Улучшение верхней панели */
+        /* Улучшенная верхняя панель */
         .top-bar {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 12px 15px;
-            border-radius: 0 0 16px 16px;
-        }
-        
-        .score-display {
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            border-radius: 0 0 20px 20px;
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
         }
         
-        .score-display .game-info {
-            font-size: 1.6rem;
-            color: var(--primary);
+        .score-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .score-box {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
             font-weight: 900;
+            font-size: 1.4rem;
+            box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+            min-width: 60px;
+            text-align: center;
         }
         
-        .coins-display {
-            font-size: 1rem;
-            color: #FFC107;
-            font-weight: bold;
+        .coins-box {
+            background: linear-gradient(135deg, #FFC107, #FF9800);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 8px rgba(255, 193, 7, 0.3);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
         
         .game-area {
             position: relative;
             width: 95%;
-            height: 60vh; /* Высота поля - 60% от экрана */
+            height: 60vh;
             border-bottom: 3px solid var(--primary);
             overflow: hidden;
             background: linear-gradient(to bottom, #eef2f5, #e3f2fd);
             border-radius: 12px;
             margin-bottom: 20px;
-            touch-action: none; /* Защита от скролла */
+            touch-action: none;
         }
 
         .falling-item {
             position: absolute;
-            top: -60px; /* Начинает за пределами экрана */
+            top: -60px;
             background: white;
             padding: 10px 18px;
             border-radius: 12px;
@@ -90,7 +104,6 @@
             background: #f5f5f5;
         }
 
-        /* Анимация прибавления денег */
         .coin-popup {
             position: absolute;
             color: #FFC107;
@@ -108,7 +121,7 @@
         
         .lives-display {
             margin-top: 15px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--text);
         }
@@ -120,17 +133,16 @@
 
     <div class="top-bar">
         <a href="../index.html" class="btn-back">←</a>
-        <div class="score-display">
-            <div class="game-info" id="score">0</div>
-            <div class="coins-display">
-                <span>+</span>
+        <div class="score-container">
+            <div class="score-box" id="score">0</div>
+            <div class="coins-box">
                 <span id="earned-coins">0</span>
                 <span>💰</span>
             </div>
         </div>
     </div>
 
-    <div class="screen" style="justify-content: flex-start; padding-top: 80px;">
+    <div class="screen" style="justify-content: flex-start; padding-top: 85px;">
         
         <div class="game-area" id="game-area">
             <!-- Сюда падают примеры -->
@@ -177,11 +189,9 @@
         // --- ЛОГИКА ИГРЫ ---
         let score = 0;
         let lives = 3;
-        let animationFrameId; // ID анимации
+        let animationFrameId;
         let spawnIntervalId;
         
-        // Главный массив объектов
-        // Структура: { el: DOMNode, y: number, val: number, speed: number }
         let items = []; 
         let isPlaying = false;
         
@@ -198,67 +208,45 @@
             document.getElementById('lives').innerText = '❤️❤️❤️';
             document.getElementById('earned-coins').innerText = 0;
             
-            // Запускаем игровой цикл (движение)
             animationFrameId = requestAnimationFrame(gameLoop);
-            
-            // Запускаем создание врагов (каждые 2 сек)
             spawnIntervalId = setInterval(spawnItem, 2000);
         }
 
         function spawnItem() {
             if(!isPlaying) return;
             
-            // Генерация примера (ответ 1-9)
             let result = Math.floor(Math.random() * 9) + 1;
             let a = Math.floor(Math.random() * result);
             let b = result - a;
             let text = `${a} + ${b}`;
 
-            // Создаем HTML элемент
             let el = document.createElement('div');
             el.className = 'falling-item';
             el.innerText = text;
-            
-            // Случайная позиция по X (с отступом от краев)
-            // area.clientWidth - 80, чтобы блок не вылез за правый край
             el.style.left = Math.random() * (area.clientWidth - 90) + 'px'; 
             area.appendChild(el);
 
-            // Рассчитываем скорость (усложнение от очков)
-            // Базовая 1.5 + 0.5 за каждые 10 очков
             let currentSpeed = 1.5 + (Math.floor(score / 10) * 0.4); 
 
-            // Добавляем в массив
             items.push({
                 el: el,
-                y: -60,       // Начальная высота (за краем)
-                val: result,  // Правильный ответ
+                y: -60,
+                val: result,
                 speed: currentSpeed
             });
         }
 
-        // Главный цикл анимации (60 FPS)
         function gameLoop() {
             if (!isPlaying) return;
-
-            // Запрашиваем следующий кадр
             animationFrameId = requestAnimationFrame(gameLoop);
 
-            // Обновляем позицию каждого элемента
-            // Идем с конца массива, чтобы безопасно удалять элементы
             for (let i = items.length - 1; i >= 0; i--) {
                 let item = items[i];
-                
-                // Двигаем вниз
                 item.y += item.speed;
                 item.el.style.top = item.y + 'px';
 
-                // Проверка на падение на пол
-                // Высота поля минус высота блока (~50px)
                 if (item.y > area.clientHeight - 50) {
                     loseLife();
-                    
-                    // Удаляем элемент
                     item.el.remove();
                     items.splice(i, 1);
                 }
@@ -268,7 +256,6 @@
         function checkAnswer(val) {
             if(!isPlaying) return;
             
-            // 1. Находим все падающие примеры с таким ответом
             let candidates = [];
             items.forEach((item, index) => {
                 if (item.val === val) {
@@ -277,32 +264,21 @@
             });
 
             if (candidates.length > 0) {
-                // 2. Сортируем их по высоте (Y). Нам нужен тот, у кого Y больше (он ниже)
                 candidates.sort((a, b) => b.y - a.y);
-                
-                // Берем самый нижний (первый в списке)
                 let target = candidates[0];
                 let itemToRemove = items[target.index];
 
-                // 3. Эффекты успеха
                 playSound('pop');
                 showCoinAnim(itemToRemove.el.style.left, itemToRemove.el.style.top);
                 
-                // 4. Удаляем
                 itemToRemove.el.remove();
-                
-                // Важно: удаляем из массива items по индексу
                 items.splice(target.index, 1); 
                 
-                // 5. Очки
                 score++;
                 document.getElementById('score').innerText = score;
                 document.getElementById('earned-coins').innerText = score;
             } else {
-                // Ошибка (нет такого ответа на экране)
                 if (navigator.vibrate) navigator.vibrate(50);
-                
-                // Красная вспышка границы
                 const ga = document.getElementById('game-area');
                 ga.style.borderBottom = "3px solid #FF5252";
                 setTimeout(() => ga.style.borderBottom = "3px solid var(--primary)", 200);
@@ -313,12 +289,10 @@
             playSound('crash');
             lives--;
             
-            // Обновляем сердца
             let hearts = '';
             for(let i=0; i<lives; i++) hearts += '❤️';
             document.getElementById('lives').innerText = hearts;
             
-            // Красный фон при уроне
             area.style.background = '#ffebee';
             setTimeout(()=> area.style.background = '', 200);
 
@@ -340,7 +314,6 @@
             cancelAnimationFrame(animationFrameId);
             clearInterval(spawnIntervalId);
             
-            // Сохраняем монеты
             saveCoinsToBank(score);
             
             confetti();
@@ -354,12 +327,10 @@
             localStorage.setItem('neuroCoins', newBalance);
         }
 
-        // Инициализация звука (требование браузеров)
         document.body.addEventListener('click', () => { 
             if (audioCtx.state === 'suspended') audioCtx.resume(); 
         }, { once: true });
         
-        // Запуск игры с небольшой задержкой (чтобы стили прогрузились)
         setTimeout(initGame, 100);
 
     </script>
