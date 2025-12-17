@@ -30,23 +30,40 @@
             z-index: 1;
         }
 
-        .big-robot-img {
-            width: 85%; 
+        .robot-wrapper {
+            position: relative;
+            width: 85%;
             max-width: 350px;
+        }
+
+        .big-robot-img {
+            width: 100%; 
             height: auto;
             filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2));
             transition: transform 0.1s;
             cursor: pointer;
             animation: floatBig 5s ease-in-out infinite;
-            /* Убираем любой фон */
             background: transparent !important;
-            /* Используем object-fit для корректного отображения */
             object-fit: contain;
         }
         
+        /* Аксессуар поверх робота */
+        .accessory-overlay {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: auto;
+            pointer-events: none;
+            z-index: 10;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+            animation: floatBig 5s ease-in-out infinite;
+        }
+        
         @keyframes floatBig {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            0%, 100% { transform: translateY(0) translateX(-50%); }
+            50% { transform: translateY(-15px) translateX(-50%); }
         }
 
         /* Эффект клика (сжатие) */
@@ -132,8 +149,13 @@
         <!-- Робот -->
         <div class="big-robot-container">
             <div class="thought-bubble" id="bubble">Я тут!</div>
-            <!-- Полное изображение робота в одежде -->
-            <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот">
+            
+            <div class="robot-wrapper">
+                <!-- Полное изображение робота в одежде -->
+                <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот">
+                <!-- Аксессуар поверх робота -->
+                <img id="accessory-img" src="" class="accessory-overlay" alt="Аксессуар" style="display: none;">
+            </div>
         </div>
 
         <!-- Кнопки управления -->
