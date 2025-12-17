@@ -40,6 +40,36 @@
         .cheat-button:active {
             transform: scale(0.9);
         }
+        
+        /* Кнопка достижений */
+        .achievements-button {
+            position: fixed;
+            bottom: 70px;
+            left: 10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+            text-decoration: none;
+        }
+        
+        .achievements-button:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+        }
+        
+        .achievements-button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -96,8 +126,11 @@
             </a>
         </div>
 
-        <div class="footer">Версия 4.2 (Room Link)</div>
+        <div class="footer">Версия 4.3 (Achievements)</div>
     </div>
+
+    <!-- КНОПКА ДОСТИЖЕНИЙ -->
+    <a href="achievements.html" class="achievements-button" title="Достижения">🏆</a>
 
     <!-- СЕКРЕТНАЯ КНОПКА ЧИТА -->
     <div class="cheat-button" onclick="addCheatCoins()" title="Чит-код: +1000 монет">💰</div>
