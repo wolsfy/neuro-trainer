@@ -6,23 +6,89 @@ const THEMES = [
     { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
 ];
 
-// Одежда для робота (теперь это полные изображения)
+// Одежда для робота
 const CLOTHES = [
-    { id: 'clothes-none', name: 'Без одежды', price: 0, img: 'mascot.png', preview: 'https://img.icons8.com/color/96/nothing.png' },
-    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'robot-tshirt.png', preview: 'https://img.icons8.com/fluency/96/t-shirt--v1.png' },
-    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'robot-hoodie.png', preview: 'https://img.icons8.com/fluency/96/hoodie.png' },
-    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'robot-jacket.png', preview: 'https://img.icons8.com/fluency/96/jacket.png' },
-    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'robot-suit.png', preview: 'https://img.icons8.com/fluency/96/tuxedo.png' }
+    { 
+        id: 'clothes-none', 
+        name: 'Без одежды', 
+        price: 0, 
+        img: 'mascot.png', 
+        preview: 'https://img.icons8.com/?size=96&id=19997&format=png' 
+    },
+    { 
+        id: 'clothes-tshirt', 
+        name: 'Футболка', 
+        price: 50, 
+        img: 'robot-tshirt.png', 
+        preview: 'https://img.icons8.com/?size=96&id=78695&format=png' 
+    },
+    { 
+        id: 'clothes-hoodie', 
+        name: 'Худи', 
+        price: 100, 
+        img: 'robot-hoodie.png', 
+        preview: 'https://img.icons8.com/?size=96&id=66994&format=png' 
+    },
+    { 
+        id: 'clothes-jacket', 
+        name: 'Куртка', 
+        price: 150, 
+        img: 'robot-jacket.png', 
+        preview: 'https://img.icons8.com/?size=96&id=49483&format=png' 
+    },
+    { 
+        id: 'clothes-suit', 
+        name: 'Костюм', 
+        price: 300, 
+        img: 'robot-suit.png', 
+        preview: 'https://img.icons8.com/?size=96&id=43059&format=png' 
+    }
 ];
 
-// Аксессуары для робота (пока оставляем как иконки, потом можно добавить полные изображения)
+// Аксессуары для робота
 const ACCESSORIES = [
-    { id: 'acc-none', name: 'Без аксессуаров', price: 0, img: '', preview: 'https://img.icons8.com/color/96/nothing.png' },
-    { id: 'acc-glasses', name: 'Очки', price: 75, img: 'robot-glasses.png', preview: 'https://img.icons8.com/color/96/glasses.png' },
-    { id: 'acc-hat', name: 'Шляпа', price: 100, img: '', preview: 'https://img.icons8.com/color/96/top-hat.png' },
-    { id: 'acc-headphones', name: 'Наушники', price: 125, img: '', preview: 'https://img.icons8.com/color/96/headphones.png' },
-    { id: 'acc-crown', name: 'Корона', price: 200, img: '', preview: 'https://img.icons8.com/color/96/crown.png' },
-    { id: 'acc-bow', name: 'Бантик', price: 150, img: '', preview: 'https://img.icons8.com/color/96/bow-tie.png' }
+    { 
+        id: 'acc-none', 
+        name: 'Без аксессуаров', 
+        price: 0, 
+        img: '', 
+        preview: 'https://img.icons8.com/?size=96&id=19997&format=png' 
+    },
+    { 
+        id: 'acc-glasses', 
+        name: 'Очки', 
+        price: 75, 
+        img: 'robot-glasses.png', 
+        preview: 'https://img.icons8.com/?size=96&id=60688&format=png' 
+    },
+    { 
+        id: 'acc-hat', 
+        name: 'Шляпа', 
+        price: 100, 
+        img: '', 
+        preview: 'https://img.icons8.com/?size=96&id=12421&format=png' 
+    },
+    { 
+        id: 'acc-headphones', 
+        name: 'Наушники', 
+        price: 125, 
+        img: '', 
+        preview: 'https://img.icons8.com/?size=96&id=59852&format=png' 
+    },
+    { 
+        id: 'acc-crown', 
+        name: 'Корона', 
+        price: 200, 
+        img: '', 
+        preview: 'https://img.icons8.com/?size=96&id=40668&format=png' 
+    },
+    { 
+        id: 'acc-bow', 
+        name: 'Бантик', 
+        price: 150, 
+        img: '', 
+        preview: 'https://img.icons8.com/?size=96&id=19036&format=png' 
+    }
 ];
 
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
