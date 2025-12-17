@@ -1,178 +1,194 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Комната Нейрона</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Комната на весь экран */
-        .room-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Комната Нейрона</title>
+  <link rel="stylesheet" href="css/style.css" />
 
-        /* Большой робот */
-        .big-robot-container {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
+  <style>
+    /* Комната на весь экран */
+    .room-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
+      overflow: hidden;
+    }
 
-        .robot-wrapper {
-            position: relative;
-            width: 85%;
-            max-width: 350px;
-        }
+    /* Большой робот */
+    .big-robot-container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
 
-        .big-robot-img {
-            width: 100%; 
-            height: auto;
-            filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2));
-            transition: transform 0.1s;
-            cursor: pointer;
-            animation: floatBig 5s ease-in-out infinite;
-            background: transparent !important;
-            object-fit: contain;
-        }
-        
-        /* Аксессуар поверх робота */
-        .accessory-overlay {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40%;
-            height: auto;
-            pointer-events: none;
-            z-index: 10;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-            animation: floatBig 5s ease-in-out infinite;
-        }
-        
-        @keyframes floatBig {
-            0%, 100% { transform: translateY(0) translateX(-50%); }
-            50% { transform: translateY(-15px) translateX(-50%); }
-        }
+    /* Обёртка — нужна, чтобы аксессуар накладывался поверх робота */
+    .robot-wrapper {
+      position: relative;
+      width: 85%;
+      max-width: 350px;
+    }
 
-        /* Эффект клика (сжатие) */
-        .big-robot-img:active {
-            transform: scale(0.95) translateY(0) !important;
-            transition: 0.05s;
-        }
+    /* Изображение робота */
+    .big-robot-img {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 25px 20px rgba(0,0,0,0.2));
+      cursor: pointer;
+      background: transparent !important;
+      object-fit: contain;
 
-        /* Панель управления (внизу) */
-        .room-controls {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-            z-index: 10;
-        }
+      /* Плавное “парение” */
+      animation: floatRobot 5s ease-in-out infinite;
+      transition: transform 0.1s;
+    }
 
-        .room-btn {
-            background: var(--card-bg);
-            border: none;
-            padding: 15px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: var(--text);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .room-btn:active { transform: scale(0.95); }
+    /* Аксессуар поверх робота */
+    .accessory-overlay {
+      position: absolute;
 
-        .btn-icon { font-size: 2rem; }
+      /* Базовая позиция (можно потом подстроить под каждый аксессуар в room.js) */
+      top: 2%;
+      left: 50%;
+      transform: translateX(-50%);
 
-        /* Облачко мыслей */
-        .thought-bubble {
-            position: absolute;
-            top: 5%;
-            right: 5%;
-            background: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            border-bottom-left-radius: 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            font-weight: bold;
-            color: #444;
-            animation: popIn 0.5s forwards;
-            max-width: 160px;
-            text-align: center;
-            z-index: 5;
-            opacity: 0;
-        }
-        
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    </style>
-    
-    <!-- Библиотека конфетти -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      width: 60%;
+      height: auto;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+
+      /* Парит вместе с роботом, но не ломает translateX(-50%) */
+      animation: floatAccessory 5s ease-in-out infinite;
+    }
+
+    /* Парение робота (только по Y) */
+    @keyframes floatRobot {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-15px); }
+    }
+
+    /* Парение аксессуара: сохраняем translateX(-50%) + добавляем translateY */
+    @keyframes floatAccessory {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(-15px); }
+    }
+
+    /* Эффект клика (сжатие) */
+    .big-robot-img:active {
+      transform: scale(0.95) translateY(0) !important;
+      transition: 0.05s;
+    }
+
+    /* Панель управления (внизу) */
+    .room-controls {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 30px;
+      z-index: 10;
+    }
+
+    .room-btn {
+      background: var(--card-bg);
+      border: none;
+      padding: 15px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--text);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .room-btn:active { transform: scale(0.95); }
+
+    .btn-icon { font-size: 2rem; }
+
+    /* Облачко мыслей */
+    .thought-bubble {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      background: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border-bottom-left-radius: 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      font-weight: bold;
+      color: #444;
+      animation: popIn 0.5s forwards;
+      max-width: 160px;
+      text-align: center;
+      z-index: 5;
+      opacity: 0;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+
+  <!-- Библиотека конфетти -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
+
 <body>
+  <!-- Верхняя панель -->
+  <div class="top-bar">
+    <a href="index.html" class="btn-back" style="text-decoration: none; z-index: 100; font-size: 1.5rem;">🏠</a>
 
-    <!-- Верхняя панель -->
-    <div class="top-bar">
-        <a href="index.html" class="btn-back" style="text-decoration: none; z-index: 100; font-size: 1.5rem;">🏠</a>
-        
-        <div class="game-info">Комната</div>
-        
-        <!-- Баланс -->
-        <div class="balance-badge" style="font-size:1rem; background: var(--card-bg); padding: 5px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-            <span id="coins">0</span> 💰
-        </div>
+    <div class="game-info">Комната</div>
+
+    <div class="balance-badge"
+      style="font-size:1rem; background: var(--card-bg); padding: 5px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+      <span id="coins">0</span> 💰
+    </div>
+  </div>
+
+  <div class="room-screen">
+    <!-- Робот -->
+    <div class="big-robot-container">
+      <div class="thought-bubble" id="bubble">Я тут!</div>
+
+      <div class="robot-wrapper">
+        <!-- Робот (одежда) -->
+        <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" />
+
+        <!-- Аксессуар (поверх) -->
+        <img id="accessory-img" src="" class="accessory-overlay" alt="Аксессуар" style="display:none;" />
+      </div>
     </div>
 
-    <div class="room-screen">
-        
-        <!-- Робот -->
-        <div class="big-robot-container">
-            <div class="thought-bubble" id="bubble">Я тут!</div>
-            
-            <div class="robot-wrapper">
-                <!-- Полное изображение робота в одежде -->
-                <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот">
-                <!-- Аксессуар поверх робота -->
-                <img id="accessory-img" src="" class="accessory-overlay" alt="Аксессуар" style="display: none;">
-            </div>
-        </div>
-
-        <!-- Кнопки управления -->
-        <div class="room-controls">
-            <button class="room-btn" data-action="shop">
-                <span class="btn-icon">👕</span>
-                <span>Гардероб</span>
-            </button>
-            <button class="room-btn" data-action="feed">
-                <span class="btn-icon">⚡</span>
-                <span>Зарядить</span>
-            </button>
-        </div>
-
+    <!-- Кнопки управления -->
+    <div class="room-controls">
+      <button class="room-btn" data-action="shop">
+        <span class="btn-icon">👕</span>
+        <span>Гардероб</span>
+      </button>
+      <button class="room-btn" data-action="feed">
+        <span class="btn-icon">⚡</span>
+        <span>Зарядить</span>
+      </button>
     </div>
+  </div>
 
-    <!-- Подключение внешнего JS -->
-    <script src="js/room.js"></script>
+  <!-- Подключение внешнего JS -->
+  <script src="js/room.js"></script>
 </body>
 </html>
