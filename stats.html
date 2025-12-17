@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Статистика</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        
+        .total-badge {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            width: 90%; 
+            max-width: 600px;
+            text-align: left;
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .stats-cards {
+            width: 90%;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .chart-container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .game-stats-list {
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-stat-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .game-stat-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .game-stat-icon {
+            font-size: 2rem;
+        }
+
+        .game-stat-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .game-stat-info p {
+            margin: 5px 0 0 0;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .game-stat-value {
+            text-align: right;
+        }
+
+        .game-stat-number {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent);
+        }
+
+        .game-stat-unit {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #FF5252, #D32F2F);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 82, 82, 0.3);
+            margin: 20px 0 40px 0;
+        }
+
+        .reset-button:active {
+            transform: scale(0.98);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">←</a>
+        <div class="game-info">Статистика</div>
+    </div>
+
+    <div class="screen" style="justify-content: flex-start; padding-top: 80px; overflow-y: auto;">
+        
+        <!-- Общая статистика -->
+        <div class="stats-header">
+            <div style="font-weight:bold; color:#777;">Всего игр:</div>
+            <div class="total-badge"><span id="total-games">0</span> 🎮</div>
+        </div>
+
+        <!-- Карточки статистики -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="total-coins">0</div>
+                <div class="stat-label">Заработано</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="achievements-count">0/13</div>
+                <div class="stat-label">Достижения</div>
+            </div>
+        </div>
+
+        <!-- График: Распределение игр -->
+        <div class="section-title">📊 Распределение игр</div>
+        <div class="chart-container">
+            <canvas id="gamesChart"></canvas>
+        </div>
+
+        <!-- Детальная статистика по играм -->
+        <div class="section-title">🎯 Детальная статистика</div>
+        <div class="game-stats-list" id="game-stats-list">
+            <!-- Генерируется JS -->
+        </div>
+
+        <!-- Кнопка сброса -->
+        <button class="reset-button" onclick="resetStats()">🔄 Сбросить статистику</button>
+
+        <div style="height: 50px;"></div>
+    </div>
+
+    <script>
+        // ===== ЗАГРУЗКА ДАННЫХ =====
+        function loadStats() {
+            return {
+                totalGames: parseInt(localStorage.getItem('neuroTotalGames')) || 0,
+                totalCoinsEarned: parseInt(localStorage.getItem('neuroTotalCoinsEarned')) || 0,
+                achievements: JSON.parse(localStorage.getItem('neuroAchievements')) || [],
+                
+                schulte: {
+                    played: parseInt(localStorage.getItem('neuroSchultePlayed')) || 0,
+                    bestTime: parseFloat(localStorage.getItem('neuroSchulteBestTime')) || 0
+                },
+                decoder: {
+                    played: parseInt(localStorage.getItem('neuroDecoderPlayed')) || 0
+                },
+                memory: {
+                    played: parseInt(localStorage.getItem('neuroMemoryPlayed')) || 0,
+                    maxLevel: parseInt(localStorage.getItem('neuroMemoryMaxLevel')) || 0
+                },
+                stroop: {
+                    played: parseInt(localStorage.getItem('neuroStroopPlayed')) || 0,
+                    maxStreak: parseInt(localStorage.getItem('neuroStroopStreak')) || 0
+                },
+                math: {
+                    played: parseInt(localStorage.getItem('neuroMathPlayed')) || 0,
+                    perfectStreak: parseInt(localStorage.getItem('neuroMathPerfectStreak')) || 0
+                }
+            };
+        }
+
+        // ===== ОТОБРАЖЕНИЕ =====
+        function renderStats() {
+            const stats = loadStats();
+            
+            // Общая статистика
+            document.getElementById('total-games').textContent = stats.totalGames;
+            document.getElementById('total-coins').textContent = stats.totalCoinsEarned;
+            document.getElementById('achievements-count').textContent = `${stats.achievements.length}/13`;
+
+            // График
+            renderGamesChart(stats);
+            
+            // Детальная статистика
+            renderGameStatsList(stats);
+        }
+
+        function renderGamesChart(stats) {
+            const ctx = document.getElementById('gamesChart').getContext('2d');
+            
+            const data = {
+                labels: ['Шульте', 'Шифр', 'Память', 'Цвета', 'Математика'],
+                datasets: [{
+                    label: 'Сыграно игр',
+                    data: [
+                        stats.schulte.played,
+                        stats.decoder.played,
+                        stats.memory.played,
+                        stats.stroop.played,
+                        stats.math.played
+                    ],
+                    backgroundColor: [
+                        'rgba(33, 150, 243, 0.8)',
+                        'rgba(156, 39, 176, 0.8)',
+                        'rgba(76, 175, 80, 0.8)',
+                        'rgba(255, 152, 0, 0.8)',
+                        'rgba(244, 67, 54, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(33, 150, 243, 1)',
+                        'rgba(156, 39, 176, 1)',
+                        'rgba(76, 175, 80, 1)',
+                        'rgba(255, 152, 0, 1)',
+                        'rgba(244, 67, 54, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderGameStatsList(stats) {
+            const container = document.getElementById('game-stats-list');
+            
+            if (stats.totalGames === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎮</div>
+                        <p>Сыграй хотя бы в одну игру,<br>чтобы увидеть статистику!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const games = [
+                {
+                    icon: '🔢',
+                    name: 'Таблица Шульте',
+                    played: stats.schulte.played,
+                    record: stats.schulte.bestTime > 0 ? `${stats.schulte.bestTime.toFixed(1)}с` : '—',
+                    unit: 'Лучшее время'
+                },
+                {
+                    icon: '🧩',
+                    name: 'Шифровальщик',
+                    played: stats.decoder.played,
+                    record: '—',
+                    unit: 'Сыграно'
+                },
+                {
+                    icon: '💡',
+                    name: 'Матрица Памяти',
+                    played: stats.memory.played,
+                    record: stats.memory.maxLevel > 0 ? `${stats.memory.maxLevel} ур.` : '—',
+                    unit: 'Макс. уровень'
+                },
+                {
+                    icon: '🎨',
+                    name: 'Эффект Струпа',
+                    played: stats.stroop.played,
+                    record: stats.stroop.maxStreak > 0 ? `x${stats.stroop.maxStreak}` : '—',
+                    unit: 'Макс. комбо'
+                },
+                {
+                    icon: '🧮',
+                    name: 'Математика',
+                    played: stats.math.played,
+                    record: stats.math.perfectStreak > 0 ? `x${stats.math.perfectStreak}` : '—',
+                    unit: 'Идеальная серия'
+                }
+            ];
+
+            container.innerHTML = games.map(game => `
+                <div class="game-stat-item">
+                    <div class="game-stat-left">
+                        <div class="game-stat-icon">${game.icon}</div>
+                        <div class="game-stat-info">
+                            <h3>${game.name}</h3>
+                            <p>${game.unit}: ${game.record}</p>
+                        </div>
+                    </div>
+                    <div class="game-stat-value">
+                        <div class="game-stat-number">${game.played}</div>
+                        <div class="game-stat-unit">игр</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== СБРОС СТАТИСТИКИ =====
+        function resetStats() {
+            if (!confirm('Вы уверены, что хотите сбросить всю статистику?\n\nЭто действие нельзя отменить!')) {
+                return;
+            }
+
+            const keysToRemove = [
+                'neuroTotalGames',
+                'neuroTotalCoinsEarned',
+                'neuroSchultePlayed',
+                'neuroSchulteBestTime',
+                'schulte_best_3',
+                'schulte_best_5',
+                'neuroDecoderPlayed',
+                'neuroMemoryPlayed',
+                'neuroMemoryMaxLevel',
+                'neuroStroopPlayed',
+                'neuroStroopStreak',
+                'neuroMathPlayed',
+                'neuroMathPerfectStreak'
+            ];
+
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
+            alert('Статистика сброшена!');
+            location.reload();
+        }
+
+        // ===== ЗАПУСК =====
+        document.addEventListener('DOMContentLoaded', renderStats);
+    </script>
+</body>
+</html>
