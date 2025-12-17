@@ -9,10 +9,10 @@ const THEMES = [
 // Одежда для робота (теперь это полные изображения)
 const CLOTHES = [
     { id: 'clothes-none', name: 'Без одежды', price: 0, img: 'mascot.png', preview: 'https://img.icons8.com/color/96/nothing.png' },
-    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'robot-tshirt.png', preview: 'https://img.icons8.com/color/96/t-shirt.png' },
-    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'robot-hoodie.png', preview: 'https://img.icons8.com/color/96/hoodie.png' },
-    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'robot-jacket.png', preview: 'https://img.icons8.com/color/96/jacket.png' },
-    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'robot-suit.png', preview: 'https://img.icons8.com/color/96/business-shirt.png' }
+    { id: 'clothes-tshirt', name: 'Футболка', price: 50, img: 'robot-tshirt.png', preview: 'https://img.icons8.com/fluency/96/t-shirt--v1.png' },
+    { id: 'clothes-hoodie', name: 'Худи', price: 100, img: 'robot-hoodie.png', preview: 'https://img.icons8.com/fluency/96/hoodie.png' },
+    { id: 'clothes-jacket', name: 'Куртка', price: 150, img: 'robot-jacket.png', preview: 'https://img.icons8.com/fluency/96/jacket.png' },
+    { id: 'clothes-suit', name: 'Костюм', price: 300, img: 'robot-suit.png', preview: 'https://img.icons8.com/fluency/96/tuxedo.png' }
 ];
 
 // Аксессуары для робота (пока оставляем как иконки, потом можно добавить полные изображения)
