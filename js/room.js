@@ -12,14 +12,14 @@ const CLOTHES_IMAGES = {
     'clothes-suit': 'robot-suit.png'
 };
 
-// Данные об аксессуарах (пока пусто, можно добавить позже)
+// Данные об аксессуарах
 const ACCESSORY_IMAGES = {
     'acc-none': '',
     'acc-glasses': 'robot-glasses.png',
-    'acc-hat': '',
-    'acc-headphones': '',
-    'acc-crown': '',
-    'acc-bow': ''
+    'acc-hat': 'robot-hat.png',
+    'acc-headphones': 'robot-headphones.png',
+    'acc-crown': 'robot-crown.png',
+    'acc-bow': 'robot-bow.png'
 };
 
 // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
@@ -31,6 +31,7 @@ let audioCtx = null;
 
 // ===== ЭЛЕМЕНТЫ DOM =====
 let robotImg = null;
+let accessoryImg = null;
 let thoughtBubble = null;
 let coinsDisplay = null;
 
@@ -38,6 +39,7 @@ let coinsDisplay = null;
 function initRoom() {
     // Получаем элементы DOM
     robotImg = document.getElementById('robot-img');
+    accessoryImg = document.getElementById('accessory-img');
     thoughtBubble = document.getElementById('bubble');
     coinsDisplay = document.getElementById('coins');
     
@@ -88,9 +90,6 @@ function updateRobotAppearance() {
     
     // Получаем изображение робота в одежде
     const clothesImage = CLOTHES_IMAGES[equippedClothes] || 'mascot.png';
-    
-    // Если есть изображение с аксессуаром - используем его
-    // Пока у нас нет комбинированных изображений, просто отображаем одежду
     robotImg.src = clothesImage;
     
     // Если изображение не загрузилось, возвращаемся к дефолтному
@@ -98,6 +97,28 @@ function updateRobotAppearance() {
         console.warn('Не удалось загрузить:', clothesImage);
         robotImg.src = 'mascot.png';
     };
+    
+    // Обновляем аксессуар
+    updateAccessory();
+}
+
+function updateAccessory() {
+    if (!accessoryImg) return;
+    
+    const accessoryImage = ACCESSORY_IMAGES[equippedAccessory];
+    
+    if (accessoryImage && equippedAccessory !== 'acc-none') {
+        accessoryImg.src = accessoryImage;
+        accessoryImg.style.display = 'block';
+        
+        // Если изображение не загрузилось, скрываем
+        accessoryImg.onerror = function() {
+            console.warn('Не удалось загрузить аксессуар:', accessoryImage);
+            accessoryImg.style.display = 'none';
+        };
+    } else {
+        accessoryImg.style.display = 'none';
+    }
 }
 
 // ===== АУДИО =====
