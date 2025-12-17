@@ -11,6 +11,36 @@
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/brain--v1.png">
     <meta name="theme-color" content="#2196F3">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <style>
+        /* Секретная кнопка чита */
+        .cheat-button {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px dashed rgba(255, 215, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+        }
+        
+        .cheat-button:hover {
+            background: rgba(255, 215, 0, 0.6);
+            transform: scale(1.1);
+        }
+        
+        .cheat-button:active {
+            transform: scale(0.9);
+        }
+    </style>
 </head>
 <body>
 
@@ -24,7 +54,7 @@
                     <span id="user-coins">0</span> 💰
                 </span>
             </div>
-            <a href="shop.html" class="shop-link-btn">🛒 Магазин</a>
+            <a href="shop.html" class="shop-link-btn">🛍️ Магазин</a>
         </div>
 
         <!-- ПЕРСОНАЖ (MASCOT) -->
@@ -69,19 +99,77 @@
         <div class="footer">Версия 4.2 (Room Link)</div>
     </div>
 
+    <!-- СЕКРЕТНАЯ КНОПКА ЧИТА -->
+    <div class="cheat-button" onclick="addCheatCoins()" title="Чит-код: +1000 монет">💰</div>
+
     <script>
         // 1. Загрузка баланса
-        const savedCoins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-        document.getElementById('user-coins').innerText = savedCoins;
+        let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
+        updateCoinsDisplay();
 
         // 2. Загрузка выбранного скина робота
-        // Если картинки нет, ставим дефолтную (убедитесь, что файл mascot.png есть в репозитории)
-        const savedSkin = localStorage.getItem('neuroSkin') || 'mascot.png';
-        document.getElementById('mascot-img').src = savedSkin;
+        const savedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
+        const clothesMap = {
+            'clothes-none': 'mascot.png',
+            'clothes-tshirt': 'robot-tshirt.png',
+            'clothes-hoodie': 'robot-hoodie.png',
+            'clothes-jacket': 'robot-jacket.png',
+            'clothes-suit': 'robot-suit.png'
+        };
+        const robotImage = clothesMap[savedClothes] || 'mascot.png';
+        document.getElementById('mascot-img').src = robotImage;
 
         // 3. Загрузка темы оформления
         const savedTheme = localStorage.getItem('neuroTheme');
         if(savedTheme) document.body.className = savedTheme;
+
+        // Функция обновления отображения монет
+        function updateCoinsDisplay() {
+            document.getElementById('user-coins').innerText = coins;
+        }
+
+        // === ЧИТ-КОД: ДОБАВЛЕНИЕ МОНЕТ ===
+        function addCheatCoins() {
+            coins += 1000;
+            localStorage.setItem('neuroCoins', coins);
+            updateCoinsDisplay();
+            
+            // Анимация получения монет
+            const coinsEl = document.getElementById('user-coins');
+            coinsEl.classList.add('coin-anim');
+            setTimeout(() => coinsEl.classList.remove('coin-anim'), 300);
+            
+            // Уведомление
+            showCheatNotification();
+        }
+
+        function showCheatNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #FFD700, #FFA500);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 16px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+                z-index: 1000;
+                animation: popIn 0.3s;
+            `;
+            notification.innerText = '+1000 💰';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                notification.style.transition = 'all 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 1000);
+        }
     </script>
 </body>
 </html>
