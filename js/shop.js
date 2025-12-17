@@ -6,88 +6,88 @@ const THEMES = [
     { id: 'theme-space', name: 'Космос', price: 200, color: '#0D1b2a' }
 ];
 
-// Одежда для робота
+// Одежда для робота (с эмодзи вместо иконок)
 const CLOTHES = [
     { 
         id: 'clothes-none', 
         name: 'Без одежды', 
         price: 0, 
         img: 'mascot.png', 
-        preview: 'https://img.icons8.com/?size=96&id=19997&format=png' 
+        emoji: '🤖'
     },
     { 
         id: 'clothes-tshirt', 
         name: 'Футболка', 
         price: 50, 
         img: 'robot-tshirt.png', 
-        preview: 'https://img.icons8.com/?size=96&id=78695&format=png' 
+        emoji: '👕'
     },
     { 
         id: 'clothes-hoodie', 
         name: 'Худи', 
         price: 100, 
         img: 'robot-hoodie.png', 
-        preview: 'https://img.icons8.com/?size=96&id=66994&format=png' 
+        emoji: '🧥'
     },
     { 
         id: 'clothes-jacket', 
         name: 'Куртка', 
         price: 150, 
         img: 'robot-jacket.png', 
-        preview: 'https://img.icons8.com/?size=96&id=49483&format=png' 
+        emoji: '🧥'
     },
     { 
         id: 'clothes-suit', 
         name: 'Костюм', 
         price: 300, 
         img: 'robot-suit.png', 
-        preview: 'https://img.icons8.com/?size=96&id=43059&format=png' 
+        emoji: '🤵'
     }
 ];
 
-// Аксессуары для робота
+// Аксессуары для робота (с эмодзи)
 const ACCESSORIES = [
     { 
         id: 'acc-none', 
         name: 'Без аксессуаров', 
         price: 0, 
         img: '', 
-        preview: 'https://img.icons8.com/?size=96&id=19997&format=png' 
+        emoji: '❌'
     },
     { 
         id: 'acc-glasses', 
         name: 'Очки', 
         price: 75, 
         img: 'robot-glasses.png', 
-        preview: 'https://img.icons8.com/?size=96&id=60688&format=png' 
+        emoji: '👓'
     },
     { 
         id: 'acc-hat', 
         name: 'Шляпа', 
         price: 100, 
         img: '', 
-        preview: 'https://img.icons8.com/?size=96&id=12421&format=png' 
+        emoji: '🎩'
     },
     { 
         id: 'acc-headphones', 
         name: 'Наушники', 
         price: 125, 
         img: '', 
-        preview: 'https://img.icons8.com/?size=96&id=59852&format=png' 
+        emoji: '🎧'
     },
     { 
         id: 'acc-crown', 
         name: 'Корона', 
         price: 200, 
         img: '', 
-        preview: 'https://img.icons8.com/?size=96&id=40668&format=png' 
+        emoji: '👑'
     },
     { 
         id: 'acc-bow', 
         name: 'Бантик', 
         price: 150, 
         img: '', 
-        preview: 'https://img.icons8.com/?size=96&id=19036&format=png' 
+        emoji: '🎀'
     }
 ];
 
@@ -225,7 +225,7 @@ function createThemeItemHTML(item, status) {
 function createItemHTML(item, status, type) {
     return `
         <div class="shop-item">
-            <img src="${item.preview}" class="item-icon" alt="${item.name}" onerror="this.style.display='none'">
+            <div class="item-icon" style="font-size: 3rem;">${item.emoji}</div>
             <div class="item-details">
                 <span class="item-name">${item.name}</span>
                 <span class="item-desc">${item.price > 0 ? item.price + ' монет' : 'Бесплатно'}</span>
