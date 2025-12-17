@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Комната Нейрона</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/robot-animations.css" />
 
   <style>
-    /* Комната на весь экран */
     .room-screen {
       display: flex;
       flex-direction: column;
@@ -20,7 +20,6 @@
       overflow: hidden;
     }
 
-    /* Большой робот */
     .big-robot-container {
       flex-grow: 1;
       display: flex;
@@ -31,14 +30,12 @@
       z-index: 1;
     }
 
-    /* Обёртка — нужна, чтобы аксессуар накладывался поверх робота */
     .robot-wrapper {
       position: relative;
       width: 85%;
       max-width: 350px;
     }
 
-    /* Изображение робота */
     .big-robot-img {
       width: 100%;
       height: auto;
@@ -46,50 +43,13 @@
       cursor: pointer;
       background: transparent !important;
       object-fit: contain;
-
-      /* Плавное “парение” */
-      animation: floatRobot 5s ease-in-out infinite;
       transition: transform 0.1s;
     }
 
-    /* Аксессуар поверх робота */
-    .accessory-overlay {
-      position: absolute;
-
-      /* Базовая позиция (можно потом подстроить под каждый аксессуар в room.js) */
-      top: 2%;
-      left: 50%;
-      transform: translateX(-50%);
-
-      width: 60%;
-      height: auto;
-      pointer-events: none;
-      z-index: 10;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-
-      /* Парит вместе с роботом, но не ломает translateX(-50%) */
-      animation: floatAccessory 5s ease-in-out infinite;
-    }
-
-    /* Парение робота (только по Y) */
-    @keyframes floatRobot {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-15px); }
-    }
-
-    /* Парение аксессуара: сохраняем translateX(-50%) + добавляем translateY */
-    @keyframes floatAccessory {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%      { transform: translateX(-50%) translateY(-15px); }
-    }
-
-    /* Эффект клика (сжатие) */
     .big-robot-img:active {
-      transform: scale(0.95) translateY(0) !important;
-      transition: 0.05s;
+      transform: scale(0.95);
     }
 
-    /* Панель управления (внизу) */
     .room-controls {
       width: 100%;
       display: grid;
@@ -119,7 +79,6 @@
 
     .btn-icon { font-size: 2rem; }
 
-    /* Облачко мыслей */
     .thought-bubble {
       position: absolute;
       top: 5%;
@@ -144,38 +103,27 @@
     }
   </style>
 
-  <!-- Библиотека конфетти -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="js/robot-animator.js"></script>
 </head>
 
 <body>
-  <!-- Верхняя панель -->
   <div class="top-bar">
     <a href="index.html" class="btn-back" style="text-decoration: none; z-index: 100; font-size: 1.5rem;">🏠</a>
-
     <div class="game-info">Комната</div>
-
-    <div class="balance-badge"
-      style="font-size:1rem; background: var(--card-bg); padding: 5px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div class="balance-badge" style="font-size:1rem; background: var(--card-bg); padding: 5px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
       <span id="coins">0</span> 💰
     </div>
   </div>
 
   <div class="room-screen">
-    <!-- Робот -->
     <div class="big-robot-container">
       <div class="thought-bubble" id="bubble">Я тут!</div>
-
       <div class="robot-wrapper">
-        <!-- Робот (одежда) -->
-        <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" />
-
-        <!-- Аксессуар (поверх) -->
-        <img id="accessory-img" src="" class="accessory-overlay" alt="Аксессуар" style="display:none;" />
+        <img id="robot-img" src="mascot.png" class="big-robot-img robot-float" alt="Робот" />
       </div>
     </div>
 
-    <!-- Кнопки управления -->
     <div class="room-controls">
       <button class="room-btn" data-action="shop">
         <span class="btn-icon">👕</span>
@@ -188,7 +136,54 @@
     </div>
   </div>
 
-  <!-- Подключение внешнего JS -->
-  <script src="js/room.js"></script>
+  <script>
+    // Загрузка данных
+    let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
+    document.getElementById('coins').textContent = coins;
+
+    const savedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
+    const clothesMap = {
+      'clothes-none': 'mascot.png',
+      'clothes-tshirt': 'robot-tshirt.png',
+      'clothes-hoodie': 'robot-hoodie.png',
+      'clothes-jacket': 'robot-jacket.png',
+      'clothes-suit': 'robot-suit.png'
+    };
+    const robotImage = clothesMap[savedClothes] || 'mascot.png';
+    document.getElementById('robot-img').src = robotImage;
+
+    // Инициализация аниматора
+    const robotAnimator = new RobotAnimator(
+      document.getElementById('robot-img'),
+      document.getElementById('bubble')
+    );
+
+    // Приветствие при загрузке
+    setTimeout(() => {
+      robotAnimator.greet();
+    }, 500);
+
+    // Кнопки
+    const buttons = document.querySelectorAll('.room-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        
+        if (action === 'shop') {
+          robotAnimator.showEmotion('thinking');
+          setTimeout(() => {
+            window.location.href = 'shop.html';
+          }, 800);
+        }
+        
+        if (action === 'feed') {
+          robotAnimator.showEmotion('happy');
+          setTimeout(() => {
+            robotAnimator.celebrate();
+          }, 600);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
