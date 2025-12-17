@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../css/style.css">
     
     <style>
-        /* Сетка памяти */
         .memory-grid {
             display: grid;
             gap: 10px;
@@ -17,39 +16,29 @@
             transition: all 0.3s ease;
             margin-top: 20px;
         }
-
         .cell {
-            background: #cfd8dc; /* Серый (неактивный) */
+            background: #cfd8dc;
             border-radius: 12px;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
             box-shadow: 0 4px 0 #b0bec5;
         }
-
-        .cell:active {
-            transform: scale(0.95);
-        }
-
-        /* Состояния клеток */
+        .cell:active { transform: scale(0.95); }
         .cell.active {
-            background: var(--primary) !important; /* Синий (показ) */
+            background: var(--primary) !important;
             box-shadow: 0 4px 0 #1976D2;
             transform: scale(1.05);
         }
-
         .cell.correct {
-            background: var(--success) !important; /* Зеленый (угадал) */
+            background: var(--success) !important;
             box-shadow: 0 4px 0 #388E3C;
             animation: pop 0.2s;
         }
-
         .cell.wrong {
-            background: var(--error) !important; /* Красный (ошибка) */
+            background: var(--error) !important;
             box-shadow: 0 4px 0 #D32F2F;
             animation: shake 0.4s;
         }
-
-        /* Индикатор уровня */
         .level-badge {
             background: var(--accent);
             color: white;
@@ -60,49 +49,42 @@
             box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
             margin-bottom: 20px;
         }
-
         .status-text {
             height: 20px;
             color: #777;
             font-size: 0.9rem;
             margin-top: 10px;
         }
-
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="../js/achievements.js"></script>
+    <script src="../js/game-stats.js"></script>
 </head>
 <body>
 
     <div class="top-bar">
         <a href="../index.html" class="btn-back">←</a>
         <div>
-            <!-- Очки (звездочки) -->
             <div class="game-info" id="score-display">★ 0</div>
         </div>
     </div>
 
     <div class="screen">
         <div class="level-badge" id="level-display">Уровень 1</div>
-        
-        <div id="grid" class="memory-grid">
-            <!-- Ячейки -->
-        </div>
-
+        <div id="grid" class="memory-grid"></div>
         <div class="status-text" id="status">Запоминай...</div>
     </div>
 
     <script>
-        // --- ПЕРЕМЕННЫЕ ---
         let currentLevel = 1;
-        let gridSize = 3;         // Размер сетки (3x3, 4x4...)
-        let pattern = [];         // Загаданные клетки (индексы)
-        let userClicksCount = 0;  // Сколько уже угадал
-        let isInputLocked = true; // Блокировка нажатий (пока показываем)
+        let gridSize = 3;
+        let pattern = [];
+        let userClicksCount = 0;
+        let isInputLocked = true;
         
         const gridElement = document.getElementById('grid');
         const statusElement = document.getElementById('status');
 
-        // --- ЗВУКИ ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -110,7 +92,7 @@
             const gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
 
-            if (type === 'show') { // Звук показа клетки
+            if (type === 'show') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
@@ -126,8 +108,6 @@
             }
         }
 
-        // --- ЛОГИКА ---
-        
         function initGame() {
             currentLevel = 1;
             gridSize = 3;
@@ -140,29 +120,21 @@
             userClicksCount = 0;
             pattern = [];
             
-            // Обновляем UI
             document.getElementById('level-display').innerText = `Уровень ${currentLevel}`;
             document.getElementById('score-display').innerText = `★ ${currentLevel - 1}`;
             statusElement.innerText = "Смотри и запоминай!";
 
-            // 1. Рассчитываем сложность
-            // Кол-во плиток: 3, 3, 4, 4, 5, 5... (растет каждые 2 уровня)
             let tilesToShow = 3 + Math.floor((currentLevel - 1) / 2);
-            
-            // Размер сетки растет на 4-м и 9-м уровне
             if (currentLevel >= 4) gridSize = 4;
             if (currentLevel >= 9) gridSize = 5;
 
-            // 2. Строим сетку
             renderGrid();
 
-            // 3. Генерируем паттерн
             const totalCells = gridSize * gridSize;
             let indices = Array.from({length: totalCells}, (_, i) => i);
             indices.sort(() => Math.random() - 0.5);
             pattern = indices.slice(0, tilesToShow);
 
-            // 4. Показываем паттерн (через 500мс после старта)
             setTimeout(() => {
                 showPattern();
             }, 800);
@@ -183,18 +155,15 @@
         }
 
         function showPattern() {
-            // Подсвечиваем все нужные клетки
             pattern.forEach((index) => {
                 const cell = gridElement.children[index];
                 cell.classList.add('active');
             });
             playSound('show');
 
-            // Время показа: 1 сек + немного за сложность
             let showTime = 1000 + (currentLevel * 50); 
 
             setTimeout(() => {
-                // Прячем
                 Array.from(gridElement.children).forEach(c => c.classList.remove('active'));
                 isInputLocked = false;
                 statusElement.innerText = "Повтори!";
@@ -203,17 +172,13 @@
 
         function handleCellClick(cell, index) {
             if (isInputLocked) return;
-            
-            // Если уже нажата (зеленая), игнорируем
             if (cell.classList.contains('correct')) return;
 
             if (pattern.includes(index)) {
-                // Верно!
                 playSound('correct');
                 cell.classList.add('correct');
                 userClicksCount++;
 
-                // Уровень пройден?
                 if (userClicksCount === pattern.length) {
                     isInputLocked = true;
                     statusElement.innerText = "Отлично!";
@@ -225,7 +190,6 @@
                     }, 1000);
                 }
             } else {
-                // Ошибка!
                 playSound('wrong');
                 cell.classList.add('wrong');
                 isInputLocked = true;
@@ -234,11 +198,11 @@
                 if (navigator.vibrate) navigator.vibrate(200);
 
                 setTimeout(() => {
-                    // --- НАЧИСЛЕНИЕ МОНЕТ ---
-                    // Даем 5 монет за каждый ПОЛНОСТЬЮ пройденный уровень
                     let reward = (currentLevel - 1) * 5;
-                    if(reward > 0) saveCoins(reward);
-                    // -----------------------
+                    if (reward > 0) {
+                        window.GameStats.addCoins(reward);
+                        window.GameStats.updateMemory(currentLevel - 1);
+                    }
 
                     alert(`Игра окончена!\nВы дошли до уровня ${currentLevel}\nЗаработано: ${reward} монет 💰`);
                     initGame();
@@ -246,16 +210,10 @@
             }
         }
 
-        function saveCoins(amount) {
-            let currentBank = parseInt(localStorage.getItem('neuroCoins')) || 0;
-            localStorage.setItem('neuroCoins', currentBank + amount);
-        }
-
         document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
         document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
         initGame();
-
     </script>
 </body>
 </html>
