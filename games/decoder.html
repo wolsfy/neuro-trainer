@@ -5,237 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Шифровальщик</title>
     <link rel="stylesheet" href="../css/style.css">
-    
-    <style>
-        .key-container {
-            display: flex;
-            gap: 8px;
-            background: white;
-            padding: 15px;
-            border-radius: 16px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 95%;
-            max-width: 500px;
-        }
-        .key-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid #eee;
-            padding: 8px;
-            border-radius: 8px;
-            min-width: 30px;
-        }
-        .key-symbol {
-            font-size: 1.4rem;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        .key-number {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #555;
-            background: #f0f0f0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .task-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 150px;
-        }
-        .task-symbol {
-            font-size: 6rem;
-            color: var(--primary);
-            transition: transform 0.1s, opacity 0.1s;
-        }
-        .task-hint {
-            color: #999;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        .numpad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 90%;
-            max-width: 300px;
-            margin-bottom: 30px;
-        }
-        .num-btn {
-            background: white;
-            border: none;
-            padding: 20px 0;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-            border-radius: 12px;
-            box-shadow: 0 4px 0 #dce0e6;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .num-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-            background: #f5f5f5;
-        }
-        .shake { animation: shake 0.3s; color: var(--error) !important; }
-        @keyframes shake { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-    </style>
+    <link rel="stylesheet" href="../css/robot-animations.css">
+    <style>.key-container{display:flex;gap:8px;background:white;padding:15px;border-radius:16px;margin:20px 0;box-shadow:0 4px 12px rgba(0,0,0,0.05);flex-wrap:wrap;justify-content:center;width:95%;max-width:500px}.key-item{display:flex;flex-direction:column;align-items:center;border:1px solid #eee;padding:8px;border-radius:8px;min-width:30px}.key-symbol{font-size:1.4rem;color:var(--primary);margin-bottom:5px}.key-number{font-size:1.1rem;font-weight:bold;color:#555;background:#f0f0f0;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}.task-area{flex-grow:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:150px}.task-symbol{font-size:6rem;color:var(--primary);transition:transform 0.1s,opacity 0.1s}.task-hint{color:#999;margin-top:10px;font-size:0.9rem}.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:90%;max-width:300px;margin-bottom:30px}.num-btn{background:white;border:none;padding:20px 0;font-size:1.8rem;font-weight:bold;color:#333;border-radius:12px;box-shadow:0 4px 0 #dce0e6;cursor:pointer;transition:transform 0.1s}.num-btn:active{transform:translateY(4px);box-shadow:none;background:#f5f5f5}.shake{animation:shake 0.3s;color:var(--error)!important}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}</style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/achievements.js"></script>
     <script src="../js/game-stats.js"></script>
+    <script src="../js/game-robot.js"></script>
 </head>
 <body>
-
-    <div class="top-bar">
-        <a href="../index.html" class="btn-back">←</a>
-        <div>
-            <div class="game-info" id="timer">60</div>
-            <div style="font-size: 0.8rem; color: #777; text-align: right;">Сек</div>
-        </div>
-    </div>
-
-    <div class="screen" style="justify-content: flex-start; padding-top: 60px;">
-        <div class="key-container" id="key-display"></div>
-        <div class="task-area">
-            <div class="task-symbol" id="current-symbol">?</div>
-            <div class="task-hint">Нажми цифру!</div>
-        </div>
-        <div class="numpad">
-            <button class="num-btn" onclick="handleInput(1)">1</button>
-            <button class="num-btn" onclick="handleInput(2)">2</button>
-            <button class="num-btn" onclick="handleInput(3)">3</button>
-            <button class="num-btn" onclick="handleInput(4)">4</button>
-            <button class="num-btn" onclick="handleInput(5)">5</button>
-            <button class="num-btn" onclick="handleInput(6)">6</button>
-            <button class="num-btn" onclick="handleInput(7)">7</button>
-            <button class="num-btn" onclick="handleInput(8)">8</button>
-            <button class="num-btn" onclick="handleInput(9)">9</button>
-        </div>
-    </div>
-
+    <div class="top-bar"><a href="../index.html" class="btn-back">←</a><div><div class="game-info" id="timer">60</div><div style="font-size:0.8rem;color:#777;text-align:right">Сек</div></div></div>
+    <div class="screen" style="justify-content:flex-start;padding-top:60px"><div class="key-container" id="key-display"></div><div class="task-area"><div class="task-symbol" id="current-symbol">?</div><div class="task-hint">Нажми цифру!</div></div><div class="numpad"><button class="num-btn" onclick="handleInput(1)">1</button><button class="num-btn" onclick="handleInput(2)">2</button><button class="num-btn" onclick="handleInput(3)">3</button><button class="num-btn" onclick="handleInput(4)">4</button><button class="num-btn" onclick="handleInput(5)">5</button><button class="num-btn" onclick="handleInput(6)">6</button><button class="num-btn" onclick="handleInput(7)">7</button><button class="num-btn" onclick="handleInput(8)">8</button><button class="num-btn" onclick="handleInput(9)">9</button></div></div>
     <script>
-        const GAME_DURATION = 60;
-        const SYMBOLS_POOL = ['★', '■', '▲', '●', '◆', '✚', '▼', '⬟', '⬢'];
-        
-        let decoderMap = [];
-        let currentPair = null;
-        let score = 0;
-        let timeLeft = GAME_DURATION;
-        let timerInterval;
-        let isPlaying = false;
-
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            
-            if (type === 'correct') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'error') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-            }
-        }
-
-        function initGame() {
-            score = 0;
-            timeLeft = GAME_DURATION;
-            isPlaying = true;
-            document.getElementById('timer').innerText = timeLeft;
-            
-            let shuffled = [...SYMBOLS_POOL].sort(() => Math.random() - 0.5);
-            decoderMap = shuffled.map((symbol, index) => ({
-                sym: symbol,
-                val: index + 1
-            }));
-
-            const keyContainer = document.getElementById('key-display');
-            keyContainer.innerHTML = '';
-            decoderMap.forEach(item => {
-                keyContainer.innerHTML += `
-                    <div class="key-item">
-                        <span class="key-symbol">${item.sym}</span>
-                        <span class="key-number">${item.val}</span>
-                    </div>
-                `;
-            });
-
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 0) endGame();
-            }, 1000);
-
-            nextTask();
-        }
-
-        function nextTask() {
-            currentPair = decoderMap[Math.floor(Math.random() * decoderMap.length)];
-            
-            const el = document.getElementById('current-symbol');
-            el.style.opacity = 0;
-            el.style.transform = 'scale(0.8)';
-            
-            setTimeout(() => {
-                el.innerText = currentPair.sym;
-                el.style.opacity = 1;
-                el.style.transform = 'scale(1)';
-            }, 50);
-        }
-
-        function handleInput(num) {
-            if (!isPlaying) return;
-
-            if (num === currentPair.val) {
-                playSound('correct');
-                score++;
-                nextTask();
-            } else {
-                playSound('error');
-                const el = document.getElementById('current-symbol');
-                el.classList.add('shake');
-                setTimeout(() => el.classList.remove('shake'), 300);
-            }
-        }
-
-        function endGame() {
-            isPlaying = false;
-            clearInterval(timerInterval);
-            
-            window.GameStats.addCoins(score);
-            window.GameStats.updateDecoder();
-
-            confetti();
-            alert(`Время вышло!\nВаш результат: ${score} символов\nЗаработано монет: ${score} 💰`);
-            
-            if(confirm("Сыграть еще раз?")) {
-                initGame();
-            } else {
-                window.location.href = '../index.html';
-            }
-        }
-
-        document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
-        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
-        
+        const GAME_DURATION=60,SYMBOLS_POOL=['★','■','▲','●','◆','✚','▼','⬟','⬢'];let decoderMap=[],currentPair=null,score=0,timeLeft=GAME_DURATION,timerInterval,isPlaying=false,correctStreak=0;
+        const audioCtx=new(window.AudioContext||window.webkitAudioContext)();function playSound(t){if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);if(t==='correct'){o.type='sine';o.frequency.setValueAtTime(800,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.1);o.start();o.stop(audioCtx.currentTime+0.1)}else if(t==='error'){o.type='square';o.frequency.setValueAtTime(150,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.2);o.start();o.stop(audioCtx.currentTime+0.2)}}
+        function initGame(){score=0;timeLeft=GAME_DURATION;isPlaying=true;correctStreak=0;document.getElementById('timer').innerText=timeLeft;let s=[...SYMBOLS_POOL].sort(()=>Math.random()-0.5);decoderMap=s.map((sym,idx)=>({sym:sym,val:idx+1}));const k=document.getElementById('key-display');k.innerHTML='';decoderMap.forEach(item=>{k.innerHTML+=`<div class="key-item"><span class="key-symbol">${item.sym}</span><span class="key-number">${item.val}</span></div>`});clearInterval(timerInterval);timerInterval=setInterval(()=>{timeLeft--;document.getElementById('timer').innerText=timeLeft;if(timeLeft<=0)endGame()},1000);setTimeout(()=>{if(window.gameRobot&&window.gameRobot.initialized)window.gameRobot.onGameStart();nextTask()},100)}
+        function nextTask(){currentPair=decoderMap[Math.floor(Math.random()*decoderMap.length)];const el=document.getElementById('current-symbol');el.style.opacity=0;el.style.transform='scale(0.8)';setTimeout(()=>{el.innerText=currentPair.sym;el.style.opacity=1;el.style.transform='scale(1)'},50)}
+        function handleInput(n){if(!isPlaying)return;if(n===currentPair.val){playSound('correct');score++;correctStreak++;if(window.gameRobot&&window.gameRobot.initialized){if(correctStreak%10===0)window.gameRobot.onCombo(correctStreak);else if(Math.random()<0.25)window.gameRobot.onCorrect()}nextTask()}else{playSound('error');correctStreak=0;if(window.gameRobot&&window.gameRobot.initialized&&Math.random()<0.4)window.gameRobot.onWrong();const el=document.getElementById('current-symbol');el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),300)}}
+        function endGame(){isPlaying=false;clearInterval(timerInterval);window.GameStats.addCoins(score);window.GameStats.updateDecoder();if(window.gameRobot&&window.gameRobot.initialized)window.gameRobot.onGameOver();confetti();alert(`Время вышло!\nВаш результат: ${score} символов\nЗаработано монет: ${score} 💰`);if(confirm("Сыграть еще раз?"))initGame();else window.location.href='../index.html'}
+        document.body.addEventListener('click',()=>{if(audioCtx.state==='suspended')audioCtx.resume()},{once:true});document.addEventListener('dblclick',(e)=>e.preventDefault(),{passive:false});
         initGame();
     </script>
 </body>
