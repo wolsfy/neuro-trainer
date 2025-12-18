@@ -185,7 +185,10 @@
             targetElement.innerText = "1";
             timerElement.innerText = "00.00";
             
-            if (window.gameRobot) window.gameRobot.onGameStart();
+            // Робот: начало игры
+            if (window.gameRobot && window.gameRobot.initialized) {
+                window.gameRobot.onGameStart();
+            }
             
             clearInterval(timerInterval);
             let startTime = Date.now();
@@ -227,7 +230,8 @@
                 cell.classList.add('correct-anim');
                 correctStreak++;
                 
-                if (window.gameRobot) {
+                // Робот: правильный ответ
+                if (window.gameRobot && window.gameRobot.initialized) {
                     if (correctStreak % 5 === 0 && correctStreak > 0) {
                         window.gameRobot.onCombo(correctStreak);
                     } else if (Math.random() < 0.3) {
@@ -247,9 +251,12 @@
                 correctStreak = 0;
                 cell.style.backgroundColor = '#FF5252';
                 cell.style.color = 'white';
-                if (window.gameRobot && Math.random() < 0.5) {
+                
+                // Робот: ошибка
+                if (window.gameRobot && window.gameRobot.initialized && Math.random() < 0.5) {
                     window.gameRobot.onWrong();
                 }
+                
                 setTimeout(() => {
                     cell.style.backgroundColor = '';
                     cell.style.color = '';
@@ -275,9 +282,15 @@
             
             if (isNewRecord) {
                 localStorage.setItem(key, finalTime);
-                if (window.gameRobot) window.gameRobot.onNewRecord();
+                // Робот: новый рекорд
+                if (window.gameRobot && window.gameRobot.initialized) {
+                    window.gameRobot.onNewRecord();
+                }
             } else {
-                if (window.gameRobot) window.gameRobot.onGameOver();
+                // Робот: конец игры
+                if (window.gameRobot && window.gameRobot.initialized) {
+                    window.gameRobot.onGameOver();
+                }
             }
             
             checkRecord(finalTime, reward, isNewRecord);
@@ -332,7 +345,9 @@
         document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
         updateBestScoreDisplay();
-        restartGame();
+        
+        // Запуск игры после загрузки DOM
+        setTimeout(() => restartGame(), 100);
     </script>
 </body>
 </html>
