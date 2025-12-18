@@ -1,6 +1,5 @@
 // ===== БАЗА ДАННЫХ ДОСТИЖЕНИЙ =====
 const ACHIEVEMENTS = {
-    // Базовые достижения
     basic: [
         {
             id: 'first_game',
@@ -39,7 +38,6 @@ const ACHIEVEMENTS = {
         }
     ],
     
-    // Достижения мастерства
     mastery: [
         {
             id: 'schulte_master',
@@ -60,7 +58,7 @@ const ACHIEVEMENTS = {
         {
             id: 'stroop_expert',
             name: 'Эксперт Струпа',
-            desc: 'Набери 10 правильных ответов подряд в игре Цвета',
+            desc: 'Набери 10 правильных ответов подряд',
             icon: '🎨',
             reward: 250,
             check: (stats) => stats.stroop_streak >= 10
@@ -83,7 +81,6 @@ const ACHIEVEMENTS = {
         }
     ],
     
-    // Коллекционер
     collector: [
         {
             id: 'first_theme',
@@ -91,7 +88,7 @@ const ACHIEVEMENTS = {
             desc: 'Купи первую тему оформления',
             icon: '🎨',
             reward: 100,
-            check: (stats) => stats.themesOwned >= 2 // 2, потому что одна бесплатная
+            check: (stats) => stats.themesOwned >= 2
         },
         {
             id: 'all_themes',
@@ -107,7 +104,7 @@ const ACHIEVEMENTS = {
             desc: 'Купи 3 предмета одежды для робота',
             icon: '👕',
             reward: 200,
-            check: (stats) => stats.clothesOwned >= 4 // 4, потому что одна бесплатная
+            check: (stats) => stats.clothesOwned >= 4
         },
         {
             id: 'full_wardrobe',
@@ -120,27 +117,22 @@ const ACHIEVEMENTS = {
     ]
 };
 
-// ===== СОСТОЯНИЕ =====
 let unlockedAchievements = [];
 let stats = {};
 
-// ===== ИНИЦИАЛИЗАЦИЯ =====
 function initAchievements() {
     loadData();
     renderAchievements();
     updateStats();
 }
 
-// ===== ЗАГРУЗКА ДАННЫХ =====
 function loadData() {
     unlockedAchievements = JSON.parse(localStorage.getItem('neuroAchievements')) || [];
     
-    // Загрузка статистики
     stats = {
         totalGames: parseInt(localStorage.getItem('neuroTotalGames')) || 0,
         totalCoinsEarned: parseInt(localStorage.getItem('neuroTotalCoinsEarned')) || 0,
         
-        // По играм
         schulte_played: parseInt(localStorage.getItem('neuroSchultePlayed')) || 0,
         schulte_best_time: parseFloat(localStorage.getItem('neuroSchulteBestTime')) || 0,
         
@@ -155,13 +147,11 @@ function loadData() {
         math_played: parseInt(localStorage.getItem('neuroMathPlayed')) || 0,
         math_perfect_streak: parseInt(localStorage.getItem('neuroMathPerfectStreak')) || 0,
         
-        // Магазин
         themesOwned: (JSON.parse(localStorage.getItem('neuroOwned')) || []).filter(id => id.startsWith('theme-')).length,
         clothesOwned: (JSON.parse(localStorage.getItem('neuroOwned')) || []).filter(id => id.startsWith('clothes-')).length
     };
 }
 
-// ===== РЕНДЕРИНГ =====
 function renderAchievements() {
     renderCategory('basic-achievements', ACHIEVEMENTS.basic);
     renderCategory('mastery-achievements', ACHIEVEMENTS.mastery);
@@ -176,7 +166,6 @@ function renderCategory(containerId, achievements) {
     achievements.forEach(achievement => {
         const isUnlocked = unlockedAchievements.includes(achievement.id);
         const canUnlock = !isUnlocked && achievement.check(stats);
-        
         container.innerHTML += createAchievementHTML(achievement, isUnlocked, canUnlock);
     });
 }
@@ -197,17 +186,19 @@ function createAchievementHTML(ach, isUnlocked, canUnlock) {
     `;
 }
 
-// ===== ОБНОВЛЕНИЕ СТАТИСТИКИ =====
 function updateStats() {
-    const totalAchievements = Object.values(ACHIEVEMENTS).flat().length;
-    const unlockedCount = unlockedAchievements.length;
+    const totalCount = document.getElementById('total-count');
+    const unlockedCount = document.getElementById('unlocked-count');
     
-    document.getElementById('total-count').textContent = totalAchievements;
-    document.getElementById('unlocked-count').textContent = unlockedCount;
+    if (totalCount && unlockedCount) {
+        const totalAchievements = Object.values(ACHIEVEMENTS).flat().length;
+        totalCount.textContent = totalAchievements;
+        unlockedCount.textContent = unlockedAchievements.length;
+    }
 }
 
-// ===== ПРОВЕРКА И РАЗБЛОКИРОВКА =====
 function checkNewAchievements() {
+    loadData();
     const allAchievements = Object.values(ACHIEVEMENTS).flat();
     const newUnlocks = [];
     
@@ -216,7 +207,6 @@ function checkNewAchievements() {
             newUnlocks.push(achievement);
             unlockedAchievements.push(achievement.id);
             
-            // Выдача награды
             let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
             coins += achievement.reward;
             localStorage.setItem('neuroCoins', coins);
@@ -225,17 +215,14 @@ function checkNewAchievements() {
     
     if (newUnlocks.length > 0) {
         localStorage.setItem('neuroAchievements', JSON.stringify(unlockedAchievements));
-        return newUnlocks;
     }
     
-    return [];
+    return newUnlocks;
 }
 
-// ===== ЭКСПОРТ ДЛЯ ИСПОЛЬЗОВАНИЯ В ДРУГИХ СКРИПТАХ =====
 window.AchievementsSystem = {
     check: checkNewAchievements,
     showNotification: function(achievement) {
-        // Уведомление о разблокировке
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
@@ -264,15 +251,17 @@ window.AchievementsSystem = {
         `;
         document.body.appendChild(notification);
         
-        // Анимация появления
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-                to { transform: translateX(-50%) translateY(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
+        if (!document.getElementById('achievement-anim-style')) {
+            const style = document.createElement('style');
+            style.id = 'achievement-anim-style';
+            style.textContent = `
+                @keyframes slideDown {
+                    from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+                    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
         
         setTimeout(() => {
             notification.style.opacity = '0';
@@ -283,5 +272,15 @@ window.AchievementsSystem = {
     }
 };
 
-// ===== ЗАПУСК =====
-document.addEventListener('DOMContentLoaded', initAchievements);
+// Инициализация только на странице достижений
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (document.getElementById('basic-achievements')) {
+            initAchievements();
+        }
+    });
+} else {
+    if (document.getElementById('basic-achievements')) {
+        initAchievements();
+    }
+}
