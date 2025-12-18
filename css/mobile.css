@@ -27,28 +27,16 @@
         display: none !important;
     }
     
-    /* РОБОТ В ИГРАХ - переносим вверх справа, уменьшаем */
+    /* РОБОТ В ИГРАХ - ПОЛНОСТЬЮ УБИРАЕМ НА МОБИЛЬНЫХ */
     #game-robot,
     .robot-container {
-        position: fixed !important;
-        bottom: auto !important;
-        top: 60px !important;
-        right: 10px !important;
-        left: auto !important;
-        width: 50px !important;
-        height: 50px !important;
-        z-index: 999 !important;
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
     
-    #game-robot img,
-    .robot-container img {
-        width: 50px !important;
-        height: 50px !important;
-        max-width: 50px !important;
-        max-height: 50px !important;
-    }
-    
-    /* Речевое облачко робота - скрываем на мобильных */
+    /* Речевое облачко робота - скрываем */
     #robot-speech,
     .robot-speech-bubble {
         display: none !important;
