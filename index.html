@@ -12,7 +12,8 @@
     <style>
         .level-display{position:fixed;top:10px;right:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 20px;border-radius:16px;box-shadow:0 4px 16px rgba(102,126,234,0.4);z-index:1000;min-width:120px;cursor:pointer;transition:transform 0.2s}.level-display:hover{transform:scale(1.05)}.level-number{font-size:1.8rem;font-weight:900;text-align:center;display:block}.level-title{font-size:0.9rem;text-align:center;opacity:0.9;display:block;margin-top:2px}.xp-bar-container{width:100%;height:6px;background:rgba(255,255,255,0.3);border-radius:3px;margin-top:8px;overflow:hidden}.xp-bar-fill{height:100%;background:white;border-radius:3px;transition:width 0.5s ease}.xp-text{font-size:0.7rem;text-align:center;margin-top:4px;opacity:0.85}
         .energy-display{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,#4CAF50,#45a049);color:white;padding:12px 20px;border-radius:16px;box-shadow:0 4px 16px rgba(76,175,80,0.4);z-index:1000;min-width:120px;cursor:pointer;transition:transform 0.2s}.energy-display:hover{transform:scale(1.05)}.energy-value{font-size:1.8rem;font-weight:900;text-align:center;display:block}.energy-label{font-size:0.9rem;text-align:center;opacity:0.9;display:block;margin-top:2px}.energy-bar-container{width:100%;height:6px;background:rgba(255,255,255,0.3);border-radius:3px;margin-top:8px;overflow:hidden}.energy-bar-fill{height:100%;background:white;border-radius:3px;transition:width 0.5s ease}.energy-time{font-size:0.7rem;text-align:center;margin-top:4px;opacity:0.85;display:none}
-        .cheat-button{position:fixed;bottom:10px;left:10px;width:50px;height:50px;background:rgba(255,215,0,0.3);border:2px dashed rgba(255,215,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:999;transition:all 0.3s}.cheat-button:hover{background:rgba(255,215,0,0.6);transform:scale(1.1)}.cheat-button:active{transform:scale(0.9)}.quests-button{position:fixed;bottom:190px;left:10px;width:50px;height:50px;background:linear-gradient(135deg,#FF9800,#F57C00);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:999;transition:all 0.3s;box-shadow:0 4px 12px rgba(255,152,0,0.4);text-decoration:none}.quests-button:hover{transform:scale(1.1);box-shadow:0 6px 16px rgba(255,152,0,0.6)}.quests-button:active{transform:scale(0.95)}.achievements-button{position:fixed;bottom:70px;left:10px;width:50px;height:50px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:999;transition:all 0.3s;box-shadow:0 4px 12px rgba(255,215,0,0.4);text-decoration:none}.achievements-button:hover{transform:scale(1.1) rotate(10deg);box-shadow:0 6px 16px rgba(255,215,0,0.6)}.achievements-button:active{transform:scale(0.95)}.stats-button{position:fixed;bottom:130px;left:10px;width:50px;height:50px;background:linear-gradient(135deg,#2196F3,#1976D2);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:999;transition:all 0.3s;box-shadow:0 4px 12px rgba(33,150,243,0.4);text-decoration:none}.stats-button:hover{transform:scale(1.1);box-shadow:0 6px 16px rgba(33,150,243,0.6)}.stats-button:active{transform:scale(0.95)}
+        .cheat-button{position:fixed;bottom:10px;left:10px;width:50px;height:50px;background:rgba(255,215,0,0.3);border:2px dashed rgba(255,215,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:999;transition:all 0.3s}.cheat-button:hover{background:rgba(255,215,0,0.6);transform:scale(1.1)}.cheat-button:active{transform:scale(0.9)}
+        .main-menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;padding:20px;max-width:500px;margin:0 auto}.category-card{background:white;border-radius:20px;padding:30px 20px;box-shadow:0 6px 16px rgba(0,0,0,0.1);cursor:pointer;transition:all 0.3s;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;position:relative;min-height:140px}.category-card:hover{transform:translateY(-8px);box-shadow:0 12px 24px rgba(0,0,0,0.15)}.category-card:active{transform:translateY(-4px)}.category-icon{font-size:3.5rem;margin-bottom:12px}.category-name{font-size:1.2rem;font-weight:bold;color:#333;text-align:center;margin-bottom:5px}.category-desc{font-size:0.85rem;color:#777;text-align:center;line-height:1.3}.badge{position:absolute;top:10px;right:10px;background:#FF5252;color:white;padding:4px 8px;border-radius:12px;font-size:0.75rem;font-weight:bold;min-width:20px;text-align:center}.category-card.featured{background:linear-gradient(135deg,#667eea,#764ba2);color:white}.category-card.featured .category-name,.category-card.featured .category-desc{color:white}
     </style>
     <script src="js/level-system.js"></script>
     <script src="js/energy-system.js"></script>
@@ -36,25 +37,52 @@
     <div class="screen active">
         <div class="profile-bar">
             <div class="profile-info"><span class="profile-name">Мой баланс:</span><span class="coin-balance"><span id="user-coins">0</span> 💰</span></div>
-            <a href="shop.html" class="shop-link-btn">🛍️ Магазин</a>
         </div>
         <div class="character-area">
-            <div class="mascot-container"><a href="room.html" style="display: block;"><img id="mascot-img" src="mascot.png" alt="Наш Робот" class="mascot-img"></a><div class="mascot-speech">Привет! Жми на меня!</div></div>
+            <div class="mascot-container"><a href="room.html" style="display: block;"><img id="mascot-img" src="mascot.png" alt="Наш Робот" class="mascot-img"></a><div class="mascot-speech">Привет! Выбери категорию!</div></div>
         </div>
-        <div class="menu-grid">
-            <a href="javascript:void(0)" onclick="startGame('schulte')" class="menu-btn"><span class="menu-icon">🔢</span><span>Шульте</span><div style="font-size:0.75rem;opacity:0.7">⚡ 10</div></a>
-            <a href="javascript:void(0)" onclick="startGame('decoder')" class="menu-btn"><span class="menu-icon">🧩</span><span>Шифр</span><div style="font-size:0.75rem;opacity:0.7">⚡ 15</div></a>
-            <a href="javascript:void(0)" onclick="startGame('memory')" class="menu-btn"><span class="menu-icon">💡</span><span>Память</span><div style="font-size:0.75rem;opacity:0.7">⚡ 15</div></a>
-            <a href="javascript:void(0)" onclick="startGame('stroop')" class="menu-btn"><span class="menu-icon">🎨</span><span>Цвета</span><div style="font-size:0.75rem;opacity:0.7">⚡ 20</div></a>
-            <a href="javascript:void(0)" onclick="startGame('math')" class="menu-btn"><span class="menu-icon">🧮</span><span>Математика</span><div style="font-size:0.75rem;opacity:0.7">⚡ 20</div></a>
-            <a href="javascript:void(0)" onclick="startGame('2048')" class="menu-btn"><span class="menu-icon">🎲</span><span>2048</span><div style="font-size:0.75rem;opacity:0.7">⚡ 15</div></a>
+        <div class="main-menu-grid">
+            <a href="games-menu.html" class="category-card featured">
+                <div class="category-icon">🎮</div>
+                <div class="category-name">Игры</div>
+                <div class="category-desc">6 игр для мозга</div>
+            </a>
+            
+            <a href="quests.html" class="category-card">
+                <span class="badge" id="quests-badge" style="display:none">!</span>
+                <div class="category-icon">🎯</div>
+                <div class="category-name">Задания</div>
+                <div class="category-desc">Ежедневные квесты</div>
+            </a>
+            
+            <a href="stats.html" class="category-card">
+                <div class="category-icon">📊</div>
+                <div class="category-name">Статистика</div>
+                <div class="category-desc">Твой прогресс</div>
+            </a>
+            
+            <a href="achievements.html" class="category-card">
+                <span class="badge" id="achievements-badge" style="display:none">0</span>
+                <div class="category-icon">🏆</div>
+                <div class="category-name">Достижения</div>
+                <div class="category-desc">Твои награды</div>
+            </a>
+            
+            <a href="shop.html" class="category-card">
+                <div class="category-icon">🛍️</div>
+                <div class="category-name">Магазин</div>
+                <div class="category-desc">Одежда и улучшения</div>
+            </a>
+            
+            <a href="room.html" class="category-card">
+                <div class="category-icon">🏠</div>
+                <div class="category-name">Комната</div>
+                <div class="category-desc">Дом робота</div>
+            </a>
         </div>
-        <div class="footer">Версия 6.1 (2048 Game)</div>
+        <div class="footer">Версия 7.0 (New Navigation)</div>
     </div>
 
-    <a href="quests.html" class="quests-button" title="Ежедневные задания">🎯</a>
-    <a href="stats.html" class="stats-button" title="Статистика">📊</a>
-    <a href="achievements.html" class="achievements-button" title="Достижения">🏆</a>
     <div class="cheat-button" onclick="addCheatCoins()" title="Чит-код: +1000 монет">💰</div>
 
     <script>
@@ -62,11 +90,11 @@
         function updateCoinsDisplay(){coins=parseInt(localStorage.getItem('neuroCoins'))||0;document.getElementById('user-coins').innerText=coins}
         function updateLevelDisplay(){const p=window.levelSystem.getProgress(),t=window.levelSystem.getCurrentTitle();document.getElementById('level-num').innerText=p.level;document.getElementById('level-title').innerText=`${t.icon} ${t.name}`;document.getElementById('xp-bar').style.width=p.percentage+'%';document.getElementById('xp-text').innerText=`${p.xp} / ${p.xpNeeded} XP`}
         function showLevelInfo(){const p=window.levelSystem.getProgress(),t=window.levelSystem.getCurrentTitle(),n=window.levelSystem.getNextTitle();let msg=`🎮 Уровень: ${p.level}\n${t.icon} ${t.name}\n\n✨ XP: ${p.xp} / ${p.xpNeeded}\n📊 Прогресс: ${p.percentage}%`;if(n)msg+=`\n\n🎯 Следующий титул:\n${n.icon} ${n.name} (ур. ${n.level})`;alert(msg)}
-        function showEnergyInfo(){const e=window.energySystem.getEnergy(),t=window.energySystem.getTimeToNextRegen();let msg=`⚡ Энергия: ${e}/${window.ENERGY_CONFIG.maxEnergy}\n\n🔄 Регенерация: +1 каждые ${window.ENERGY_CONFIG.regenMinutes} мин\n\n🎮 Стоимость игр:\n🔢 Шульте: 10\n🧩 Шифр: 15\n💡 Память: 15\n🎨 Цвета: 20\n🧮 Математика: 20\n🎲 2048: 15`;if(t)msg+=`\n\n⏰ +1 через ${t.minutes}:${t.seconds.toString().padStart(2,'0')}`;msg+=`\n\n💰 Полное пополнение: ${window.ENERGY_CONFIG.refillCost} монет`;if(confirm(msg+'\n\nПополнить энергию?')){if(window.energySystem.refillEnergy()){alert('✅ Энергия пополнена!');updateCoinsDisplay();window.energySystem.updateDisplay()}else{alert('❌ Недостаточно монет!')}}}
-        function startGame(name){if(window.checkEnergyBeforeGame(name)){window.consumeEnergyForGame(name);localStorage.setItem('neuroLastGame',name);window.location.href=`games/${name}.html`}}
+        function showEnergyInfo(){const e=window.energySystem.getEnergy(),t=window.energySystem.getTimeToNextRegen();let msg=`⚡ Энергия: ${e}/${window.ENERGY_CONFIG.maxEnergy}\n\n🔄 Регенерация: +1 каждые ${window.ENERGY_CONFIG.regenMinutes} мин`;if(t)msg+=`\n⏰ +1 через ${t.minutes}:${t.seconds.toString().padStart(2,'0')}`;msg+=`\n\n💰 Пополнение: ${window.ENERGY_CONFIG.refillCost} монет`;if(confirm(msg+'\n\nПополнить энергию?')){if(window.energySystem.refillEnergy()){alert('✅ Энергия пополнена!');updateCoinsDisplay();window.energySystem.updateDisplay()}else{alert('❌ Недостаточно монет!')}}}
         function addCheatCoins(){coins+=1000;localStorage.setItem('neuroCoins',coins);updateCoinsDisplay();const c=document.getElementById('user-coins');c.classList.add('coin-anim');setTimeout(()=>c.classList.remove('coin-anim'),300);showCheatNotification()}
         function showCheatNotification(){const n=document.createElement('div');n.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);background:linear-gradient(135deg,#FFD700,#FFA500);color:white;padding:20px 40px;border-radius:16px;font-size:1.5rem;font-weight:bold;box-shadow:0 8px 24px rgba(255,215,0,0.5);z-index:1000;animation:popIn 0.3s';n.innerText='+1000 💰';document.body.appendChild(n);setTimeout(()=>{n.style.opacity='0';n.style.transform='translate(-50%, -50%) scale(1.5)';n.style.transition='all 0.3s';setTimeout(()=>n.remove(),300)},1000)}
-        updateLevelDisplay();window.energySystem.updateDisplay();setInterval(()=>window.energySystem.updateDisplay(),1000);
+        function updateBadges(){if(window.dailyQuests){const all=window.dailyQuests.getAllCompleted();if(!all){document.getElementById('quests-badge').style.display='block'}}}
+        updateLevelDisplay();window.energySystem.updateDisplay();updateBadges();setInterval(()=>window.energySystem.updateDisplay(),1000);
     </script>
 </body>
 </html>
