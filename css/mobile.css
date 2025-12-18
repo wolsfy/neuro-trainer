@@ -18,7 +18,7 @@
         min-height: 100vh;
         justify-content: flex-start !important;
         padding-bottom: 100px !important;
-        padding-top: 70px !important;
+        padding-top: 80px !important;
     }
     
     /* Скрываем фиксированные индикаторы на главной */
@@ -27,17 +27,31 @@
         display: none !important;
     }
     
-    /* Скрываем робота в играх - УСИЛЕННЫЕ ПРАВИЛА! */
+    /* РОБОТ В ИГРАХ - переносим вверх справа, уменьшаем */
     #game-robot,
-    .robot-container,
-    div[style*="position: fixed"][style*="bottom"],
-    div[style*="robot"] {
+    .robot-container {
+        position: fixed !important;
+        bottom: auto !important;
+        top: 60px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 50px !important;
+        height: 50px !important;
+        z-index: 999 !important;
+    }
+    
+    #game-robot img,
+    .robot-container img {
+        width: 50px !important;
+        height: 50px !important;
+        max-width: 50px !important;
+        max-height: 50px !important;
+    }
+    
+    /* Речевое облачко робота - скрываем на мобильных */
+    #robot-speech,
+    .robot-speech-bubble {
         display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
     }
     
     /* Верхняя панель - фиксирована сверху */
@@ -240,7 +254,7 @@
 /* Очень маленькие экраны (iPhone SE и подобные) */
 @media (max-width: 375px) {
     .screen {
-        padding-top: 65px !important;
+        padding-top: 75px !important;
     }
     
     .main-menu-grid {
