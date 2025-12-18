@@ -13,56 +13,57 @@
     .screen { overflow-y: auto !important; padding-top: 60px !important; }
     
     .room-screen {
-      min-height: 100vh;
-      padding: 20px 15px 80px;
-      box-sizing: border-box;
+      min-height: calc(100vh - 60px);
+      padding: 0;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
-    .room-container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Комната с декором */
+    /* Комната */
     .room-view {
+      flex: 1;
       position: relative;
       background: linear-gradient(180deg, #e3f2fd 0%, #f5f5f5 100%);
-      border-radius: 20px;
-      padding: 30px 20px;
-      min-height: 400px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      padding: 40px 20px 30px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
     }
 
     /* Декор на стенах */
     .wall-decor {
       position: absolute;
-      top: 40px;
+      top: 30px;
       display: flex;
-      gap: 15px;
+      gap: 20px;
+      justify-content: center;
       width: 100%;
-      justify-content: space-around;
       padding: 0 20px;
       box-sizing: border-box;
     }
 
     .decor-item {
-      font-size: 2.5rem;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+      font-size: 3rem;
+      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.2));
       animation: float 3s ease-in-out infinite;
     }
 
+    .decor-item:nth-child(2) { animation-delay: 0.5s; }
+    .decor-item:nth-child(3) { animation-delay: 1s; }
+
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-12px); }
     }
 
     /* Пол с мебелью */
     .floor-items {
       position: absolute;
-      bottom: 20px;
+      bottom: 30px;
       left: 20px;
       right: 20px;
       display: flex;
@@ -71,24 +72,42 @@
     }
 
     .furniture-item {
-      font-size: 3rem;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+      font-size: 4rem;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .furniture-item:nth-child(2) { animation-delay: 0.3s; }
+    .furniture-item:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
 
     /* Робот в центре */
+    .robot-container {
+      position: relative;
+      z-index: 10;
+    }
+
     .robot-wrapper {
       position: relative;
-      width: 200px;
-      margin: 80px auto 20px;
-      z-index: 10;
+      width: 220px;
     }
 
     .big-robot-img {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
+      filter: drop-shadow(0 20px 20px rgba(0,0,0,0.25));
       cursor: pointer;
-      transition: transform 0.1s;
+      transition: transform 0.2s;
+      animation: robotFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes robotFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
     }
 
     .big-robot-img:active {
@@ -97,81 +116,181 @@
 
     .thought-bubble {
       position: absolute;
-      top: -40px;
-      right: -20px;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
       background: white;
-      padding: 10px 15px;
+      padding: 12px 20px;
       border-radius: 20px;
-      border-bottom-left-radius: 0;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       font-weight: bold;
       color: #444;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       white-space: nowrap;
       opacity: 0;
-      transform: scale(0);
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 20;
+    }
+
+    .thought-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid white;
     }
 
     .thought-bubble.show {
       opacity: 1;
-      transform: scale(1);
+      transform: translateX(-50%) scale(1);
     }
 
     /* Кнопки управления */
     .room-controls {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 15px;
+      background: white;
+      border-top: 2px solid #f0f0f0;
     }
 
     .room-btn {
       background: var(--card-bg);
       border: none;
-      padding: 15px;
+      padding: 12px 8px;
       border-radius: 16px;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: bold;
       color: var(--text);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
-      transition: transform 0.1s;
+      transition: all 0.15s;
     }
     
-    .room-btn:active { transform: scale(0.95); }
-    .btn-icon { font-size: 1.8rem; }
+    .room-btn:active { 
+      transform: scale(0.95);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .btn-icon { font-size: 1.6rem; }
 
-    /* Магазин декора */
-    .decor-shop {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    /* Модальное окно магазина */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: flex-end;
+      z-index: 1000;
+      animation: fadeIn 0.3s;
     }
 
-    .decor-shop h2 {
-      margin: 0 0 15px;
-      font-size: 1.3rem;
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-height: 75vh;
+      border-radius: 25px 25px 0 0;
+      padding: 20px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+      animation: slideUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: bold;
       color: #333;
+    }
+
+    .modal-close {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .modal-close:active {
+      background: #f0f0f0;
+    }
+
+    .category-tabs {
+      display: flex;
       gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .category-tab {
+      flex: 1;
+      padding: 10px 16px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-tab.active {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.05);
     }
 
     .decor-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+      padding-bottom: 20px;
     }
 
     .decor-card {
       background: #f8f9fa;
-      border: 2px solid #e0e0e0;
+      border: 3px solid #e0e0e0;
       border-radius: 16px;
       padding: 15px;
       text-align: center;
@@ -195,56 +314,32 @@
     }
 
     .decor-icon {
-      font-size: 2.5rem;
+      font-size: 3rem;
       margin-bottom: 8px;
     }
 
     .decor-name {
       font-weight: bold;
       color: #333;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       margin-bottom: 4px;
-    }
-
-    .decor-price {
-      color: var(--accent);
-      font-weight: bold;
-      font-size: 0.85rem;
     }
 
     .decor-status {
       color: #666;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       margin-top: 4px;
     }
 
-    .category-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-      overflow-x: auto;
-    }
-
-    .category-tab {
-      padding: 8px 16px;
-      background: #f0f0f0;
-      border: none;
-      border-radius: 12px;
-      font-weight: bold;
-      color: #666;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .category-tab.active {
-      background: var(--primary);
-      color: white;
+    .empty-hint {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 0.9rem;
     }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="js/robot-animator.js"></script>
 </head>
 
 <body>
@@ -258,54 +353,57 @@
 
   <div class="screen">
     <div class="room-screen">
-      <div class="room-container">
-        
-        <!-- Комната -->
-        <div class="room-view">
-          <!-- Декор на стенах -->
-          <div class="wall-decor" id="wall-decor">
-            <!-- Динамически добавляется -->
-          </div>
+      
+      <!-- Комната -->
+      <div class="room-view">
+        <!-- Декор на стенах -->
+        <div class="wall-decor" id="wall-decor"></div>
 
-          <!-- Робот -->
+        <!-- Робот -->
+        <div class="robot-container">
           <div class="robot-wrapper">
             <div class="thought-bubble" id="bubble">Привет! 👋</div>
-            <img id="robot-img" src="mascot.png" class="big-robot-img robot-float" alt="Робот" />
-          </div>
-
-          <!-- Мебель на полу -->
-          <div class="floor-items" id="floor-items">
-            <!-- Динамически добавляется -->
+            <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" onclick="clickRobot()" />
           </div>
         </div>
 
-        <!-- Кнопки -->
-        <div class="room-controls">
-          <button class="room-btn" onclick="window.location.href='shop.html'">
-            <span class="btn-icon">👕</span>
-            <span>Гардероб</span>
-          </button>
-          <button class="room-btn" onclick="feedRobot()">
-            <span class="btn-icon">⚡</span>
-            <span>Зарядить</span>
-          </button>
-        </div>
-
-        <!-- Магазин декора -->
-        <div class="decor-shop">
-          <h2>🎨 Магазин декора</h2>
-          
-          <div class="category-tabs">
-            <button class="category-tab active" onclick="showCategory('wall')">🖼️ Стены</button>
-            <button class="category-tab" onclick="showCategory('floor')">🪑 Мебель</button>
-          </div>
-
-          <div class="decor-grid" id="decor-grid">
-            <!-- Динамически добавляется -->
-          </div>
-        </div>
-
+        <!-- Мебель на полу -->
+        <div class="floor-items" id="floor-items"></div>
       </div>
+
+      <!-- Кнопки -->
+      <div class="room-controls">
+        <button class="room-btn" onclick="openDecorShop()">
+          <span class="btn-icon">🎨</span>
+          <span>Декор</span>
+        </button>
+        <button class="room-btn" onclick="window.location.href='shop.html'">
+          <span class="btn-icon">👕</span>
+          <span>Одежда</span>
+        </button>
+        <button class="room-btn" onclick="feedRobot()">
+          <span class="btn-icon">⚡</span>
+          <span>Зарядка</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div class="modal-overlay" id="modal" onclick="closeModalOnOverlay(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">🎨 Магазин декора</div>
+        <button class="modal-close" onclick="closeDecorShop()">×</button>
+      </div>
+
+      <div class="category-tabs">
+        <button class="category-tab active" onclick="showCategory('wall')">🖼️ Стены</button>
+        <button class="category-tab" onclick="showCategory('floor')">🪑 Мебель</button>
+      </div>
+
+      <div class="decor-grid" id="decor-grid"></div>
     </div>
   </div>
 
@@ -322,7 +420,7 @@
       ],
       floor: [
         { id: 'furniture-plant', icon: '🪴', name: 'Растение', price: 0 },
-        { id: 'furniture-lamp', icon: '🛋️', name: 'Диван', price: 200 },
+        { id: 'furniture-sofa', icon: '🛋️', name: 'Диван', price: 200 },
         { id: 'furniture-desk', icon: '🖥️', name: 'Компьютер', price: 300 },
         { id: 'furniture-bookshelf', icon: '📖', name: 'Полка', price: 250 },
       ]
@@ -334,14 +432,12 @@
       wall: ['poster-star'],
       floor: ['furniture-plant']
     };
-
     let currentCategory = 'wall';
 
-    // Обновление интерфейса
+    // Обновление UI
     function updateUI() {
       document.getElementById('coins').textContent = coins;
       renderRoom();
-      renderShop();
     }
 
     // Отображение комнаты
@@ -352,7 +448,6 @@
       wallDecor.innerHTML = '';
       floorItems.innerHTML = '';
 
-      // Декор на стенах
       equippedDecor.wall.forEach(id => {
         const item = [...decorItems.wall, ...decorItems.floor].find(i => i.id === id);
         if (item) {
@@ -363,7 +458,6 @@
         }
       });
 
-      // Мебель на полу
       equippedDecor.floor.forEach(id => {
         const item = [...decorItems.wall, ...decorItems.floor].find(i => i.id === id);
         if (item) {
@@ -373,6 +467,21 @@
           floorItems.appendChild(div);
         }
       });
+    }
+
+    // Открыть магазин
+    function openDecorShop() {
+      document.getElementById('modal').classList.add('active');
+      renderShop();
+    }
+
+    // Закрыть магазин
+    function closeDecorShop() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function closeModalOnOverlay(e) {
+      if (e.target.id === 'modal') closeDecorShop();
     }
 
     // Отображение магазина
@@ -390,7 +499,7 @@
 
         let status = '';
         if (equipped) status = '✅ Установлено';
-        else if (owned) status = '📦 В наличии';
+        else if (owned) status = '📦 Нажмите чтобы установить';
         else status = `${item.price} 💰`;
 
         card.innerHTML = `
@@ -406,21 +515,18 @@
     // Клик по декору
     function handleDecorClick(item, owned, equipped) {
       if (equipped) {
-        // Снять декор
         equippedDecor[currentCategory] = equippedDecor[currentCategory].filter(id => id !== item.id);
         showBubble('Убрал!');
       } else if (owned) {
-        // Установить декор
         if (equippedDecor[currentCategory].length >= 3) {
-          showBubble('Максимум 3 штуки!');
+          showBubble('Максимум 3!');
           return;
         }
         equippedDecor[currentCategory].push(item.id);
         showBubble('Установил! 🎉');
       } else {
-        // Купить декор
         if (coins < item.price) {
-          showBubble('Нужно больше монет! 💰');
+          showBubble('Нет монет! 💰');
           return;
         }
         coins -= item.price;
@@ -432,64 +538,55 @@
 
       saveData();
       updateUI();
+      renderShop();
     }
 
     // Смена категории
     function showCategory(category) {
       currentCategory = category;
-      document.querySelectorAll('.category-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
+      document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
       event.target.classList.add('active');
       renderShop();
     }
 
-    // Показать мысль робота
+    // Клик по роботу
+    function clickRobot() {
+      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Укрась комнату! 🎨', 'Играем? 🎯'];
+      showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
+    }
+
+    // Зарядить
+    function feedRobot() {
+      showBubble('Спасибо! ⚡💚');
+      if (typeof confetti !== 'undefined') {
+        confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
+      }
+    }
+
+    // Показать мысль
     function showBubble(text) {
       const bubble = document.getElementById('bubble');
       bubble.textContent = text;
       bubble.classList.add('show');
-      setTimeout(() => bubble.classList.remove('show'), 2000);
-    }
-
-    // Зарядить робота
-    function feedRobot() {
-      showBubble('Спасибо! ⚡');
-      document.getElementById('robot-img').style.animation = 'none';
-      setTimeout(() => {
-        document.getElementById('robot-img').style.animation = '';
-      }, 10);
-      
-      if (typeof confetti !== 'undefined') {
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { x: 0.5, y: 0.6 }
-        });
-      }
+      setTimeout(() => bubble.classList.remove('show'), 2500);
     }
 
     // Звук
     function playSound(type) {
       const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
       if (!soundEnabled) return;
-
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
-      
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-      
       if (type === 'buy') {
         oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
       }
-      
       const volume = (parseInt(localStorage.getItem('soundVolume')) || 70) / 100 * 0.3;
       gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-      
       oscillator.start();
       oscillator.stop(audioCtx.currentTime + 0.2);
     }
@@ -501,8 +598,7 @@
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
     }
 
-    // Загрузка одежды робота
-    const savedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
+    // Загрузка одежды
     const clothesMap = {
       'clothes-none': 'mascot.png',
       'clothes-tshirt': 'robot-tshirt.png',
@@ -510,17 +606,12 @@
       'clothes-jacket': 'robot-jacket.png',
       'clothes-suit': 'robot-suit.png'
     };
+    const savedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
     document.getElementById('robot-img').src = clothesMap[savedClothes] || 'mascot.png';
 
     // Инициализация
     updateUI();
-    setTimeout(() => showBubble('Привет! 👋'), 500);
-
-    // Клик по роботу
-    document.getElementById('robot-img').addEventListener('click', () => {
-      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Украшай комнату! 🎨', 'Играем? 🎯'];
-      showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
-    });
+    setTimeout(() => showBubble('Привет! 👋'), 800);
   </script>
 </body>
 </html>
