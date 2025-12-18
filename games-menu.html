@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Игры - Нейро-Тренер</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/brain--v1.png">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/brain--v1.png">
+    <style>
+        .games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;padding:20px;max-width:600px;margin:0 auto}.game-card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);cursor:pointer;transition:all 0.3s;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;position:relative}.game-card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,0.15)}.game-card:active{transform:translateY(-2px)}.game-icon{font-size:3.5rem;margin-bottom:10px}.game-name{font-size:1.1rem;font-weight:bold;color:#333;margin-bottom:5px;text-align:center}.game-info{font-size:0.85rem;color:#666;text-align:center;margin-bottom:8px}.energy-cost{background:linear-gradient(135deg,#4CAF50,#45a049);color:white;padding:5px 12px;border-radius:20px;font-size:0.9rem;font-weight:bold;display:inline-flex;align-items:center;gap:5px}.difficulty{position:absolute;top:10px;right:10px;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold}.diff-easy{background:#E8F5E9;color:#4CAF50}.diff-medium{background:#FFF3E0;color:#FF9800}.diff-hard{background:#FFEBEE;color:#F44336}.best-score{font-size:0.8rem;color:#FF9800;margin-top:8px;font-weight:bold}.filter-bar{display:flex;gap:10px;padding:15px 20px;justify-content:center;flex-wrap:wrap}.filter-btn{background:#E0E0E0;color:#555;border:none;padding:8px 16px;border-radius:20px;font-size:0.9rem;cursor:pointer;font-weight:bold;transition:all 0.3s}.filter-btn.active{background:var(--primary);color:white;box-shadow:0 4px 10px rgba(33,150,243,0.3)}.energy-display{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,#4CAF50,#45a049);color:white;padding:12px 20px;border-radius:16px;box-shadow:0 4px 16px rgba(76,175,80,0.4);z-index:1000;min-width:120px;cursor:pointer;transition:transform 0.2s}.energy-display:hover{transform:scale(1.05)}.energy-value{font-size:1.8rem;font-weight:900;text-align:center;display:block}.energy-label{font-size:0.9rem;text-align:center;opacity:0.9;display:block;margin-top:2px}
+    </style>
+    <script src="js/energy-system.js"></script>
+</head>
+<body>
+    <div class="energy-display" onclick="showEnergyInfo()">
+        <span class="energy-value" id="energy-value">100</span>
+        <span class="energy-label">⚡ Энергия</span>
+    </div>
+    
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">←</a>
+        <div class="game-info">🎮 Игры</div>
+    </div>
+    
+    <div class="screen" style="padding-top:60px;overflow-y:auto">
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterGames('all')">📋 Все</button>
+            <button class="filter-btn" onclick="filterGames('easy')">🟢 Легкие</button>
+            <button class="filter-btn" onclick="filterGames('medium')">🟡 Средние</button>
+            <button class="filter-btn" onclick="filterGames('hard')">🔴 Сложные</button>
+        </div>
+        
+        <div class="games-grid" id="games-grid">
+            <a href="javascript:void(0)" onclick="startGame('schulte')" class="game-card" data-difficulty="easy">
+                <span class="difficulty diff-easy">🟢 Легко</span>
+                <div class="game-icon">🔢</div>
+                <div class="game-name">Шульте</div>
+                <div class="game-info">Найди числа по порядку</div>
+                <div class="energy-cost">⚡ 10</div>
+                <div class="best-score" id="best-schulte">🏆 --:--</div>
+            </a>
+            
+            <a href="javascript:void(0)" onclick="startGame('memory')" class="game-card" data-difficulty="medium">
+                <span class="difficulty diff-medium">🟡 Среднее</span>
+                <div class="game-icon">💡</div>
+                <div class="game-name">Память</div>
+                <div class="game-info">Запомни последовательность</div>
+                <div class="energy-cost">⚡ 15</div>
+                <div class="best-score" id="best-memory">🏆 Лучший: --</div>
+            </a>
+            
+            <a href="javascript:void(0)" onclick="startGame('decoder')" class="game-card" data-difficulty="medium">
+                <span class="difficulty diff-medium">🟡 Среднее</span>
+                <div class="game-icon">🧩</div>
+                <div class="game-name">Шифр</div>
+                <div class="game-info">Расшифруй сообщения</div>
+                <div class="energy-cost">⚡ 15</div>
+                <div class="best-score" id="best-decoder">🏆 Лучший: --</div>
+            </a>
+            
+            <a href="javascript:void(0)" onclick="startGame('2048')" class="game-card" data-difficulty="medium">
+                <span class="difficulty diff-medium">🟡 Среднее</span>
+                <div class="game-icon">🎲</div>
+                <div class="game-name">2048</div>
+                <div class="game-info">Объединяй плитки</div>
+                <div class="energy-cost">⚡ 15</div>
+                <div class="best-score" id="best-2048">🏆 Лучший: --</div>
+            </a>
+            
+            <a href="javascript:void(0)" onclick="startGame('stroop')" class="game-card" data-difficulty="hard">
+                <span class="difficulty diff-hard">🔴 Сложно</span>
+                <div class="game-icon">🎨</div>
+                <div class="game-name">Цвета</div>
+                <div class="game-info">Назови цвет текста</div>
+                <div class="energy-cost">⚡ 20</div>
+                <div class="best-score" id="best-stroop">🏆 Лучший: --</div>
+            </a>
+            
+            <a href="javascript:void(0)" onclick="startGame('math')" class="game-card" data-difficulty="hard">
+                <span class="difficulty diff-hard">🔴 Сложно</span>
+                <div class="game-icon">🧮</div>
+                <div class="game-name">Математика</div>
+                <div class="game-info">Решай примеры быстро</div>
+                <div class="energy-cost">⚡ 20</div>
+                <div class="best-score" id="best-math">🏆 Лучший: --</div>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function loadBestScores(){const schulte5=localStorage.getItem('schulte_best_5');if(schulte5)document.getElementById('best-schulte').textContent=`🏆 ${schulte5}с`;const memory=localStorage.getItem('neuroMemoryBest');if(memory)document.getElementById('best-memory').textContent=`🏆 ${memory} оч`;const decoder=localStorage.getItem('neuroDecoderBest');if(decoder)document.getElementById('best-decoder').textContent=`🏆 ${decoder}с`;const game2048=localStorage.getItem('neuro2048Best');if(game2048)document.getElementById('best-2048').textContent=`🏆 ${game2048} оч`;const stroop=localStorage.getItem('neuroStroopBest');if(stroop)document.getElementById('best-stroop').textContent=`🏆 ${stroop}с`;const math=localStorage.getItem('neuroMathBest');if(math)document.getElementById('best-math').textContent=`🏆 ${math}с`}
+        
+        function filterGames(difficulty){document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('active'));event.target.classList.add('active');const cards=document.querySelectorAll('.game-card');cards.forEach(card=>{if(difficulty==='all'){card.style.display='flex'}else{card.style.display=card.dataset.difficulty===difficulty?'flex':'none'}})}
+        
+        function startGame(name){if(window.checkEnergyBeforeGame(name)){window.consumeEnergyForGame(name);localStorage.setItem('neuroLastGame',name);window.location.href=`games/${name}.html`}}
+        
+        function showEnergyInfo(){const e=window.energySystem.getEnergy(),t=window.energySystem.getTimeToNextRegen();let msg=`⚡ Энергия: ${e}/${window.ENERGY_CONFIG.maxEnergy}\n\n🔄 Регенерация: +1 каждые ${window.ENERGY_CONFIG.regenMinutes} мин`;if(t)msg+=`\n⏰ +1 через ${t.minutes}:${t.seconds.toString().padStart(2,'0')}`;msg+=`\n\n💰 Пополнение: ${window.ENERGY_CONFIG.refillCost} монет`;if(confirm(msg+'\n\nПополнить?')){if(window.energySystem.refillEnergy()){alert('✅ Энергия пополнена!');window.energySystem.updateDisplay()}else{alert('❌ Недостаточно монет!')}}}
+        
+        loadBestScores();
+        window.energySystem.updateDisplay();
+        setInterval(()=>window.energySystem.updateDisplay(),1000);
+    </script>
+</body>
+</html>
