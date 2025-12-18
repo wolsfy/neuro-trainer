@@ -54,6 +54,9 @@
         linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
       overflow: hidden;
       transform-style: preserve-3d;
+      /* OPT#2: Containment для изоляции */
+      contain: layout style paint;
+      isolation: isolate;
     }
 
     .room-view::after {
@@ -160,6 +163,9 @@
       transition: width 0.5s ease, background 0.3s;
       position: relative;
       overflow: hidden;
+      /* OPT#2: GPU acceleration */
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     .status-bar-fill::after {
@@ -176,6 +182,9 @@
         transparent
       );
       animation: shimmer 2s infinite;
+      /* OPT#2: GPU acceleration */
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     @keyframes shimmer {
@@ -259,12 +268,17 @@
       overflow: hidden;
     }
 
+    /* OPT#2: GPU acceleration для анимированных элементов */
     .cloud {
       position: absolute;
       background: white;
       border-radius: 50px;
       opacity: 0.9;
       animation: cloudFloat 20s linear infinite;
+      /* GPU optimization */
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .cloud::before,
@@ -347,6 +361,7 @@
       to { transform: translateX(250px); }
     }
 
+    /* OPT#2: GPU acceleration для солнца */
     .sun {
       position: absolute;
       top: 20px;
@@ -357,6 +372,10 @@
       border-radius: 50%;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
       animation: sunGlow 3s ease-in-out infinite;
+      /* GPU optimization */
+      will-change: opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     @keyframes sunGlow {
@@ -378,6 +397,7 @@
       pointer-events: none;
     }
 
+    /* OPT#2: GPU acceleration для декора */
     .decor-item {
       font-size: 5rem;
       filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
@@ -385,10 +405,14 @@
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
+      /* GPU optimization */
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .decor-item:hover {
-      transform: translateY(-8px) scale(1.08);
+      transform: translateY(-8px) scale(1.08) translateZ(0);
     }
 
     .decor-item:nth-child(1) { animation-delay: 0s; }
@@ -396,8 +420,8 @@
     .decor-item:nth-child(3) { animation-delay: 1s; }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+      0%, 100% { transform: translateY(0) translateZ(0); }
+      50% { transform: translateY(-15px) translateZ(0); }
     }
 
     .floor-items {
@@ -414,6 +438,7 @@
       pointer-events: none;
     }
 
+    /* OPT#2: GPU acceleration для мебели */
     .furniture-item {
       font-size: 6rem;
       filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
@@ -421,10 +446,14 @@
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
+      /* GPU optimization */
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .furniture-item:hover {
-      transform: translateY(-6px) scale(1.05);
+      transform: translateY(-6px) scale(1.05) translateZ(0);
     }
 
     .furniture-item:nth-child(1) { animation-delay: 0s; }
@@ -432,19 +461,21 @@
     .furniture-item:nth-child(3) { animation-delay: 0.8s; }
 
     @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      0%, 100% { transform: translateY(0) translateZ(0); }
+      50% { transform: translateY(-8px) translateZ(0); }
     }
 
     /* === 3D РОБОТ === */
+    /* OPT#2: Containment для 3D контейнера */
     .robot-container {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) translateZ(0);
       z-index: 10;
       width: 350px;
       height: 400px;
+      contain: layout paint;
     }
 
     model-viewer {
@@ -457,11 +488,12 @@
       background: var(--primary);
     }
 
+    /* OPT#2: GPU acceleration для bubble */
     .thought-bubble {
       position: absolute;
       top: -20px;
       left: 50%;
-      transform: translateX(-50%) scale(0);
+      transform: translateX(-50%) scale(0) translateZ(0);
       background: white;
       padding: 12px 20px;
       border-radius: 20px;
@@ -473,6 +505,8 @@
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       z-index: 20;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
     }
 
     .thought-bubble::after {
@@ -490,25 +524,29 @@
 
     .thought-bubble.show {
       opacity: 1;
-      transform: translateX(-50%) scale(1);
+      transform: translateX(-50%) scale(1) translateZ(0);
     }
 
+    /* OPT#2: GPU acceleration для частиц */
     .particle {
       position: absolute;
       font-size: 1.5rem;
       pointer-events: none;
       z-index: 20;
       animation: particleFloat 2s ease-out forwards;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     @keyframes particleFloat {
       0% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0) scale(1) translateZ(0);
       }
       100% {
         opacity: 0;
-        transform: translateY(-100px) scale(1.5);
+        transform: translateY(-100px) scale(1.5) translateZ(0);
       }
     }
 
@@ -519,11 +557,11 @@
     @keyframes particleSide {
       0% {
         opacity: 1;
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0) scale(1) translateZ(0);
       }
       100% {
         opacity: 0;
-        transform: translate(var(--x), -80px) scale(1.2);
+        transform: translate(var(--x), -80px) scale(1.2) translateZ(0);
       }
     }
 
@@ -590,6 +628,7 @@
       to { opacity: 1; }
     }
 
+    /* OPT#2: GPU acceleration для модального окна */
     .modal-content {
       background: white;
       width: 100%;
@@ -599,11 +638,14 @@
       box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
       animation: slideUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       overflow-y: auto;
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+      from { transform: translateY(100%) translateZ(0); }
+      to { transform: translateY(0) translateZ(0); }
     }
 
     .modal-header {
@@ -788,19 +830,22 @@
 
       <div class="robot-container" id="robot-container">
         <div class="thought-bubble" id="bubble">Привет! 👋</div>
+        <!-- OPT#4: WebGL оптимизация - отключены тени, оптимизирован рендерер -->
         <model-viewer
           id="robot-model"
           src="cute robot 3d model.glb"
-          alt="Нейрон"
+          alt="Нейрон - милый робот-помощник"
           camera-controls
           touch-action="pan-y"
-          shadow-intensity="0.4"
+          shadow-intensity="0"
           environment-image="neutral"
-          exposure="1.1"
+          exposure="1.0"
           camera-orbit="0deg 85deg 3.5m"
           field-of-view="25deg"
           disable-zoom
-          interpolation-decay="120"
+          disable-tap
+          interpolation-decay="150"
+          ar-modes="webxr scene-viewer quick-look"
         >
         </model-viewer>
       </div>
@@ -839,6 +884,39 @@
   </div>
 
   <script>
+    /* ===== OPT#5: THROTTLE/DEBOUNCE UTILITIES ===== */
+    function throttle(func, delay) {
+      let lastCall = 0;
+      return function(...args) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+          lastCall = now;
+          return func.apply(this, args);
+        }
+      };
+    }
+
+    function debounce(func, delay) {
+      let timeoutId;
+      return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+
+    function rafThrottle(func) {
+      let rafId = null;
+      return function(...args) {
+        if (rafId === null) {
+          rafId = requestAnimationFrame(() => {
+            func.apply(this, args);
+            rafId = null;
+          });
+        }
+      };
+    }
+
+    /* ===== GAME DATA ===== */
     const decorItems = {
       wall: [
         { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
@@ -872,6 +950,27 @@
       lastVisit: parseInt(localStorage.getItem('robotLastVisit')) || Date.now()
     };
 
+    /* ===== OPT#5: Batched updates queue ===== */
+    let updateQueue = [];
+
+    function queueStatusUpdate(type, value) {
+      updateQueue.push({ type, value });
+    }
+
+    function flushUpdates() {
+      if (updateQueue.length === 0) return;
+      
+      updateQueue.forEach(({ type, value }) => {
+        robotStatus[type] = value;
+      });
+      
+      updateStatusBarsThrottled();
+      saveDataDebounced();
+      
+      updateQueue = [];
+    }
+
+    /* ===== ROBOT LOGIC ===== */
     function updateRobotEmotion() {
       const moodIcon = document.getElementById('mood-icon');
       
@@ -892,7 +991,6 @@
 
     function createParticles(emoji, count = 5) {
       const container = document.getElementById('robot-container');
-      const rect = container.getBoundingClientRect();
       
       for (let i = 0; i < count; i++) {
         const particle = document.createElement('div');
@@ -903,6 +1001,7 @@
         particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
         container.appendChild(particle);
         
+        // OPT#5: Cleanup after animation
         setTimeout(() => particle.remove(), 2000);
       }
     }
@@ -942,6 +1041,9 @@
       hungerBar.classList.toggle('low', robotStatus.hunger < 30);
     }
 
+    // OPT#5: Throttled version (max 10 FPS for UI updates)
+    const updateStatusBarsThrottled = throttle(updateStatusBars, 100);
+
     function saveRobotStatus() {
       localStorage.setItem('robotMood', robotStatus.mood);
       localStorage.setItem('robotEnergy', robotStatus.energy);
@@ -950,6 +1052,7 @@
       localStorage.setItem('robotLastVisit', robotStatus.lastVisit);
     }
 
+    /* ===== UI LOGIC ===== */
     function updateUI() {
       document.getElementById('coins').textContent = coins;
       renderRoom();
@@ -981,6 +1084,9 @@
         }
       });
     }
+
+    // OPT#5: RAF throttled version
+    const renderRoomOptimized = rafThrottle(renderRoom);
 
     function openDecorShop() {
       document.getElementById('modal').classList.add('active');
@@ -1033,10 +1139,8 @@
         }
         equippedDecor[currentCategory].push(item.id);
         showBubble('Установил! 🎉');
-        robotStatus.mood = Math.min(100, robotStatus.mood + 5);
+        queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 5));
         createParticles('✨', 3);
-        updateStatusBars();
-        updateRobotEmotion();
       } else {
         if (coins < item.price) {
           showBubble('Нет монет! 💰');
@@ -1047,14 +1151,11 @@
         equippedDecor[currentCategory].push(item.id);
         showBubble('Куплено! ✨');
         playSound('buy');
-        robotStatus.mood = Math.min(100, robotStatus.mood + 10);
+        queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 10));
         createParticles('🎉', 5);
-        updateStatusBars();
-        updateRobotEmotion();
       }
 
       saveData();
-      saveRobotStatus();
       updateUI();
       renderShop();
     }
@@ -1066,6 +1167,7 @@
       renderShop();
     }
 
+    // OPT#5: Batched updates для feedRobot
     function feedRobot() {
       if (coins < 10) {
         showBubble('Нужно 10 монет! 💰');
@@ -1073,9 +1175,9 @@
       }
       
       coins -= 10;
-      robotStatus.hunger = Math.min(100, robotStatus.hunger + 30);
-      robotStatus.energy = Math.min(100, robotStatus.energy + 20);
-      robotStatus.mood = Math.min(100, robotStatus.mood + 15);
+      queueStatusUpdate('hunger', Math.min(100, robotStatus.hunger + 30));
+      queueStatusUpdate('energy', Math.min(100, robotStatus.energy + 20));
+      queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 15));
       
       showBubble('Ням-ням! 😋🍔');
       createParticles('🍔', 4);
@@ -1085,10 +1187,8 @@
         confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
       }
       
-      updateStatusBars();
       updateRobotEmotion();
       saveData();
-      saveRobotStatus();
       updateUI();
     }
 
@@ -1124,6 +1224,10 @@
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
     }
 
+    // OPT#5: Debounced version (saves only after 500ms of inactivity)
+    const saveDataDebounced = debounce(saveData, 500);
+
+    /* ===== INITIALIZATION ===== */
     // Клик по 3D роботу
     document.getElementById('robot-model').addEventListener('click', function() {
       const phrases = [
@@ -1136,11 +1240,9 @@
         'Давай играть! 🎯'
       ];
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
-      robotStatus.mood = Math.min(100, robotStatus.mood + 2);
+      queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 2));
       createParticles('❤️', 3);
-      updateStatusBars();
       updateRobotEmotion();
-      saveRobotStatus();
     });
 
     updateUI();
@@ -1159,13 +1261,21 @@
       }
     }, 1000);
 
+    // OPT#5: RAF loop для batched updates
+    function updateLoop() {
+      flushUpdates();
+      requestAnimationFrame(updateLoop);
+    }
+    updateLoop();
+
+    // Periodic status degradation (once per minute)
     setInterval(() => {
       robotStatus.energy = Math.max(10, robotStatus.energy - 1);
       robotStatus.hunger = Math.max(10, robotStatus.hunger - 1);
       if (robotStatus.energy < 30 || robotStatus.hunger < 30) {
         robotStatus.mood = Math.max(10, robotStatus.mood - 1);
       }
-      updateStatusBars();
+      updateStatusBarsThrottled();
       updateRobotEmotion();
       saveRobotStatus();
     }, 60000);
