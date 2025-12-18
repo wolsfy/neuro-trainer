@@ -9,8 +9,11 @@
   <link rel="stylesheet" href="css/mobile.css?v=6" />
 
   <style>
-    body { overflow-y: auto !important; }
-    .screen { overflow-y: auto !important; padding-top: 60px !important; }
+    body { 
+      overflow: hidden !important;
+      margin: 0;
+      padding: 0;
+    }
     
     /* Улучшенная кнопка назад */
     .btn-back {
@@ -33,97 +36,98 @@
     }
 
     .room-screen {
-      min-height: calc(100vh - 60px);
-      padding: 0;
-      position: relative;
-      display: flex;
-      flex-direction: column;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 80px;
+      overflow: hidden;
     }
 
-   /* Комната с глубиной */
-.room-view {
-  flex: 1;
-  position: relative;
-  background:
-    linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
-  padding: 40px 20px 30px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 500px;
-  transform-style: preserve-3d;
-}
+    /* Комната на весь экран с 3D эффектом */
+    .room-view {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background:
+        linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
 
-/* Пол (псевдо-3D) */
-.room-view::after {
-  content: '';
-  position: absolute;
-  bottom: -10%;
-  left: 50%;
-  transform: translateX(-50%) rotateX(60deg);
-  width: 140%;
-  height: 60%;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0,0,0,0.06) 1px, transparent 1px);
-  background-size: 60px 60px;
-  background-color: #e0d4c5;
-  opacity: 0.8;
-  z-index: 1;
-}
+    /* Пол с 3D эффектом */
+    .room-view::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: 50%;
+      transform: translateX(-50%) rotateX(60deg);
+      width: 140%;
+      height: 60%;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-color: #e0d4c5;
+      opacity: 0.8;
+      z-index: 1;
+    }
 
     /* Декор на стенах */
     .wall-decor {
       position: absolute;
-      top: 30px;
+      top: 80px;
+      left: 0;
+      right: 0;
       display: flex;
-      gap: 20px;
+      gap: 30px;
       justify-content: center;
-      width: 100%;
-      padding: 0 20px;
-      box-sizing: border-box;
+      padding: 0 40px;
+      z-index: 3;
     }
 
     .decor-item {
-  font-size: 3rem;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
-  animation: float 3s ease-in-out infinite;
-  transition: transform 0.25s ease;
-  z-index: 3;
-}
+      font-size: 3.5rem;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
+      animation: float 3s ease-in-out infinite;
+      transition: transform 0.25s ease;
+    }
 
-.decor-item:hover {
-  transform: translateY(-6px) scale(1.05);
-}
+    .decor-item:hover {
+      transform: translateY(-6px) scale(1.05);
+    }
+
+    .decor-item:nth-child(2) { animation-delay: 0.5s; }
+    .decor-item:nth-child(3) { animation-delay: 1s; }
+
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
     }
 
-    /* Пол с мебелью */
+    /* Мебель на полу */
     .floor-items {
       position: absolute;
       bottom: 30px;
-      left: 20px;
-      right: 20px;
+      left: 0;
+      right: 0;
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
+      padding: 0 40px;
+      z-index: 5;
     }
 
-   .furniture-item {
-  font-size: 4rem;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.35));
-  animation: bounce 2s ease-in-out infinite;
-  transition: transform 0.25s ease;
-  z-index: 5;
-}
+    .furniture-item {
+      font-size: 4.5rem;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.35));
+      animation: bounce 2s ease-in-out infinite;
+      transition: transform 0.25s ease;
+    }
 
-.furniture-item:hover {
-  transform: translateY(-4px) scale(1.03);
-}
+    .furniture-item:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
 
     .furniture-item:nth-child(2) { animation-delay: 0.3s; }
     .furniture-item:nth-child(3) { animation-delay: 0.6s; }
@@ -135,29 +139,22 @@
 
     /* Робот в центре */
     .robot-container {
-  position: relative;
-  z-index: 10;
-}
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
 
-   .robot-wrapper {
-  position: relative;
-  width: 220px;
-}
-.robot-container {
-  position: relative;
-  z-index: 10;
-}
-
-.robot-wrapper {
-  position: relative;
-  width: 220px;
-  transform: translateY(10px);
-}
+    .robot-wrapper {
+      position: relative;
+      width: 240px;
+    }
 
     .big-robot-img {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 20px 20px rgba(0,0,0,0.25));
+      filter: drop-shadow(0 25px 25px rgba(0,0,0,0.3));
       cursor: pointer;
       transition: transform 0.2s;
       animation: robotFloat 4s ease-in-out infinite;
@@ -174,7 +171,7 @@
 
     .thought-bubble {
       position: absolute;
-      top: -50px;
+      top: -60px;
       left: 50%;
       transform: translateX(-50%) scale(0);
       background: white;
@@ -183,7 +180,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       font-weight: bold;
       color: #444;
-      font-size: 0.95rem;
+      font-size: 1rem;
       white-space: nowrap;
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -210,18 +207,25 @@
 
     /* Кнопки управления */
     .room-controls {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      padding: 15px;
+      padding: 12px;
       background: white;
       border-top: 2px solid #f0f0f0;
+      z-index: 100;
+      height: 80px;
+      box-sizing: border-box;
     }
 
     .room-btn {
       background: var(--card-bg);
       border: none;
-      padding: 12px 8px;
+      padding: 10px 8px;
       border-radius: 16px;
       font-size: 0.85rem;
       font-weight: bold;
@@ -230,6 +234,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 5px;
       cursor: pointer;
       transition: all 0.15s;
@@ -402,43 +407,39 @@
     </div>
   </div>
 
-  <div class="screen">
-    <div class="room-screen">
-      
-      <!-- Комната -->
-      <div class="room-view">
-        <!-- Декор на стенах -->
-        <div class="wall-decor" id="wall-decor"></div>
+  <div class="room-screen">
+    <!-- Комната на весь экран -->
+    <div class="room-view">
+      <!-- Декор на стенах -->
+      <div class="wall-decor" id="wall-decor"></div>
 
-        <!-- Робот -->
-        <div class="robot-container">
-          <div class="robot-wrapper">
-            <div class="thought-bubble" id="bubble">Привет! 👋</div>
-            <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" onclick="clickRobot()" />
-          </div>
+      <!-- Робот -->
+      <div class="robot-container">
+        <div class="robot-wrapper">
+          <div class="thought-bubble" id="bubble">Привет! 👋</div>
+          <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" onclick="clickRobot()" />
         </div>
-
-        <!-- Мебель на полу -->
-        <div class="floor-items" id="floor-items"></div>
       </div>
 
-      <!-- Кнопки -->
-      <div class="room-controls">
-        <button class="room-btn" onclick="openDecorShop()">
-          <span class="btn-icon">🎨</span>
-          <span>Декор</span>
-        </button>
-        <button class="room-btn" onclick="window.location.href='shop.html'">
-          <span class="btn-icon">👕</span>
-          <span>Одежда</span>
-        </button>
-        <button class="room-btn" onclick="feedRobot()">
-          <span class="btn-icon">⚡</span>
-          <span>Зарядка</span>
-        </button>
-      </div>
-
+      <!-- Мебель на полу -->
+      <div class="floor-items" id="floor-items"></div>
     </div>
+  </div>
+
+  <!-- Кнопки -->
+  <div class="room-controls">
+    <button class="room-btn" onclick="openDecorShop()">
+      <span class="btn-icon">🎨</span>
+      <span>Декор</span>
+    </button>
+    <button class="room-btn" onclick="window.location.href='shop.html'">
+      <span class="btn-icon">👕</span>
+      <span>Одежда</span>
+    </button>
+    <button class="room-btn" onclick="feedRobot()">
+      <span class="btn-icon">⚡</span>
+      <span>Зарядка</span>
+    </button>
   </div>
 
   <!-- Модальное окно -->
@@ -459,7 +460,7 @@
   </div>
 
   <script>
-    // Данные декора (совместимые эмодзи)
+    // Данные декора
     const decorItems = {
       wall: [
         { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
