@@ -40,11 +40,11 @@
       flex-direction: column;
     }
 
-    /* Комната */
+    /* 3D Комната с перспективой */
     .room-view {
       flex: 1;
       position: relative;
-      background: linear-gradient(180deg, #e3f2fd 0%, #f5f5f5 100%);
+      background: linear-gradient(180deg, #d0e4f7 0%, #a8c8e6 50%, #b8a890 100%);
       padding: 40px 20px 30px;
       overflow: hidden;
       display: flex;
@@ -52,24 +52,105 @@
       align-items: center;
       justify-content: center;
       min-height: 500px;
+      transform-style: preserve-3d;
+      perspective: 1200px;
     }
 
-    /* Декор на стенах */
+    /* Текстурированный пол */
+    .room-view::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -10%;
+      width: 120%;
+      height: 45%;
+      background: 
+        repeating-linear-gradient(
+          90deg,
+          #a0826d 0px,
+          #a0826d 49px,
+          #8b7355 49px,
+          #8b7355 50px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          #a0826d 0px,
+          #a0826d 49px,
+          #8b7355 49px,
+          #8b7355 50px
+        );
+      background-size: 50px 50px;
+      background-color: #9a7f6a;
+      transform: rotateX(60deg) translateZ(-100px);
+      transform-origin: bottom;
+      opacity: 0.85;
+      box-shadow: inset 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Задняя стена с паттерном */
+    .room-view::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: 
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.02),
+          rgba(255,255,255,0.02) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Освещение сверху */
+    .room-lighting {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,200,0.4) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      animation: lightPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes lightPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    /* Декор на стенах с улучшенными тенями */
     .wall-decor {
       position: absolute;
-      top: 30px;
+      top: 40px;
       display: flex;
-      gap: 20px;
+      gap: 25px;
       justify-content: center;
       width: 100%;
       padding: 0 20px;
       box-sizing: border-box;
+      z-index: 5;
     }
 
     .decor-item {
       font-size: 3rem;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.2));
+      filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3));
       animation: float 3s ease-in-out infinite;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .decor-item:hover {
+      transform: scale(1.15) translateY(-8px);
+      filter: drop-shadow(3px 6px 12px rgba(0,0,0,0.4));
     }
 
     .decor-item:nth-child(2) { animation-delay: 0.5s; }
@@ -80,21 +161,39 @@
       50% { transform: translateY(-12px); }
     }
 
-    /* Пол с мебелью */
+    /* Мебель с реалистичными тенями */
     .floor-items {
       position: absolute;
-      bottom: 30px;
+      bottom: 50px;
       left: 20px;
       right: 20px;
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
+      z-index: 6;
     }
 
     .furniture-item {
-      font-size: 4rem;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+      font-size: 4.5rem;
+      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));
       animation: bounce 2s ease-in-out infinite;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .furniture-item:hover {
+      transform: scale(1.1) translateY(-8px);
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,0.5));
+    }
+
+    .furniture-item.interactive {
+      animation: bounce 2s ease-in-out infinite, glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4)); }
+      50% { filter: drop-shadow(0 8px 15px rgba(255,200,0,0.6)) drop-shadow(0 0 20px rgba(255,200,0,0.4)); }
     }
 
     .furniture-item:nth-child(2) { animation-delay: 0.3s; }
@@ -102,7 +201,7 @@
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-8px); }
     }
 
     /* Робот в центре */
@@ -119,7 +218,7 @@
     .big-robot-img {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 20px 20px rgba(0,0,0,0.25));
+      filter: drop-shadow(0 25px 25px rgba(0,0,0,0.3));
       cursor: pointer;
       transition: transform 0.2s;
       animation: robotFloat 4s ease-in-out infinite;
@@ -350,6 +449,65 @@
       font-size: 0.8rem;
       margin-top: 4px;
     }
+
+    /* Комплекты декора */
+    .theme-sets {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      color: white;
+    }
+
+    .theme-set-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-set-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .theme-set-card {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-set-card:active {
+      transform: scale(0.95);
+    }
+
+    .theme-set-card.owned {
+      background: rgba(255,255,255,0.4);
+      border-color: rgba(255,255,255,0.8);
+    }
+
+    .theme-set-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .theme-set-items {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 5px;
+    }
+
+    .theme-set-price {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -369,6 +527,9 @@
       
       <!-- Комната -->
       <div class="room-view">
+        <!-- Освещение -->
+        <div class="room-lighting"></div>
+
         <!-- Декор на стенах -->
         <div class="wall-decor" id="wall-decor"></div>
 
@@ -411,6 +572,12 @@
         <button class="modal-close" onclick="closeDecorShop()">×</button>
       </div>
 
+      <!-- Комплекты тем -->
+      <div class="theme-sets">
+        <div class="theme-set-title">✨ Комплекты декора</div>
+        <div class="theme-set-grid" id="theme-sets"></div>
+      </div>
+
       <div class="category-tabs">
         <button class="category-tab active" onclick="showCategory('wall')">🖼️ Стены</button>
         <button class="category-tab" onclick="showCategory('floor')">📚 Мебель</button>
@@ -421,7 +588,7 @@
   </div>
 
   <script>
-    // Данные декора (совместимые эмодзи)
+    // Расширенные данные декора
     const decorItems = {
       wall: [
         { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
@@ -430,14 +597,50 @@
         { id: 'poster-trophy', icon: '🏆', name: 'Кубок', price: 150 },
         { id: 'poster-books', icon: '📚', name: 'Книги', price: 80 },
         { id: 'poster-bulb', icon: '💡', name: 'Лампочка', price: 120 },
+        { id: 'poster-planet', icon: '🪐', name: 'Планета', price: 180 },
+        { id: 'poster-fire', icon: '🔥', name: 'Огонь', price: 130 },
+        { id: 'poster-diamond', icon: '💎', name: 'Алмаз', price: 200 },
+        { id: 'window-day', icon: '🪟', name: 'Окно день', price: 250 },
+        { id: 'window-night', icon: '🌃', name: 'Окно ночь', price: 250 },
+        { id: 'lamp-bulb', icon: '💡', name: 'Лампа', price: 150 },
       ],
       floor: [
         { id: 'furniture-plant', icon: '🌿', name: 'Растение', price: 0 },
-        { id: 'furniture-sofa', icon: '🛌', name: 'Кровать', price: 200 },
-        { id: 'furniture-desk', icon: '💻', name: 'Ноутбук', price: 300 },
-        { id: 'furniture-bookshelf', icon: '📚', name: 'Книги', price: 250 },
+        { id: 'furniture-sofa', icon: '🛋️', name: 'Диван', price: 200 },
+        { id: 'furniture-bed', icon: '🛌', name: 'Кровать', price: 220 },
+        { id: 'furniture-desk', icon: '💻', name: 'Ноутбук', price: 300, interactive: true },
+        { id: 'furniture-bookshelf', icon: '📚', name: 'Книжная полка', price: 250, interactive: true },
+        { id: 'furniture-tv', icon: '📺', name: 'Телевизор', price: 350, interactive: true },
+        { id: 'furniture-guitar', icon: '🎸', name: 'Гитара', price: 180 },
+        { id: 'furniture-globe', icon: '🌍', name: 'Глобус', price: 160 },
+        { id: 'furniture-lamp', icon: '🕯️', name: 'Свеча', price: 90 },
       ]
     };
+
+    // Комплекты декора
+    const themeSets = [
+      {
+        id: 'space-theme',
+        name: '🌌 Космическая база',
+        items: ['poster-planet', 'poster-rocket', 'window-night'],
+        price: 500,
+        bonus: 100
+      },
+      {
+        id: 'cozy-library',
+        name: '📚 Уютная библиотека',
+        items: ['poster-books', 'furniture-bookshelf', 'furniture-lamp'],
+        price: 450,
+        bonus: 80
+      },
+      {
+        id: 'gaming-room',
+        name: '🎮 Игровая комната',
+        items: ['poster-fire', 'furniture-tv', 'furniture-desk'],
+        price: 600,
+        bonus: 120
+      }
+    ];
 
     let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
     let ownedDecor = JSON.parse(localStorage.getItem('ownedDecor')) || ['poster-star', 'furniture-plant'];
@@ -445,7 +648,15 @@
       wall: ['poster-star'],
       floor: ['furniture-plant']
     };
+    let ownedThemes = JSON.parse(localStorage.getItem('ownedThemes')) || [];
     let currentCategory = 'wall';
+
+    // Интерактивные фразы для мебели
+    const interactivePhrases = {
+      'furniture-desk': ['Время кодить! 💻', 'Запускаю программу...', 'Ctrl+S! Сохраняем!'],
+      'furniture-bookshelf': ['Читаем книгу! 📖', 'Узнал что-то новое!', 'Знание - сила! 🧠'],
+      'furniture-tv': ['Смотрим кино! 🍿', 'Какой сериал!', 'Реклама... 😴']
+    };
 
     // Обновление UI
     function updateUI() {
@@ -467,6 +678,7 @@
           const div = document.createElement('div');
           div.className = 'decor-item';
           div.textContent = item.icon;
+          div.onclick = () => handleDecorClick(item, true, true);
           wallDecor.appendChild(div);
         }
       });
@@ -476,15 +688,39 @@
         if (item) {
           const div = document.createElement('div');
           div.className = 'furniture-item';
+          if (item.interactive) {
+            div.classList.add('interactive');
+            div.onclick = () => interactWithFurniture(item);
+          }
           div.textContent = item.icon;
           floorItems.appendChild(div);
         }
       });
     }
 
+    // Взаимодействие с интерактивной мебелью
+    function interactWithFurniture(item) {
+      const phrases = interactivePhrases[item.id];
+      if (phrases) {
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        showBubble(phrase);
+        playSound('interact');
+        
+        if (typeof confetti !== 'undefined') {
+          confetti({
+            particleCount: 30,
+            spread: 50,
+            origin: { x: 0.5, y: 0.7 },
+            colors: ['#667eea', '#764ba2', '#f093fb']
+          });
+        }
+      }
+    }
+
     // Открыть магазин
     function openDecorShop() {
       document.getElementById('modal').classList.add('active');
+      renderThemeSets();
       renderShop();
     }
 
@@ -495,6 +731,79 @@
 
     function closeModalOnOverlay(e) {
       if (e.target.id === 'modal') closeDecorShop();
+    }
+
+    // Отображение комплектов
+    function renderThemeSets() {
+      const grid = document.getElementById('theme-sets');
+      grid.innerHTML = '';
+
+      themeSets.forEach(theme => {
+        const owned = ownedThemes.includes(theme.id);
+        const allItemsOwned = theme.items.every(id => ownedDecor.includes(id));
+
+        const card = document.createElement('div');
+        card.className = 'theme-set-card' + (owned ? ' owned' : '');
+        card.onclick = () => buyThemeSet(theme);
+
+        const itemsText = theme.items.map(id => {
+          const item = [...decorItems.wall, ...decorItems.floor].find(i => i.id === id);
+          return item ? item.icon : '';
+        }).join(' ');
+
+        let status = '';
+        if (owned) status = '✅ Куплено!';
+        else if (allItemsOwned) status = `${theme.price} 💰 +${theme.bonus}💰 бонус`;
+        else status = `${theme.price} 💰`;
+
+        card.innerHTML = `
+          <div class="theme-set-name">${theme.name}</div>
+          <div class="theme-set-items">${itemsText}</div>
+          <div class="theme-set-price">${status}</div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Покупка комплекта
+    function buyThemeSet(theme) {
+      if (ownedThemes.includes(theme.id)) {
+        showBubble('Уже куплено! ✅');
+        return;
+      }
+
+      if (coins < theme.price) {
+        showBubble('Нужно больше монет! 💰');
+        return;
+      }
+
+      coins -= theme.price;
+      ownedThemes.push(theme.id);
+      
+      theme.items.forEach(id => {
+        if (!ownedDecor.includes(id)) {
+          ownedDecor.push(id);
+        }
+      });
+
+      coins += theme.bonus;
+      showBubble(`Комплект куплен! +${theme.bonus}💰 бонус! 🎉`);
+      playSound('buy');
+      
+      if (typeof confetti !== 'undefined') {
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe']
+        });
+      }
+
+      saveData();
+      updateUI();
+      renderThemeSets();
+      renderShop();
     }
 
     // Отображение магазина
@@ -512,7 +821,7 @@
 
         let status = '';
         if (equipped) status = '✅ Установлено';
-        else if (owned) status = '📦 Нажмите чтобы установить';
+        else if (owned) status = '📦 Нажми чтобы установить';
         else status = `${item.price} 💰`;
 
         card.innerHTML = `
@@ -537,6 +846,7 @@
         }
         equippedDecor[currentCategory].push(item.id);
         showBubble('Установил! 🎉');
+        playSound('equip');
       } else {
         if (coins < item.price) {
           showBubble('Нет монет! 💰');
@@ -564,15 +874,22 @@
 
     // Клик по роботу
     function clickRobot() {
-      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Укрась комнату! 🎨', 'Играем? 🎯'];
+      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Укрась комнату! 🎨', 'Играем? 🎯', 'Мне нравится! 💙'];
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
+      playSound('click');
     }
 
     // Зарядить
     function feedRobot() {
       showBubble('Спасибо! ⚡💚');
+      playSound('charge');
       if (typeof confetti !== 'undefined') {
-        confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
+        confetti({ 
+          particleCount: 80, 
+          spread: 70, 
+          origin: { x: 0.5, y: 0.6 },
+          colors: ['#00ff00', '#ffff00', '#00ffff']
+        });
       }
     }
 
@@ -584,7 +901,7 @@
       setTimeout(() => bubble.classList.remove('show'), 2500);
     }
 
-    // Звук
+    // Звуки
     function playSound(type) {
       const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
       if (!soundEnabled) return;
@@ -593,10 +910,23 @@
       const gainNode = audioCtx.createGain();
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
+      
       if (type === 'buy') {
         oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+      } else if (type === 'equip') {
+        oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+      } else if (type === 'interact') {
+        oscillator.frequency.setValueAtTime(500, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
+      } else if (type === 'charge') {
+        oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15);
+      } else if (type === 'click') {
+        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
       }
+      
       const volume = (parseInt(localStorage.getItem('soundVolume')) || 70) / 100 * 0.3;
       gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
@@ -609,6 +939,7 @@
       localStorage.setItem('neuroCoins', coins);
       localStorage.setItem('ownedDecor', JSON.stringify(ownedDecor));
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
+      localStorage.setItem('ownedThemes', JSON.stringify(ownedThemes));
     }
 
     // Загрузка одежды
