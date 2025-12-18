@@ -437,16 +437,17 @@
       width: 240px;
     }
 
-    /* Глаза робота */
+    /* Глаза робота - СКРЫТЫ */
     .robot-eyes {
       position: absolute;
       top: 35%;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
+      display: none; /* Скрываем визуально */
       gap: 25px;
       z-index: 15;
       pointer-events: none;
+      opacity: 0; /* Дополнительно скрываем */
     }
 
     .robot-eye {
@@ -455,52 +456,6 @@
       background: #1a1a1a;
       border-radius: 50%;
       position: relative;
-      animation: blink 4s infinite;
-    }
-
-    .robot-eye::after {
-      content: '';
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: white;
-      border-radius: 50%;
-      top: 4px;
-      left: 4px;
-    }
-
-    @keyframes blink {
-      0%, 100% { height: 18px; }
-      48%, 52% { height: 18px; }
-      50% { height: 2px; }
-    }
-
-    /* Состояния глаз */
-    .robot-eyes.happy .robot-eye {
-      border-radius: 50% 50% 0 0;
-      animation: blinkHappy 4s infinite;
-    }
-
-    .robot-eyes.sad .robot-eye {
-      border-radius: 0 0 50% 50%;
-    }
-
-    .robot-eyes.sleeping .robot-eye {
-      height: 3px;
-      border-radius: 0;
-      animation: none;
-    }
-
-    .robot-eyes.tired .robot-eye {
-      width: 20px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    @keyframes blinkHappy {
-      0%, 100% { transform: scaleY(1); }
-      48%, 52% { transform: scaleY(1); }
-      50% { transform: scaleY(0.1); }
     }
 
     .big-robot-img {
@@ -905,7 +860,7 @@
 
       <div class="robot-container">
         <div class="robot-wrapper" id="robot-wrapper">
-          <!-- Глаза робота -->
+          <!-- Глаза робота (скрыты, но логика работает) -->
           <div class="robot-eyes" id="robot-eyes">
             <div class="robot-eye"></div>
             <div class="robot-eye"></div>
@@ -988,11 +943,9 @@
       const eyes = document.getElementById('robot-eyes');
       const moodIcon = document.getElementById('mood-icon');
       
-      // Удаляем старые классы
       wrapper.className = 'robot-wrapper';
       eyes.className = 'robot-eyes';
       
-      // Определяем эмоцию
       if (robotStatus.energy < 20) {
         eyes.classList.add('sleeping');
         wrapper.classList.add('emotion-tired');
