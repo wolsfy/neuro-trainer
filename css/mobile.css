@@ -2,15 +2,32 @@
 
 /* Общие правила для мобильных */
 @media (max-width: 768px) {
-    /* Убираем лишние отступы */
+    /* ВАЖНО: Включаем прокрутку! */
     body {
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
     }
     
-    /* ВАЖНО: Скрываем фиксированные индикаторы на главной */
+    .screen {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100vh;
+        justify-content: flex-start !important;
+        padding-bottom: 80px;
+    }
+    
+    /* Скрываем фиксированные индикаторы на главной */
     .energy-display,
     .level-display {
+        display: none !important;
+    }
+    
+    /* Скрываем робота в играх (он мешает) */
+    #game-robot {
         display: none !important;
     }
     
@@ -38,11 +55,11 @@
         font-size: 0.8rem;
     }
     
-    /* Меню игр */
+    /* Меню игр - 2 колонки для вертикальной прокрутки */
     .games-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: 1fr 1fr !important;
         gap: 12px;
-        padding: 15px;
+        padding: 15px 15px 30px 15px;
     }
     
     .game-card {
@@ -50,15 +67,15 @@
     }
     
     .game-icon {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
     }
     
     .game-name {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     
     .game-info {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
     
     /* Профиль */
@@ -74,7 +91,7 @@
     
     /* Робот */
     .character-area {
-        margin: 20px 0;
+        margin: 20px 0 15px 0;
     }
     
     .mascot-container {
@@ -132,9 +149,9 @@
     
     /* Магазин */
     .shop-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
-        padding: 15px;
+        padding: 15px 15px 30px 15px;
     }
     
     .shop-item {
@@ -143,8 +160,12 @@
     
     /* Комната */
     .room-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
+        padding: 15px 15px 30px 15px;
+    }
+    
+    .room-btn {
         padding: 15px;
     }
     
@@ -153,9 +174,17 @@
         padding: 12px;
     }
     
+    .achievements-list {
+        padding: 15px 15px 30px 15px;
+    }
+    
     /* Задания */
     .quest-card {
         padding: 12px;
+    }
+    
+    .quests-container {
+        padding: 15px 15px 30px 15px;
     }
     
     /* Статистика */
@@ -163,18 +192,23 @@
         padding: 15px;
     }
     
-    /* Чит-кнопка */
+    .stats-container {
+        padding: 15px 15px 30px 15px;
+    }
+    
+    /* Чит-кнопка - чуть выше */
     .cheat-button {
         width: 45px;
         height: 45px;
         font-size: 1.3rem;
-        bottom: 15px;
+        bottom: 80px;
         left: 15px;
     }
     
     /* Footer */
     .footer {
         margin-top: 20px;
+        margin-bottom: 20px;
         font-size: 0.75rem;
     }
 }
@@ -205,12 +239,12 @@
     }
     
     .games-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: 1fr 1fr !important;
         gap: 10px;
     }
     
     .game-icon {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
     
     .mascot-container {
@@ -280,11 +314,11 @@
 /* Фиксим Safari на iOS */
 @supports (-webkit-touch-callout: none) {
     body {
-        height: -webkit-fill-available;
+        height: auto !important;
     }
     
     .screen {
-        min-height: -webkit-fill-available;
+        min-height: 100vh;
     }
 }
 
