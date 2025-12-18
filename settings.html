@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Настройки</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile.css?v=5">
+    <style>
+        .settings-container { padding: 20px 15px 80px 15px; max-width: 600px; margin: 0 auto; }
+        .settings-section { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .settings-section h2 { margin: 0 0 15px 0; font-size: 1.3rem; color: #333; display: flex; align-items: center; gap: 10px; }
+        .setting-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-label { font-size: 1rem; color: #555; flex: 1; }
+        .setting-label small { display: block; color: #999; font-size: 0.85rem; margin-top: 4px; }
+        .toggle-switch { position: relative; width: 50px; height: 28px; background: #ccc; border-radius: 14px; cursor: pointer; transition: background 0.3s; }
+        .toggle-switch.active { background: var(--primary); }
+        .toggle-slider { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: white; border-radius: 50%; transition: left 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .toggle-switch.active .toggle-slider { left: 25px; }
+        .volume-slider { width: 150px; height: 6px; border-radius: 3px; background: #e0e0e0; position: relative; cursor: pointer; }
+        .volume-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.2s; }
+        .volume-value { font-size: 0.9rem; color: var(--primary); font-weight: bold; margin-left: 10px; min-width: 35px; }
+        .test-sound-btn { padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: bold; }
+        .test-sound-btn:active { transform: scale(0.95); }
+        .danger-zone { border-top: 2px solid #ffebee; padding-top: 20px; margin-top: 20px; }
+        .danger-btn { width: 100%; padding: 15px; background: #f44336; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .danger-btn:active { transform: scale(0.98); }
+        .info-box { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">←</a>
+        <div class="game-info">⚙️ Настройки</div>
+    </div>
+
+    <div class="screen">
+        <div class="settings-container">
+            <!-- Звук -->
+            <div class="settings-section">
+                <h2>🔊 Звук</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        Включить звук
+                        <small>Звуковые эффекты в играх</small>
+                    </div>
+                    <div class="toggle-switch active" id="sound-toggle" onclick="toggleSound()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item" id="volume-setting">
+                    <div class="setting-label">
+                        Громкость
+                        <small>Уровень громкости звуков</small>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="volume-slider" id="volume-slider" onclick="setVolume(event)">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <span class="volume-value" id="volume-value">70%</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        Проверить звук
+                    </div>
+                    <button class="test-sound-btn" onclick="testSound()">🔔 Тест</button>
+                </div>
+            </div>
+
+            <!-- Игра -->
+            <div class="settings-section">
+                <h2>🎮 Игра</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        Вибрация
+                        <small>Вибрация при ошибках (только на телефоне)</small>
+                    </div>
+                    <div class="toggle-switch active" id="vibration-toggle" onclick="toggleVibration()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        Анимации
+                        <small>Визуальные эффекты и конфетти</small>
+                    </div>
+                    <div class="toggle-switch active" id="animations-toggle" onclick="toggleAnimations()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация -->
+            <div class="settings-section">
+                <h2>ℹ️ Информация</h2>
+                
+                <div class="info-box">
+                    <strong>🎮 Нейро-Тренер</strong><br>
+                    Версия: 7.4 (Settings Update)<br>
+                    Тренажер для развития когнитивных способностей
+                </div>
+            </div>
+
+            <!-- Опасная зона -->
+            <div class="settings-section">
+                <h2>⚠️ Опасная зона</h2>
+                <div class="info-box" style="background: #fff3e0; border-left-color: #ff9800;">
+                    ⚠️ Внимание! Эти действия нельзя отменить.
+                </div>
+                <div class="danger-zone">
+                    <button class="danger-btn" onclick="resetSettings()">🔄 Сбросить настройки</button>
+                    <button class="danger-btn" onclick="resetProgress()">🗑️ Удалить весь прогресс</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Загрузка настроек
+        let settings = {
+            soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
+            volume: parseInt(localStorage.getItem('soundVolume')) || 70,
+            vibrationEnabled: localStorage.getItem('vibrationEnabled') !== 'false',
+            animationsEnabled: localStorage.getItem('animationsEnabled') !== 'false'
+        };
+
+        function loadSettings() {
+            // Звук
+            const soundToggle = document.getElementById('sound-toggle');
+            soundToggle.classList.toggle('active', settings.soundEnabled);
+            
+            // Громкость
+            updateVolumeDisplay();
+            
+            // Вибрация
+            const vibrationToggle = document.getElementById('vibration-toggle');
+            vibrationToggle.classList.toggle('active', settings.vibrationEnabled);
+            
+            // Анимации
+            const animationsToggle = document.getElementById('animations-toggle');
+            animationsToggle.classList.toggle('active', settings.animationsEnabled);
+        }
+
+        function toggleSound() {
+            settings.soundEnabled = !settings.soundEnabled;
+            localStorage.setItem('soundEnabled', settings.soundEnabled);
+            document.getElementById('sound-toggle').classList.toggle('active', settings.soundEnabled);
+            if (settings.soundEnabled) testSound();
+        }
+
+        function setVolume(event) {
+            const slider = document.getElementById('volume-slider');
+            const rect = slider.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            settings.volume = Math.round(percentage);
+            localStorage.setItem('soundVolume', settings.volume);
+            updateVolumeDisplay();
+            testSound();
+        }
+
+        function updateVolumeDisplay() {
+            document.getElementById('volume-fill').style.width = settings.volume + '%';
+            document.getElementById('volume-value').textContent = settings.volume + '%';
+        }
+
+        function testSound() {
+            if (!settings.soundEnabled) return;
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            
+            const volume = settings.volume / 100 * 0.3;
+            gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function toggleVibration() {
+            settings.vibrationEnabled = !settings.vibrationEnabled;
+            localStorage.setItem('vibrationEnabled', settings.vibrationEnabled);
+            document.getElementById('vibration-toggle').classList.toggle('active', settings.vibrationEnabled);
+            if (settings.vibrationEnabled && navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+        }
+
+        function toggleAnimations() {
+            settings.animationsEnabled = !settings.animationsEnabled;
+            localStorage.setItem('animationsEnabled', settings.animationsEnabled);
+            document.getElementById('animations-toggle').classList.toggle('active', settings.animationsEnabled);
+        }
+
+        function resetSettings() {
+            if (confirm('🔄 Сбросить все настройки к значениям по умолчанию?')) {
+                localStorage.removeItem('soundEnabled');
+                localStorage.removeItem('soundVolume');
+                localStorage.removeItem('vibrationEnabled');
+                localStorage.removeItem('animationsEnabled');
+                location.reload();
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('⚠️ УДАЛИТЬ ВСЕ ДАННЫЕ?\n\nЭто удалит:\n- Все монеты\n- Статистику игр\n- Достижения\n- Покупки\n\nЭто действие НЕЛЬЗЯ отменить!')) {
+                if (confirm('❗ Вы уверены? Последнее предупреждение!')) {
+                    localStorage.clear();
+                    alert('✅ Все данные удалены. Перезагружаю...');
+                    location.href = 'index.html';
+                }
+            }
+        }
+
+        loadSettings();
+    </script>
+</body>
+</html>
