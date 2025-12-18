@@ -18,7 +18,7 @@
         min-height: 100vh;
         justify-content: flex-start !important;
         padding-bottom: 100px !important;
-        padding-top: 80px !important;
+        padding-top: 100px !important;
     }
     
     /* Скрываем фиксированные индикаторы на главной */
@@ -29,16 +29,21 @@
     
     /* РОБОТ В ИГРАХ - ПОЛНОСТЬЮ УБИРАЕМ НА МОБИЛЬНЫХ */
     #game-robot,
-    .robot-container {
+    .robot-container,
+    div[id*="robot"],
+    div[class*="robot"] {
         display: none !important;
         opacity: 0 !important;
         visibility: hidden !important;
         pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
     }
     
     /* Речевое облачко робота - скрываем */
     #robot-speech,
-    .robot-speech-bubble {
+    .robot-speech-bubble,
+    div[id*="speech"] {
         display: none !important;
     }
     
@@ -242,7 +247,7 @@
 /* Очень маленькие экраны (iPhone SE и подобные) */
 @media (max-width: 375px) {
     .screen {
-        padding-top: 75px !important;
+        padding-top: 95px !important;
     }
     
     .main-menu-grid {
