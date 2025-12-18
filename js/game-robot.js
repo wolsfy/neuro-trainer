@@ -10,6 +10,7 @@ class GameRobot {
     this.bubble = null;
     this.isVisible = false;
     this.hideTimeout = null;
+    this.initialized = false;
     
     this.reactions = {
       gameStart: ['🎮 Поехали!', '✨ Давай!', '🚀 Вперёд!'],
@@ -22,10 +23,17 @@ class GameRobot {
       encourage: ['💪 Ты сможешь!', '❤️ Не сдавайся!', '✨ Ещё раз!']
     };
     
-    this.init();
+    // Инициализируем после загрузки DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.init());
+    } else {
+      this.init();
+    }
   }
   
   init() {
+    if (this.initialized) return;
+    
     this.container = document.createElement('div');
     this.container.style.cssText = `
       position: fixed;
@@ -54,6 +62,10 @@ class GameRobot {
     };
     
     this.robot.src = basePath + (clothesMap[savedClothes] || 'mascot.png');
+    this.robot.onerror = () => {
+      console.warn('⚠️ Не удалось загрузить изображение робота:', this.robot.src);
+    };
+    
     this.robot.style.cssText = `
       width: 100%;
       height: 100%;
@@ -100,13 +112,19 @@ class GameRobot {
     this.container.appendChild(this.robot);
     document.body.appendChild(this.container);
     
-    console.log('🤖 GameRobot инициализирован');
+    this.initialized = true;
+    console.log('✅ GameRobot инициализирован');
   }
   
   show(message) {
+    if (!this.initialized) {
+      console.warn('⚠️ GameRobot ещё не инициализирован');
+      return;
+    }
+    
     if (this.hideTimeout) clearTimeout(this.hideTimeout);
     
-    console.log('🤖 Робот говорит:', message);
+    console.log('🤖 Робот:', message);
     
     this.container.style.right = '20px';
     this.isVisible = true;
@@ -121,6 +139,8 @@ class GameRobot {
   }
   
   hide() {
+    if (!this.initialized) return;
+    
     this.bubble.style.opacity = '0';
     this.bubble.style.transform = 'scale(0.8) translateY(10px)';
     setTimeout(() => {
@@ -170,5 +190,4 @@ class GameRobot {
 // Глобальный экземпляр
 if (typeof window !== 'undefined') {
   window.gameRobot = new GameRobot();
-  console.log('✅ window.gameRobot готов к использованию');
 }
