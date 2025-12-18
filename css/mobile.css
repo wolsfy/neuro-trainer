@@ -1,0 +1,286 @@
+/* ===== МОБИЛЬНАЯ ОПТИМИЗАЦИЯ ===== */
+
+/* Общие правила для мобильных */
+@media (max-width: 768px) {
+    /* Убираем лишние отступы */
+    body {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    /* Главное меню */
+    .main-menu-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .category-card {
+        padding: 20px 15px;
+        min-height: 120px;
+    }
+    
+    .category-icon {
+        font-size: 2.5rem;
+    }
+    
+    .category-name {
+        font-size: 1rem;
+    }
+    
+    .category-desc {
+        font-size: 0.8rem;
+    }
+    
+    /* Меню игр */
+    .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .game-card {
+        padding: 15px;
+    }
+    
+    .game-icon {
+        font-size: 2.8rem;
+    }
+    
+    .game-name {
+        font-size: 1rem;
+    }
+    
+    .game-info {
+        font-size: 0.75rem;
+    }
+    
+    /* Энергия и уровень */
+    .energy-display,
+    .level-display {
+        padding: 8px 15px;
+        min-width: 90px;
+        border-radius: 12px;
+    }
+    
+    .energy-value,
+    .level-number {
+        font-size: 1.4rem;
+    }
+    
+    .energy-label,
+    .level-title {
+        font-size: 0.75rem;
+    }
+    
+    /* Профиль */
+    .profile-bar {
+        width: 95%;
+        padding: 12px;
+    }
+    
+    .coin-balance {
+        font-size: 1.2rem;
+    }
+    
+    /* Робот */
+    .mascot-container {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .mascot-img {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .mascot-speech {
+        font-size: 0.85rem;
+        padding: 10px 15px;
+        right: 5%;
+    }
+    
+    /* Верхняя панель */
+    .top-bar {
+        padding: 10px;
+    }
+    
+    .btn-back {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+    
+    .game-info {
+        font-size: 1.1rem;
+    }
+    
+    /* Фильтры */
+    .filter-bar {
+        padding: 12px 15px 8px 15px;
+    }
+    
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Энергия-бейдж */
+    .energy-badge {
+        padding: 6px 15px;
+        font-size: 0.9rem;
+    }
+    
+    /* Магазин */
+    .shop-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .shop-item {
+        padding: 15px;
+    }
+    
+    /* Комната */
+    .room-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    /* Достижения */
+    .achievement-card {
+        padding: 12px;
+    }
+    
+    /* Задания */
+    .quest-card {
+        padding: 12px;
+    }
+    
+    /* Статистика */
+    .stat-card {
+        padding: 15px;
+    }
+    
+    /* Чит-кнопка */
+    .cheat-button,
+    .quests-button,
+    .achievements-button,
+    .stats-button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+}
+
+/* Очень маленькие экраны (iPhone SE и подобные) */
+@media (max-width: 375px) {
+    .main-menu-grid {
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .category-card {
+        padding: 15px 10px;
+        min-height: 100px;
+    }
+    
+    .category-icon {
+        font-size: 2.2rem;
+    }
+    
+    .category-name {
+        font-size: 0.9rem;
+    }
+    
+    .category-desc {
+        font-size: 0.7rem;
+    }
+    
+    .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .game-icon {
+        font-size: 2.5rem;
+    }
+    
+    .mascot-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .mascot-img {
+        width: 130px;
+        height: 130px;
+    }
+    
+    .mascot-speech {
+        font-size: 0.75rem;
+        padding: 8px 12px;
+    }
+}
+
+/* Ландшафтная ориентация на телефонах */
+@media (max-width: 768px) and (orientation: landscape) {
+    .character-area {
+        margin: 15px 0;
+    }
+    
+    .mascot-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .mascot-img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .mascot-speech {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+    
+    .main-menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Планшеты */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 600px;
+    }
+    
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 650px;
+    }
+}
+
+/* Фиксим Safari на iOS */
+@supports (-webkit-touch-callout: none) {
+    body {
+        height: -webkit-fill-available;
+    }
+    
+    .screen {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Убираем outline при тапах */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button, a, .menu-btn, .game-card, .category-card {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
