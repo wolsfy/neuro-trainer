@@ -17,6 +17,7 @@
     <script src="js/level-system.js"></script>
     <script src="js/energy-system.js"></script>
     <script src="js/daily-quests.js"></script>
+    <script src="js/quest-tracker.js"></script>
 </head>
 <body>
     <div class="energy-display" onclick="showEnergyInfo()">
@@ -46,8 +47,9 @@
             <a href="javascript:void(0)" onclick="startGame('memory')" class="menu-btn"><span class="menu-icon">💡</span><span>Память</span><div style="font-size:0.75rem;opacity:0.7">⚡ 15</div></a>
             <a href="javascript:void(0)" onclick="startGame('stroop')" class="menu-btn"><span class="menu-icon">🎨</span><span>Цвета</span><div style="font-size:0.75rem;opacity:0.7">⚡ 20</div></a>
             <a href="javascript:void(0)" onclick="startGame('math')" class="menu-btn"><span class="menu-icon">🧮</span><span>Математика</span><div style="font-size:0.75rem;opacity:0.7">⚡ 20</div></a>
+            <a href="javascript:void(0)" onclick="startGame('2048')" class="menu-btn"><span class="menu-icon">🎲</span><span>2048</span><div style="font-size:0.75rem;opacity:0.7">⚡ 15</div></a>
         </div>
-        <div class="footer">Версия 6.0 (Daily Quests)</div>
+        <div class="footer">Версия 6.1 (2048 Game)</div>
     </div>
 
     <a href="quests.html" class="quests-button" title="Ежедневные задания">🎯</a>
@@ -60,7 +62,7 @@
         function updateCoinsDisplay(){coins=parseInt(localStorage.getItem('neuroCoins'))||0;document.getElementById('user-coins').innerText=coins}
         function updateLevelDisplay(){const p=window.levelSystem.getProgress(),t=window.levelSystem.getCurrentTitle();document.getElementById('level-num').innerText=p.level;document.getElementById('level-title').innerText=`${t.icon} ${t.name}`;document.getElementById('xp-bar').style.width=p.percentage+'%';document.getElementById('xp-text').innerText=`${p.xp} / ${p.xpNeeded} XP`}
         function showLevelInfo(){const p=window.levelSystem.getProgress(),t=window.levelSystem.getCurrentTitle(),n=window.levelSystem.getNextTitle();let msg=`🎮 Уровень: ${p.level}\n${t.icon} ${t.name}\n\n✨ XP: ${p.xp} / ${p.xpNeeded}\n📊 Прогресс: ${p.percentage}%`;if(n)msg+=`\n\n🎯 Следующий титул:\n${n.icon} ${n.name} (ур. ${n.level})`;alert(msg)}
-        function showEnergyInfo(){const e=window.energySystem.getEnergy(),t=window.energySystem.getTimeToNextRegen();let msg=`⚡ Энергия: ${e}/${window.ENERGY_CONFIG.maxEnergy}\n\n🔄 Регенерация: +1 каждые ${window.ENERGY_CONFIG.regenMinutes} мин\n\n🎮 Стоимость игр:\n🔢 Шульте: 10\n🧩 Шифр: 15\n💡 Память: 15\n🎨 Цвета: 20\n🧮 Математика: 20`;if(t)msg+=`\n\n⏰ +1 через ${t.minutes}:${t.seconds.toString().padStart(2,'0')}`;msg+=`\n\n💰 Полное пополнение: ${window.ENERGY_CONFIG.refillCost} монет`;if(confirm(msg+'\n\nПополнить энергию?')){if(window.energySystem.refillEnergy()){alert('✅ Энергия пополнена!');updateCoinsDisplay();window.energySystem.updateDisplay()}else{alert('❌ Недостаточно монет!')}}}
+        function showEnergyInfo(){const e=window.energySystem.getEnergy(),t=window.energySystem.getTimeToNextRegen();let msg=`⚡ Энергия: ${e}/${window.ENERGY_CONFIG.maxEnergy}\n\n🔄 Регенерация: +1 каждые ${window.ENERGY_CONFIG.regenMinutes} мин\n\n🎮 Стоимость игр:\n🔢 Шульте: 10\n🧩 Шифр: 15\n💡 Память: 15\n🎨 Цвета: 20\n🧮 Математика: 20\n🎲 2048: 15`;if(t)msg+=`\n\n⏰ +1 через ${t.minutes}:${t.seconds.toString().padStart(2,'0')}`;msg+=`\n\n💰 Полное пополнение: ${window.ENERGY_CONFIG.refillCost} монет`;if(confirm(msg+'\n\nПополнить энергию?')){if(window.energySystem.refillEnergy()){alert('✅ Энергия пополнена!');updateCoinsDisplay();window.energySystem.updateDisplay()}else{alert('❌ Недостаточно монет!')}}}
         function startGame(name){if(window.checkEnergyBeforeGame(name)){window.consumeEnergyForGame(name);localStorage.setItem('neuroLastGame',name);window.location.href=`games/${name}.html`}}
         function addCheatCoins(){coins+=1000;localStorage.setItem('neuroCoins',coins);updateCoinsDisplay();const c=document.getElementById('user-coins');c.classList.add('coin-anim');setTimeout(()=>c.classList.remove('coin-anim'),300);showCheatNotification()}
         function showCheatNotification(){const n=document.createElement('div');n.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);background:linear-gradient(135deg,#FFD700,#FFA500);color:white;padding:20px 40px;border-radius:16px;font-size:1.5rem;font-weight:bold;box-shadow:0 8px 24px rgba(255,215,0,0.5);z-index:1000;animation:popIn 0.3s';n.innerText='+1000 💰';document.body.appendChild(n);setTimeout(()=>{n.style.opacity='0';n.style.transform='translate(-50%, -50%) scale(1.5)';n.style.transition='all 0.3s';setTimeout(()=>n.remove(),300)},1000)}

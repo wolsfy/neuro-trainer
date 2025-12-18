@@ -6,15 +6,16 @@
 
 const ENERGY_CONFIG = {
   maxEnergy: 100,
-  regenRate: 1, // +1 энергия каждые X минут
-  regenMinutes: 5, // 5 минут на 1 энергию
-  refillCost: 50, // стоимость полного пополнения
+  regenRate: 1,
+  regenMinutes: 5,
+  refillCost: 50,
   gameCosts: {
     schulte: 10,
     memory: 15,
     stroop: 20,
     math: 20,
-    decoder: 15
+    decoder: 15,
+    '2048': 15
   }
 };
 
@@ -69,7 +70,7 @@ class EnergySystem {
     setInterval(() => {
       this.regenerate();
       this.updateDisplay();
-    }, 60000); // каждую минуту
+    }, 60000);
   }
   
   getEnergy() {
@@ -146,7 +147,6 @@ class EnergySystem {
   }
 }
 
-// Проверка энергии перед игрой
 function checkEnergyBeforeGame(gameName) {
   if (!window.energySystem) return true;
   
@@ -183,7 +183,6 @@ function checkEnergyBeforeGame(gameName) {
   return true;
 }
 
-// Списание энергии при старте игры
 function consumeEnergyForGame(gameName) {
   if (!window.energySystem) return;
   
@@ -193,7 +192,6 @@ function consumeEnergyForGame(gameName) {
   }
 }
 
-// Уведомление о пополнении энергии
 function showEnergyRefillNotification() {
   const notification = document.createElement('div');
   notification.style.cssText = `
@@ -233,7 +231,6 @@ function showEnergyRefillNotification() {
   }, 2000);
 }
 
-// Глобальная инициализация
 if (typeof window !== 'undefined') {
   window.energySystem = new EnergySystem();
   window.ENERGY_CONFIG = ENERGY_CONFIG;
