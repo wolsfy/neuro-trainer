@@ -8,6 +8,12 @@
         touch-action: manipulation;
     }
     
+    /* ВАЖНО: Скрываем фиксированные индикаторы на главной */
+    .energy-display,
+    .level-display {
+        display: none !important;
+    }
+    
     /* Главное меню */
     .main-menu-grid {
         grid-template-columns: 1fr 1fr;
@@ -55,28 +61,11 @@
         font-size: 0.75rem;
     }
     
-    /* Энергия и уровень */
-    .energy-display,
-    .level-display {
-        padding: 8px 15px;
-        min-width: 90px;
-        border-radius: 12px;
-    }
-    
-    .energy-value,
-    .level-number {
-        font-size: 1.4rem;
-    }
-    
-    .energy-label,
-    .level-title {
-        font-size: 0.75rem;
-    }
-    
     /* Профиль */
     .profile-bar {
         width: 95%;
         padding: 12px;
+        margin-bottom: 15px;
     }
     
     .coin-balance {
@@ -84,20 +73,25 @@
     }
     
     /* Робот */
-    .mascot-container {
-        width: 180px;
-        height: 180px;
+    .character-area {
+        margin: 20px 0;
     }
     
-    .mascot-img {
+    .mascot-container {
         width: 160px;
         height: 160px;
     }
     
+    .mascot-img {
+        width: 140px;
+        height: 140px;
+    }
+    
     .mascot-speech {
-        font-size: 0.85rem;
-        padding: 10px 15px;
+        font-size: 0.8rem;
+        padding: 8px 12px;
         right: 5%;
+        top: -5px;
     }
     
     /* Верхняя панель */
@@ -118,6 +112,7 @@
     /* Фильтры */
     .filter-bar {
         padding: 12px 15px 8px 15px;
+        gap: 8px;
     }
     
     .filter-btn {
@@ -129,6 +124,10 @@
     .energy-badge {
         padding: 6px 15px;
         font-size: 0.9rem;
+    }
+    
+    .energy-info-bar {
+        padding: 8px 15px 12px 15px;
     }
     
     /* Магазин */
@@ -165,13 +164,18 @@
     }
     
     /* Чит-кнопка */
-    .cheat-button,
-    .quests-button,
-    .achievements-button,
-    .stats-button {
+    .cheat-button {
         width: 45px;
         height: 45px;
         font-size: 1.3rem;
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    /* Footer */
+    .footer {
+        margin-top: 20px;
+        font-size: 0.75rem;
     }
 }
 
@@ -189,6 +193,7 @@
     
     .category-icon {
         font-size: 2.2rem;
+        margin-bottom: 8px;
     }
     
     .category-name {
@@ -209,35 +214,13 @@
     }
     
     .mascot-container {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
     }
     
     .mascot-img {
-        width: 130px;
-        height: 130px;
-    }
-    
-    .mascot-speech {
-        font-size: 0.75rem;
-        padding: 8px 12px;
-    }
-}
-
-/* Ландшафтная ориентация на телефонах */
-@media (max-width: 768px) and (orientation: landscape) {
-    .character-area {
-        margin: 15px 0;
-    }
-    
-    .mascot-container {
         width: 120px;
         height: 120px;
-    }
-    
-    .mascot-img {
-        width: 100px;
-        height: 100px;
     }
     
     .mascot-speech {
@@ -245,8 +228,39 @@
         padding: 6px 10px;
     }
     
+    .character-area {
+        margin: 15px 0;
+    }
+}
+
+/* Ландшафтная ориентация на телефонах */
+@media (max-width: 768px) and (orientation: landscape) {
+    .character-area {
+        margin: 10px 0;
+    }
+    
+    .mascot-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .mascot-img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .mascot-speech {
+        font-size: 0.65rem;
+        padding: 5px 8px;
+    }
+    
     .main-menu-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .category-card {
+        min-height: 90px;
+        padding: 12px 8px;
     }
 }
 
