@@ -18,6 +18,7 @@
         min-height: 100vh;
         justify-content: flex-start !important;
         padding-bottom: 80px;
+        padding-top: 60px !important;
     }
     
     /* Скрываем фиксированные индикаторы на главной */
@@ -27,8 +28,20 @@
     }
     
     /* Скрываем робота в играх (он мешает) */
-    #game-robot {
+    #game-robot,
+    .robot-container {
         display: none !important;
+    }
+    
+    /* Верхняя панель - фиксирована сверху */
+    .top-bar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1001 !important;
+        background: white !important;
+        padding: 10px !important;
     }
     
     /* Главное меню */
@@ -112,10 +125,6 @@
     }
     
     /* Верхняя панель */
-    .top-bar {
-        padding: 10px;
-    }
-    
     .btn-back {
         width: 36px;
         height: 36px;
@@ -184,7 +193,13 @@
     }
     
     .quests-container {
-        padding: 15px 15px 30px 15px;
+        padding: 0 15px 30px 15px;
+    }
+    
+    /* Страйк заданий */
+    .streak-banner {
+        margin-top: 0 !important;
+        margin-bottom: 15px !important;
     }
     
     /* Статистика */
