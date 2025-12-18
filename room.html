@@ -73,6 +73,141 @@
       z-index: 1;
     }
 
+    /* Статус-бар робота */
+    .robot-status {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      min-width: 200px;
+      z-index: 20;
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .robot-avatar {
+      font-size: 2rem;
+    }
+
+    .robot-name {
+      flex: 1;
+    }
+
+    .robot-name-text {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #333;
+      margin: 0;
+    }
+
+    .robot-level {
+      font-size: 0.8rem;
+      color: #666;
+      margin: 2px 0 0 0;
+    }
+
+    .status-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-icon {
+      font-size: 1.3rem;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .status-bar-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .status-label {
+      font-size: 0.75rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .status-bar {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .status-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease, background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.3),
+        transparent
+      );
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .status-bar-fill.mood {
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    }
+
+    .status-bar-fill.energy {
+      background: linear-gradient(90deg, #2196F3, #03A9F4);
+    }
+
+    .status-bar-fill.hunger {
+      background: linear-gradient(90deg, #FF9800, #FFC107);
+    }
+
+    .status-bar-fill.low {
+      background: linear-gradient(90deg, #f44336, #FF5722) !important;
+    }
+
+    .status-value {
+      font-size: 0.7rem;
+      color: #999;
+      font-weight: bold;
+      min-width: 35px;
+      text-align: right;
+    }
+
     /* Окно */
     .window-container {
       position: absolute;
@@ -90,7 +225,6 @@
       z-index: 2;
     }
 
-    /* Рама окна */
     .window-frame {
       position: absolute;
       top: 0;
@@ -120,7 +254,6 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
     }
 
-    /* Небо и облака */
     .window-sky {
       width: 100%;
       height: 100%;
@@ -212,15 +345,10 @@
     }
 
     @keyframes cloudFloat {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(250px);
-      }
+      from { transform: translateX(0); }
+      to { transform: translateX(250px); }
     }
 
-    /* Солнце */
     .sun {
       position: absolute;
       top: 20px;
@@ -238,7 +366,6 @@
       50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.9); }
     }
 
-    /* Декор на стенах */
     .wall-decor {
       position: absolute;
       top: 80px;
@@ -270,7 +397,6 @@
       50% { transform: translateY(-12px); }
     }
 
-    /* Мебель на полу */
     .floor-items {
       position: absolute;
       bottom: 30px;
@@ -302,7 +428,6 @@
       50% { transform: translateY(-5px); }
     }
 
-    /* Робот в центре */
     .robot-container {
       position: absolute;
       top: 50%;
@@ -370,7 +495,6 @@
       transform: translateX(-50%) scale(1);
     }
 
-    /* Кнопки управления */
     .room-controls {
       position: fixed;
       bottom: 0;
@@ -412,7 +536,6 @@
     
     .btn-icon { font-size: 1.6rem; }
 
-    /* Модальное окно магазина */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -573,8 +696,50 @@
   </div>
 
   <div class="room-screen">
-    <!-- Комната на весь экран -->
     <div class="room-view">
+      <!-- Статус-бар робота -->
+      <div class="robot-status">
+        <div class="status-header">
+          <div class="robot-avatar">🤖</div>
+          <div class="robot-name">
+            <p class="robot-name-text">Нейрон</p>
+            <p class="robot-level">Уровень <span id="robot-level">1</span></p>
+          </div>
+        </div>
+        <div class="status-bars">
+          <div class="status-item">
+            <div class="status-icon">😊</div>
+            <div class="status-bar-container">
+              <div class="status-label">Настроение</div>
+              <div class="status-bar">
+                <div class="status-bar-fill mood" id="mood-bar" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="status-value" id="mood-value">80%</div>
+          </div>
+          <div class="status-item">
+            <div class="status-icon">🔋</div>
+            <div class="status-bar-container">
+              <div class="status-label">Энергия</div>
+              <div class="status-bar">
+                <div class="status-bar-fill energy" id="energy-bar" style="width: 70%"></div>
+              </div>
+            </div>
+            <div class="status-value" id="energy-value">70%</div>
+          </div>
+          <div class="status-item">
+            <div class="status-icon">🍔</div>
+            <div class="status-bar-container">
+              <div class="status-label">Голод</div>
+              <div class="status-bar">
+                <div class="status-bar-fill hunger" id="hunger-bar" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="status-value" id="hunger-value">60%</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Окно -->
       <div class="window-container">
         <div class="window-sky">
@@ -589,10 +754,8 @@
         </div>
       </div>
 
-      <!-- Декор на стенах -->
       <div class="wall-decor" id="wall-decor"></div>
 
-      <!-- Робот -->
       <div class="robot-container">
         <div class="robot-wrapper">
           <div class="thought-bubble" id="bubble">Привет! 👋</div>
@@ -600,12 +763,10 @@
         </div>
       </div>
 
-      <!-- Мебель на полу -->
       <div class="floor-items" id="floor-items"></div>
     </div>
   </div>
 
-  <!-- Кнопки -->
   <div class="room-controls">
     <button class="room-btn" onclick="openDecorShop()">
       <span class="btn-icon">🎨</span>
@@ -617,29 +778,25 @@
     </button>
     <button class="room-btn" onclick="feedRobot()">
       <span class="btn-icon">⚡</span>
-      <span>Зарядка</span>
+      <span>Покормить</span>
     </button>
   </div>
 
-  <!-- Модальное окно -->
   <div class="modal-overlay" id="modal" onclick="closeModalOnOverlay(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div class="modal-title">🎨 Магазин декора</div>
         <button class="modal-close" onclick="closeDecorShop()">×</button>
       </div>
-
       <div class="category-tabs">
         <button class="category-tab active" onclick="showCategory('wall')">🖼️ Стены</button>
         <button class="category-tab" onclick="showCategory('floor')">📚 Мебель</button>
       </div>
-
       <div class="decor-grid" id="decor-grid"></div>
     </div>
   </div>
 
   <script>
-    // Данные декора
     const decorItems = {
       wall: [
         { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
@@ -665,17 +822,73 @@
     };
     let currentCategory = 'wall';
 
-    // Обновление UI
+    // Статус робота
+    let robotStatus = {
+      mood: parseInt(localStorage.getItem('robotMood')) || 80,
+      energy: parseInt(localStorage.getItem('robotEnergy')) || 70,
+      hunger: parseInt(localStorage.getItem('robotHunger')) || 60,
+      level: parseInt(localStorage.getItem('robotLevel')) || 1,
+      lastVisit: parseInt(localStorage.getItem('robotLastVisit')) || Date.now()
+    };
+
+    function updateRobotStatus() {
+      // Уменьшение статусов со временем
+      const now = Date.now();
+      const timePassed = (now - robotStatus.lastVisit) / 1000 / 60; // в минутах
+      
+      if (timePassed > 5) {
+        robotStatus.energy = Math.max(10, robotStatus.energy - Math.floor(timePassed / 5));
+        robotStatus.hunger = Math.max(10, robotStatus.hunger - Math.floor(timePassed / 3));
+        robotStatus.mood = Math.max(20, robotStatus.mood - Math.floor(timePassed / 10));
+      }
+      
+      robotStatus.lastVisit = now;
+      updateStatusBars();
+      saveRobotStatus();
+    }
+
+    function updateStatusBars() {
+      const moodBar = document.getElementById('mood-bar');
+      const energyBar = document.getElementById('energy-bar');
+      const hungerBar = document.getElementById('hunger-bar');
+      
+      moodBar.style.width = robotStatus.mood + '%';
+      energyBar.style.width = robotStatus.energy + '%';
+      hungerBar.style.width = robotStatus.hunger + '%';
+      
+      document.getElementById('mood-value').textContent = robotStatus.mood + '%';
+      document.getElementById('energy-value').textContent = robotStatus.energy + '%';
+      document.getElementById('hunger-value').textContent = robotStatus.hunger + '%';
+      document.getElementById('robot-level').textContent = robotStatus.level;
+      
+      // Красный цвет при низких значениях
+      moodBar.classList.toggle('low', robotStatus.mood < 30);
+      energyBar.classList.toggle('low', robotStatus.energy < 30);
+      hungerBar.classList.toggle('low', robotStatus.hunger < 30);
+
+      // Изменение эмодзи в зависимости от настроения
+      const moodIcon = document.querySelector('.status-item .status-icon');
+      if (robotStatus.mood > 70) moodIcon.textContent = '😊';
+      else if (robotStatus.mood > 40) moodIcon.textContent = '😐';
+      else moodIcon.textContent = '😞';
+    }
+
+    function saveRobotStatus() {
+      localStorage.setItem('robotMood', robotStatus.mood);
+      localStorage.setItem('robotEnergy', robotStatus.energy);
+      localStorage.setItem('robotHunger', robotStatus.hunger);
+      localStorage.setItem('robotLevel', robotStatus.level);
+      localStorage.setItem('robotLastVisit', robotStatus.lastVisit);
+    }
+
     function updateUI() {
       document.getElementById('coins').textContent = coins;
       renderRoom();
     }
 
-    // Отображение комнаты
     function renderRoom() {
       const wallDecor = document.getElementById('wall-decor');
       const floorItems = document.getElementById('floor-items');
-
       wallDecor.innerHTML = '';
       floorItems.innerHTML = '';
 
@@ -700,13 +913,11 @@
       });
     }
 
-    // Открыть магазин
     function openDecorShop() {
       document.getElementById('modal').classList.add('active');
       renderShop();
     }
 
-    // Закрыть магазин
     function closeDecorShop() {
       document.getElementById('modal').classList.remove('active');
     }
@@ -715,7 +926,6 @@
       if (e.target.id === 'modal') closeDecorShop();
     }
 
-    // Отображение магазина
     function renderShop() {
       const grid = document.getElementById('decor-grid');
       grid.innerHTML = '';
@@ -743,7 +953,6 @@
       });
     }
 
-    // Клик по декору
     function handleDecorClick(item, owned, equipped) {
       if (equipped) {
         equippedDecor[currentCategory] = equippedDecor[currentCategory].filter(id => id !== item.id);
@@ -755,6 +964,8 @@
         }
         equippedDecor[currentCategory].push(item.id);
         showBubble('Установил! 🎉');
+        robotStatus.mood = Math.min(100, robotStatus.mood + 5);
+        updateStatusBars();
       } else {
         if (coins < item.price) {
           showBubble('Нет монет! 💰');
@@ -765,14 +976,16 @@
         equippedDecor[currentCategory].push(item.id);
         showBubble('Куплено! ✨');
         playSound('buy');
+        robotStatus.mood = Math.min(100, robotStatus.mood + 10);
+        updateStatusBars();
       }
 
       saveData();
+      saveRobotStatus();
       updateUI();
       renderShop();
     }
 
-    // Смена категории
     function showCategory(category) {
       currentCategory = category;
       document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
@@ -780,21 +993,45 @@
       renderShop();
     }
 
-    // Клик по роботу
     function clickRobot() {
-      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Укрась комнату! 🎨', 'Смотри в окно! 🤩'];
+      const phrases = [
+        'Привет! 👋',
+        'Я тут! 🤖',
+        'Что делаем? 🎮',
+        'Укрась комнату! 🎨',
+        'Смотри в окно! 🤩',
+        'Покорми меня! 🍔',
+        'Давай играть! 🎯'
+      ];
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
+      robotStatus.mood = Math.min(100, robotStatus.mood + 2);
+      updateStatusBars();
+      saveRobotStatus();
     }
 
-    // Зарядить
     function feedRobot() {
-      showBubble('Спасибо! ⚡💚');
+      if (coins < 10) {
+        showBubble('Нужно 10 монет! 💰');
+        return;
+      }
+      
+      coins -= 10;
+      robotStatus.hunger = Math.min(100, robotStatus.hunger + 30);
+      robotStatus.energy = Math.min(100, robotStatus.energy + 20);
+      robotStatus.mood = Math.min(100, robotStatus.mood + 15);
+      
+      showBubble('Ням-ням! 😋🍔');
+      
       if (typeof confetti !== 'undefined') {
         confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
       }
+      
+      updateStatusBars();
+      saveData();
+      saveRobotStatus();
+      updateUI();
     }
 
-    // Показать мысль
     function showBubble(text) {
       const bubble = document.getElementById('bubble');
       bubble.textContent = text;
@@ -802,7 +1039,6 @@
       setTimeout(() => bubble.classList.remove('show'), 2500);
     }
 
-    // Звук
     function playSound(type) {
       const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
       if (!soundEnabled) return;
@@ -822,14 +1058,12 @@
       oscillator.stop(audioCtx.currentTime + 0.2);
     }
 
-    // Сохранение
     function saveData() {
       localStorage.setItem('neuroCoins', coins);
       localStorage.setItem('ownedDecor', JSON.stringify(ownedDecor));
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
     }
 
-    // Загрузка одежды
     const clothesMap = {
       'clothes-none': 'mascot.png',
       'clothes-tshirt': 'robot-tshirt.png',
@@ -840,9 +1074,25 @@
     const savedClothes = localStorage.getItem('neuroClothes') || 'clothes-none';
     document.getElementById('robot-img').src = clothesMap[savedClothes] || 'mascot.png';
 
-    // Инициализация
     updateUI();
-    setTimeout(() => showBubble('Привет! 👋'), 800);
+    updateRobotStatus();
+    setTimeout(() => {
+      if (robotStatus.mood < 40) showBubble('Мне грустно... 😞');
+      else if (robotStatus.energy < 30) showBubble('Я устал... 😴');
+      else if (robotStatus.hunger < 30) showBubble('Хочу кушать! 🍔');
+      else showBubble('Привет! 👋');
+    }, 800);
+
+    // Пассивное уменьшение статусов
+    setInterval(() => {
+      robotStatus.energy = Math.max(10, robotStatus.energy - 1);
+      robotStatus.hunger = Math.max(10, robotStatus.hunger - 1);
+      if (robotStatus.energy < 30 || robotStatus.hunger < 30) {
+        robotStatus.mood = Math.max(10, robotStatus.mood - 1);
+      }
+      updateStatusBars();
+      saveRobotStatus();
+    }, 60000); // каждую минуту
   </script>
 </body>
 </html>
