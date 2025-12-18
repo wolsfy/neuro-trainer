@@ -40,19 +40,39 @@
       flex-direction: column;
     }
 
-    /* Комната */
-    .room-view {
-      flex: 1;
-      position: relative;
-      background: linear-gradient(180deg, #e3f2fd 0%, #f5f5f5 100%);
-      padding: 40px 20px 30px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 500px;
-    }
+   /* Комната с глубиной */
+.room-view {
+  flex: 1;
+  position: relative;
+  background:
+    linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
+  padding: 40px 20px 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  transform-style: preserve-3d;
+}
+
+/* Пол (псевдо-3D) */
+.room-view::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  transform: translateX(-50%) rotateX(60deg);
+  width: 140%;
+  height: 60%;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-color: #e0d4c5;
+  opacity: 0.8;
+  z-index: 1;
+}
 
     /* Декор на стенах */
     .wall-decor {
@@ -67,14 +87,16 @@
     }
 
     .decor-item {
-      font-size: 3rem;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.2));
-      animation: float 3s ease-in-out infinite;
-    }
+  font-size: 3rem;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.25s ease;
+  z-index: 3;
+}
 
-    .decor-item:nth-child(2) { animation-delay: 0.5s; }
-    .decor-item:nth-child(3) { animation-delay: 1s; }
-
+.decor-item:hover {
+  transform: translateY(-6px) scale(1.05);
+}
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
@@ -91,11 +113,17 @@
       align-items: flex-end;
     }
 
-    .furniture-item {
-      font-size: 4rem;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-      animation: bounce 2s ease-in-out infinite;
-    }
+   .furniture-item {
+  font-size: 4rem;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.35));
+  animation: bounce 2s ease-in-out infinite;
+  transition: transform 0.25s ease;
+  z-index: 5;
+}
+
+.furniture-item:hover {
+  transform: translateY(-4px) scale(1.03);
+}
 
     .furniture-item:nth-child(2) { animation-delay: 0.3s; }
     .furniture-item:nth-child(3) { animation-delay: 0.6s; }
@@ -107,14 +135,24 @@
 
     /* Робот в центре */
     .robot-container {
-      position: relative;
-      z-index: 10;
-    }
+  position: relative;
+  z-index: 10;
+}
 
-    .robot-wrapper {
-      position: relative;
-      width: 220px;
-    }
+   .robot-wrapper {
+  position: relative;
+  width: 220px;
+}
+.robot-container {
+  position: relative;
+  z-index: 10;
+}
+
+.robot-wrapper {
+  position: relative;
+  width: 220px;
+  transform: translateY(10px);
+}
 
     .big-robot-img {
       width: 100%;
