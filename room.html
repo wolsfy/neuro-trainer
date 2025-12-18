@@ -54,7 +54,6 @@
         linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
       overflow: hidden;
       transform-style: preserve-3d;
-      /* OPT#2: Containment для изоляции */
       contain: layout style paint;
       isolation: isolate;
     }
@@ -163,7 +162,6 @@
       transition: width 0.5s ease, background 0.3s;
       position: relative;
       overflow: hidden;
-      /* OPT#2: GPU acceleration */
       will-change: transform;
       transform: translateZ(0);
     }
@@ -182,12 +180,10 @@
         transparent
       );
       animation: shimmer 2s infinite;
-      /* OPT#2: GPU acceleration */
       will-change: transform;
       transform: translateZ(0);
     }
 
-    /* OPT#3: Pause animations when hidden */
     body.page-hidden .status-bar-fill::after {
       animation-play-state: paused;
     }
@@ -273,20 +269,17 @@
       overflow: hidden;
     }
 
-    /* OPT#2: GPU acceleration для анимированных элементов */
     .cloud {
       position: absolute;
       background: white;
       border-radius: 50px;
       opacity: 0.9;
       animation: cloudFloat 20s linear infinite;
-      /* GPU optimization */
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
-    /* OPT#3: Pause animations when page hidden */
     body.page-hidden .cloud {
       animation-play-state: paused;
     }
@@ -371,7 +364,6 @@
       to { transform: translateX(250px); }
     }
 
-    /* OPT#2: GPU acceleration для солнца */
     .sun {
       position: absolute;
       top: 20px;
@@ -382,13 +374,11 @@
       border-radius: 50%;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
       animation: sunGlow 3s ease-in-out infinite;
-      /* GPU optimization */
       will-change: opacity;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
-    /* OPT#3: Pause animations when page hidden */
     body.page-hidden .sun {
       animation-play-state: paused;
     }
@@ -412,7 +402,6 @@
       pointer-events: none;
     }
 
-    /* OPT#2: GPU acceleration для декора */
     .decor-item {
       font-size: 5rem;
       filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
@@ -420,13 +409,11 @@
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
-      /* GPU optimization */
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
-    /* OPT#3: Pause animations when page hidden */
     body.page-hidden .decor-item {
       animation-play-state: paused;
     }
@@ -458,7 +445,6 @@
       pointer-events: none;
     }
 
-    /* OPT#2: GPU acceleration для мебели */
     .furniture-item {
       font-size: 6rem;
       filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
@@ -466,13 +452,11 @@
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
-      /* GPU optimization */
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
-    /* OPT#3: Pause animations when page hidden */
     body.page-hidden .furniture-item {
       animation-play-state: paused;
     }
@@ -490,8 +474,6 @@
       50% { transform: translateY(-8px) translateZ(0); }
     }
 
-    /* === 3D РОБОТ === */
-    /* OPT#2: Containment для 3D контейнера */
     .robot-container {
       position: absolute;
       top: 50%;
@@ -513,7 +495,6 @@
       background: var(--primary);
     }
 
-    /* OPT#2: GPU acceleration для bubble */
     .thought-bubble {
       position: absolute;
       top: -20px;
@@ -552,7 +533,6 @@
       transform: translateX(-50%) scale(1) translateZ(0);
     }
 
-    /* OPT#2: GPU acceleration для частиц */
     .particle {
       position: absolute;
       font-size: 1.5rem;
@@ -653,7 +633,6 @@
       to { opacity: 1; }
     }
 
-    /* OPT#2: GPU acceleration для модального окна */
     .modal-content {
       background: white;
       width: 100%;
@@ -855,10 +834,10 @@
 
       <div class="robot-container" id="robot-container">
         <div class="thought-bubble" id="bubble">Привет! 👋</div>
-        <!-- OPT: Оригинальная модель с текстурами (URL-encoded) -->
+        <!-- TEMP: Using CDN for original model to avoid deployment timeout -->
         <model-viewer
           id="robot-model"
-          src="cute%20robot%203d%20model.glb"
+          src="https://raw.githubusercontent.com/wolsfy/neuro-trainer/main/cute%20robot%203d%20model.glb"
           alt="Нейрон - милый робот-помощник"
           camera-controls
           touch-action="pan-y"
@@ -909,7 +888,6 @@
   </div>
 
   <script>
-    /* ===== OPT#5: THROTTLE/DEBOUNCE UTILITIES ===== */
     function throttle(func, delay) {
       let lastCall = 0;
       return function(...args) {
@@ -941,29 +919,24 @@
       };
     }
 
-    /* ===== OPT#3: PAGE VISIBILITY ===== */
     let isPageVisible = true;
 
-    // Page Visibility API - пауза при неактивной вкладке
     document.addEventListener('visibilitychange', () => {
       isPageVisible = !document.hidden;
       
       if (document.hidden) {
         console.log('⏸️ Page hidden - pausing animations');
         document.body.classList.add('page-hidden');
-        // Останавливаем interval
         if (window.statusInterval) {
           clearInterval(window.statusInterval);
         }
       } else {
         console.log('▶️ Page visible - resuming animations');
         document.body.classList.remove('page-hidden');
-        // Возобновляем interval
         startStatusDegradation();
       }
     });
 
-    /* ===== GAME DATA ===== */
     const decorItems = {
       wall: [
         { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
@@ -997,7 +970,6 @@
       lastVisit: parseInt(localStorage.getItem('robotLastVisit')) || Date.now()
     };
 
-    /* ===== OPT#5: Batched updates queue ===== */
     let updateQueue = [];
 
     function queueStatusUpdate(type, value) {
@@ -1006,7 +978,7 @@
 
     function flushUpdates() {
       if (updateQueue.length === 0) return;
-      if (!isPageVisible) return; // Не обновляем на фоне
+      if (!isPageVisible) return;
       
       updateQueue.forEach(({ type, value }) => {
         robotStatus[type] = value;
@@ -1018,7 +990,6 @@
       updateQueue = [];
     }
 
-    /* ===== ROBOT LOGIC ===== */
     function updateRobotEmotion() {
       const moodIcon = document.getElementById('mood-icon');
       
@@ -1049,7 +1020,6 @@
         particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
         container.appendChild(particle);
         
-        // OPT#5: Cleanup after animation
         setTimeout(() => particle.remove(), 2000);
       }
     }
@@ -1089,7 +1059,6 @@
       hungerBar.classList.toggle('low', robotStatus.hunger < 30);
     }
 
-    // OPT#5: Throttled version (max 10 FPS for UI updates)
     const updateStatusBarsThrottled = throttle(updateStatusBars, 100);
 
     function saveRobotStatus() {
@@ -1100,7 +1069,6 @@
       localStorage.setItem('robotLastVisit', robotStatus.lastVisit);
     }
 
-    /* ===== UI LOGIC ===== */
     function updateUI() {
       document.getElementById('coins').textContent = coins;
       renderRoom();
@@ -1133,7 +1101,6 @@
       });
     }
 
-    // OPT#5: RAF throttled version
     const renderRoomOptimized = rafThrottle(renderRoom);
 
     function openDecorShop() {
@@ -1215,7 +1182,6 @@
       renderShop();
     }
 
-    // OPT#5: Batched updates для feedRobot
     function feedRobot() {
       if (coins < 10) {
         showBubble('Нужно 10 монет! 💰');
@@ -1272,11 +1238,8 @@
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
     }
 
-    // OPT#5: Debounced version (saves only after 500ms of inactivity)
     const saveDataDebounced = debounce(saveData, 500);
 
-    /* ===== INITIALIZATION ===== */
-    // Клик по 3D роботу
     document.getElementById('robot-model').addEventListener('click', function() {
       const phrases = [
         'Привет! 👋',
@@ -1309,21 +1272,19 @@
       }
     }, 1000);
 
-    // OPT#5: RAF loop для batched updates
     function updateLoop() {
       flushUpdates();
       requestAnimationFrame(updateLoop);
     }
     updateLoop();
 
-    // OPT#3: Periodic status degradation (только когда страница видима)
     function startStatusDegradation() {
       if (window.statusInterval) {
         clearInterval(window.statusInterval);
       }
       
       window.statusInterval = setInterval(() => {
-        if (!isPageVisible) return; // Не ухудшаем статусы на фоне
+        if (!isPageVisible) return;
         
         robotStatus.energy = Math.max(10, robotStatus.energy - 1);
         robotStatus.hunger = Math.max(10, robotStatus.hunger - 1);
@@ -1333,7 +1294,7 @@
         updateStatusBarsThrottled();
         updateRobotEmotion();
         saveRobotStatus();
-      }, 60000); // 1 minute
+      }, 60000);
     }
     
     startStatusDegradation();
