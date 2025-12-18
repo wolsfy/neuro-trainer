@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/robot-animations.css">
     <style>
         .game-2048{width:90vw;max-width:400px;background:#bbada0;border-radius:12px;padding:10px;margin:20px auto;position:relative}.grid-container{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#cdc1b4;border-radius:8px;padding:10px}.cell{aspect-ratio:1;background:#eee4da;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:2rem;color:#776e65;position:relative;transition:all 0.15s}.cell.tile-2{background:#eee4da;color:#776e65}.cell.tile-4{background:#ede0c8;color:#776e65}.cell.tile-8{background:#f2b179;color:#f9f6f2}.cell.tile-16{background:#f59563;color:#f9f6f2}.cell.tile-32{background:#f67c5f;color:#f9f6f2}.cell.tile-64{background:#f65e3b;color:#f9f6f2}.cell.tile-128{background:#edcf72;color:#f9f6f2;font-size:1.7rem}.cell.tile-256{background:#edcc61;color:#f9f6f2;font-size:1.7rem}.cell.tile-512{background:#edc850;color:#f9f6f2;font-size:1.7rem}.cell.tile-1024{background:#edc53f;color:#f9f6f2;font-size:1.4rem}.cell.tile-2048{background:#edc22e;color:#f9f6f2;font-size:1.4rem;box-shadow:0 0 30px 10px rgba(243,215,116,0.55)}.cell.tile-new{animation:appear 0.2s}.cell.tile-merged{animation:pop 0.2s}@keyframes appear{0%{transform:scale(0)}100%{transform:scale(1)}}@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}.game-over-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(238,228,218,0.73);border-radius:8px;display:none;align-items:center;justify-content:center;z-index:100}.game-over-overlay.show{display:flex}.game-over-msg{text-align:center}.game-over-text{font-size:2rem;font-weight:bold;color:#776e65;margin-bottom:20px}.restart-btn{background:#8f7a66;color:#f9f6f2;border:none;padding:15px 30px;border-radius:8px;font-size:1.1rem;font-weight:bold;cursor:pointer}.restart-btn:active{background:#9f8a76}.score-panel{display:flex;gap:10px;justify-content:space-between;margin-bottom:15px}.score-box{background:#bbada0;padding:10px 15px;border-radius:8px;text-align:center;flex:1}.score-label{font-size:0.8rem;color:#eee4da;text-transform:uppercase}.score-value{font-size:1.5rem;font-weight:900;color:#fff}.controls-hint{text-align:center;color:#776e65;font-size:0.9rem;margin-top:10px;padding:10px}
-        .robot-small{position:fixed;bottom:20px;right:20px;width:80px;height:80px;z-index:999;pointer-events:none}.robot-img{width:100%;height:100%;object-fit:contain}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/achievements.js"></script>
@@ -29,16 +28,10 @@
         <div class="controls-hint">👆 Проводите пальцем или используйте стрелки</div>
     </div>
     
-    <div class="robot-small" id="game-robot">
-        <img src="../mascot.png" alt="Robot" class="robot-img" id="robot-img">
-    </div>
-    
     <script>
 let grid=[],score=0,moves=0,bestScore=0,hasWon=false,touchStartX=0,touchStartY=0,lastMergeValue=0,mergesInRow=0,highestTile=0;const gridSize=4,gridElement=document.getElementById('grid');
 
-function loadRobotClothes(){const saved=localStorage.getItem('neuroClothes')||'clothes-none',map={'clothes-none':'../mascot.png','clothes-tshirt':'../robot-tshirt.png','clothes-hoodie':'../robot-hoodie.png','clothes-jacket':'../robot-jacket.png','clothes-suit':'../robot-suit.png'};document.getElementById('robot-img').src=map[saved]||'../mascot.png'}
-
-function init(){if(window.QuestTracker){const cost=15;window.QuestTracker.energySpent(cost)}bestScore=parseInt(localStorage.getItem('neuro2048Best'))||0;document.getElementById('best').textContent=bestScore;loadRobotClothes();if(window.gameRobot&&window.gameRobot.initialized)window.gameRobot.onGameStart();resetGame()}
+function init(){if(window.QuestTracker){const cost=15;window.QuestTracker.energySpent(cost)}bestScore=parseInt(localStorage.getItem('neuro2048Best'))||0;document.getElementById('best').textContent=bestScore;if(window.gameRobot&&window.gameRobot.initialized)window.gameRobot.onGameStart();resetGame()}
 
 function resetGame(){grid=Array(gridSize).fill().map(()=>Array(gridSize).fill(0));score=0;moves=0;hasWon=false;lastMergeValue=0;mergesInRow=0;highestTile=0;updateDisplay();addRandomTile();addRandomTile();document.getElementById('gameOver').classList.remove('show')}
 
