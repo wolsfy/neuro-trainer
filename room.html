@@ -15,7 +15,6 @@
       padding: 0;
     }
     
-    /* Улучшенная кнопка назад */
     .btn-back {
       font-size: 1.5rem;
       text-decoration: none;
@@ -44,7 +43,6 @@
       overflow: hidden;
     }
 
-    /* Комната на весь экран с 3D эффектом */
     .room-view {
       width: 100%;
       height: 100%;
@@ -55,7 +53,6 @@
       transform-style: preserve-3d;
     }
 
-    /* Пол с 3D эффектом */
     .room-view::after {
       content: '';
       position: absolute;
@@ -73,7 +70,6 @@
       z-index: 1;
     }
 
-    /* Статус-бар робота */
     .robot-status {
       position: absolute;
       top: 20px;
@@ -208,7 +204,6 @@
       text-align: right;
     }
 
-    /* Окно */
     .window-container {
       position: absolute;
       top: 60px;
@@ -428,6 +423,7 @@
       50% { transform: translateY(-5px); }
     }
 
+    /* === РОБОТ С ЭМОЦИЯМИ === */
     .robot-container {
       position: absolute;
       top: 50%;
@@ -439,6 +435,72 @@
     .robot-wrapper {
       position: relative;
       width: 240px;
+    }
+
+    /* Глаза робота */
+    .robot-eyes {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 25px;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    .robot-eye {
+      width: 18px;
+      height: 18px;
+      background: #1a1a1a;
+      border-radius: 50%;
+      position: relative;
+      animation: blink 4s infinite;
+    }
+
+    .robot-eye::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      top: 4px;
+      left: 4px;
+    }
+
+    @keyframes blink {
+      0%, 100% { height: 18px; }
+      48%, 52% { height: 18px; }
+      50% { height: 2px; }
+    }
+
+    /* Состояния глаз */
+    .robot-eyes.happy .robot-eye {
+      border-radius: 50% 50% 0 0;
+      animation: blinkHappy 4s infinite;
+    }
+
+    .robot-eyes.sad .robot-eye {
+      border-radius: 0 0 50% 50%;
+    }
+
+    .robot-eyes.sleeping .robot-eye {
+      height: 3px;
+      border-radius: 0;
+      animation: none;
+    }
+
+    .robot-eyes.tired .robot-eye {
+      width: 20px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    @keyframes blinkHappy {
+      0%, 100% { transform: scaleY(1); }
+      48%, 52% { transform: scaleY(1); }
+      50% { transform: scaleY(0.1); }
     }
 
     .big-robot-img {
@@ -455,8 +517,95 @@
       50% { transform: translateY(-15px); }
     }
 
+    /* Анимации эмоций */
+    .robot-wrapper.emotion-happy .big-robot-img {
+      animation: robotJump 0.6s ease-in-out;
+    }
+
+    .robot-wrapper.emotion-sad .big-robot-img {
+      animation: robotTilt 2s ease-in-out;
+    }
+
+    .robot-wrapper.emotion-hungry .big-robot-img {
+      animation: robotShake 0.5s ease-in-out;
+    }
+
+    .robot-wrapper.emotion-tired .big-robot-img {
+      animation: robotSway 3s ease-in-out infinite;
+    }
+
+    .robot-wrapper.emotion-excited .big-robot-img {
+      animation: robotDance 0.8s ease-in-out;
+    }
+
+    @keyframes robotJump {
+      0%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-30px); }
+      60% { transform: translateY(-10px); }
+    }
+
+    @keyframes robotTilt {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+
+    @keyframes robotShake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    @keyframes robotSway {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-3deg); }
+      75% { transform: rotate(3deg); }
+    }
+
+    @keyframes robotDance {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-15deg) scale(1.1); }
+      50% { transform: rotate(15deg) scale(1.1); }
+      75% { transform: rotate(-15deg) scale(1.1); }
+    }
+
     .big-robot-img:active {
       transform: scale(0.95);
+    }
+
+    /* === ЧАСТИЦЫ-ЭФФЕКТЫ === */
+    .particle {
+      position: absolute;
+      font-size: 1.5rem;
+      pointer-events: none;
+      z-index: 20;
+      animation: particleFloat 2s ease-out forwards;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+      }
+    }
+
+    .particle.side {
+      animation: particleSide 2s ease-out forwards;
+    }
+
+    @keyframes particleSide {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--x), -80px) scale(1.2);
+      }
     }
 
     .thought-bubble {
@@ -697,7 +846,6 @@
 
   <div class="room-screen">
     <div class="room-view">
-      <!-- Статус-бар робота -->
       <div class="robot-status">
         <div class="status-header">
           <div class="robot-avatar">🤖</div>
@@ -708,7 +856,7 @@
         </div>
         <div class="status-bars">
           <div class="status-item">
-            <div class="status-icon">😊</div>
+            <div class="status-icon" id="mood-icon">😊</div>
             <div class="status-bar-container">
               <div class="status-label">Настроение</div>
               <div class="status-bar">
@@ -740,7 +888,6 @@
         </div>
       </div>
 
-      <!-- Окно -->
       <div class="window-container">
         <div class="window-sky">
           <div class="sun"></div>
@@ -757,7 +904,12 @@
       <div class="wall-decor" id="wall-decor"></div>
 
       <div class="robot-container">
-        <div class="robot-wrapper">
+        <div class="robot-wrapper" id="robot-wrapper">
+          <!-- Глаза робота -->
+          <div class="robot-eyes" id="robot-eyes">
+            <div class="robot-eye"></div>
+            <div class="robot-eye"></div>
+          </div>
           <div class="thought-bubble" id="bubble">Привет! 👋</div>
           <img id="robot-img" src="mascot.png" class="big-robot-img" alt="Робот" onclick="clickRobot()" />
         </div>
@@ -822,7 +974,6 @@
     };
     let currentCategory = 'wall';
 
-    // Статус робота
     let robotStatus = {
       mood: parseInt(localStorage.getItem('robotMood')) || 80,
       energy: parseInt(localStorage.getItem('robotEnergy')) || 70,
@@ -831,10 +982,70 @@
       lastVisit: parseInt(localStorage.getItem('robotLastVisit')) || Date.now()
     };
 
+    // === ЭМОЦИИ РОБОТА ===
+    function updateRobotEmotion() {
+      const wrapper = document.getElementById('robot-wrapper');
+      const eyes = document.getElementById('robot-eyes');
+      const moodIcon = document.getElementById('mood-icon');
+      
+      // Удаляем старые классы
+      wrapper.className = 'robot-wrapper';
+      eyes.className = 'robot-eyes';
+      
+      // Определяем эмоцию
+      if (robotStatus.energy < 20) {
+        eyes.classList.add('sleeping');
+        wrapper.classList.add('emotion-tired');
+        moodIcon.textContent = '😴';
+      } else if (robotStatus.mood > 80) {
+        eyes.classList.add('happy');
+        moodIcon.textContent = '😊';
+      } else if (robotStatus.mood < 30) {
+        eyes.classList.add('sad');
+        wrapper.classList.add('emotion-sad');
+        moodIcon.textContent = '😞';
+      } else if (robotStatus.hunger < 25) {
+        wrapper.classList.add('emotion-hungry');
+        moodIcon.textContent = '😐';
+      } else if (robotStatus.energy < 40) {
+        eyes.classList.add('tired');
+        wrapper.classList.add('emotion-tired');
+        moodIcon.textContent = '😪';
+      } else {
+        moodIcon.textContent = '🙂';
+      }
+    }
+
+    function createParticles(emoji, count = 5) {
+      const container = document.getElementById('robot-wrapper');
+      const rect = container.getBoundingClientRect();
+      
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle side';
+        particle.textContent = emoji;
+        particle.style.left = (rect.width / 2) + 'px';
+        particle.style.top = '50%';
+        particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
+        container.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 2000);
+      }
+    }
+
+    function playEmotionAnimation(emotion) {
+      const wrapper = document.getElementById('robot-wrapper');
+      wrapper.classList.remove('emotion-happy', 'emotion-sad', 'emotion-hungry', 'emotion-tired', 'emotion-excited');
+      
+      setTimeout(() => {
+        wrapper.classList.add('emotion-' + emotion);
+        setTimeout(() => wrapper.classList.remove('emotion-' + emotion), 1000);
+      }, 10);
+    }
+
     function updateRobotStatus() {
-      // Уменьшение статусов со временем
       const now = Date.now();
-      const timePassed = (now - robotStatus.lastVisit) / 1000 / 60; // в минутах
+      const timePassed = (now - robotStatus.lastVisit) / 1000 / 60;
       
       if (timePassed > 5) {
         robotStatus.energy = Math.max(10, robotStatus.energy - Math.floor(timePassed / 5));
@@ -844,6 +1055,7 @@
       
       robotStatus.lastVisit = now;
       updateStatusBars();
+      updateRobotEmotion();
       saveRobotStatus();
     }
 
@@ -861,16 +1073,9 @@
       document.getElementById('hunger-value').textContent = robotStatus.hunger + '%';
       document.getElementById('robot-level').textContent = robotStatus.level;
       
-      // Красный цвет при низких значениях
       moodBar.classList.toggle('low', robotStatus.mood < 30);
       energyBar.classList.toggle('low', robotStatus.energy < 30);
       hungerBar.classList.toggle('low', robotStatus.hunger < 30);
-
-      // Изменение эмодзи в зависимости от настроения
-      const moodIcon = document.querySelector('.status-item .status-icon');
-      if (robotStatus.mood > 70) moodIcon.textContent = '😊';
-      else if (robotStatus.mood > 40) moodIcon.textContent = '😐';
-      else moodIcon.textContent = '😞';
     }
 
     function saveRobotStatus() {
@@ -965,10 +1170,14 @@
         equippedDecor[currentCategory].push(item.id);
         showBubble('Установил! 🎉');
         robotStatus.mood = Math.min(100, robotStatus.mood + 5);
+        playEmotionAnimation('happy');
+        createParticles('✨', 3);
         updateStatusBars();
+        updateRobotEmotion();
       } else {
         if (coins < item.price) {
           showBubble('Нет монет! 💰');
+          playEmotionAnimation('sad');
           return;
         }
         coins -= item.price;
@@ -977,7 +1186,10 @@
         showBubble('Куплено! ✨');
         playSound('buy');
         robotStatus.mood = Math.min(100, robotStatus.mood + 10);
+        playEmotionAnimation('excited');
+        createParticles('🎉', 5);
         updateStatusBars();
+        updateRobotEmotion();
       }
 
       saveData();
@@ -1005,13 +1217,17 @@
       ];
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
       robotStatus.mood = Math.min(100, robotStatus.mood + 2);
+      playEmotionAnimation('happy');
+      createParticles('❤️', 3);
       updateStatusBars();
+      updateRobotEmotion();
       saveRobotStatus();
     }
 
     function feedRobot() {
       if (coins < 10) {
         showBubble('Нужно 10 монет! 💰');
+        playEmotionAnimation('sad');
         return;
       }
       
@@ -1021,12 +1237,16 @@
       robotStatus.mood = Math.min(100, robotStatus.mood + 15);
       
       showBubble('Ням-ням! 😋🍔');
+      playEmotionAnimation('excited');
+      createParticles('🍔', 4);
+      createParticles('❤️', 3);
       
       if (typeof confetti !== 'undefined') {
         confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
       }
       
       updateStatusBars();
+      updateRobotEmotion();
       saveData();
       saveRobotStatus();
       updateUI();
@@ -1077,13 +1297,21 @@
     updateUI();
     updateRobotStatus();
     setTimeout(() => {
-      if (robotStatus.mood < 40) showBubble('Мне грустно... 😞');
-      else if (robotStatus.energy < 30) showBubble('Я устал... 😴');
-      else if (robotStatus.hunger < 30) showBubble('Хочу кушать! 🍔');
-      else showBubble('Привет! 👋');
+      if (robotStatus.mood < 40) {
+        showBubble('Мне грустно... 😞');
+        playEmotionAnimation('sad');
+      } else if (robotStatus.energy < 30) {
+        showBubble('Я устал... 😴');
+        createParticles('💤', 3);
+      } else if (robotStatus.hunger < 30) {
+        showBubble('Хочу кушать! 🍔');
+        playEmotionAnimation('hungry');
+      } else {
+        showBubble('Привет! 👋');
+        playEmotionAnimation('happy');
+      }
     }, 800);
 
-    // Пассивное уменьшение статусов
     setInterval(() => {
       robotStatus.energy = Math.max(10, robotStatus.energy - 1);
       robotStatus.hunger = Math.max(10, robotStatus.hunger - 1);
@@ -1091,8 +1319,9 @@
         robotStatus.mood = Math.max(10, robotStatus.mood - 1);
       }
       updateStatusBars();
+      updateRobotEmotion();
       saveRobotStatus();
-    }, 60000); // каждую минуту
+    }, 60000);
   </script>
 </body>
 </html>
