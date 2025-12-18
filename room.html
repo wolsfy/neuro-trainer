@@ -443,8 +443,8 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
-      width: 300px;
-      height: 300px;
+      width: 350px;
+      height: 400px;
     }
 
     model-viewer {
@@ -793,15 +793,16 @@
           src="cute robot 3d model.glb"
           alt="Нейрон"
           auto-rotate
-          rotation-per-second="15deg"
+          rotation-per-second="12deg"
           camera-controls
           touch-action="pan-y"
-          shadow-intensity="0.8"
+          shadow-intensity="0.6"
           environment-image="neutral"
-          exposure="1.2"
-          camera-orbit="0deg 75deg 2.5m"
-          field-of-view="30deg"
+          exposure="1.1"
+          camera-orbit="0deg 85deg 3.5m"
+          field-of-view="25deg"
           disable-zoom
+          interpolation-decay="100"
         >
         </model-viewer>
       </div>
