@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Статистика</title>
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Загрузка темы -->
+    <script src="/neuro-trainer/js/theme-loader.js?v=2"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
@@ -18,7 +22,7 @@
         }
         
         .total-badge {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             padding: 10px 20px;
             border-radius: 20px;
             font-weight: 900;
@@ -74,7 +78,7 @@
         .chart-container {
             width: 90%;
             max-width: 600px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
