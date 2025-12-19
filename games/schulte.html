@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таблица Шульте</title>
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Загрузка темы -->
+    <script src="/neuro-trainer/js/theme-loader.js?v=2"></script>
+    
     <link rel="stylesheet" href="../css/mobile.css?v=5">
     <link rel="stylesheet" href="../css/robot-animations.css">
     <style>
@@ -50,7 +54,7 @@
 .mobile-hint.combo { background: linear-gradient(135deg, #FF9800, #F57C00); }
 .mobile-hint.error { background: linear-gradient(135deg, #F44336, #D32F2F); }
 .mobile-hint.record { background: linear-gradient(135deg, #FFD700, #FFA500); }
-.schulte-grid{display:grid;gap:10px;width:92vw;max-width:400px;aspect-ratio:1;margin-top:20px}.schulte-grid.size-3{grid-template-columns:repeat(3,1fr)}.schulte-grid.size-5{grid-template-columns:repeat(5,1fr)}.cell{background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#333;box-shadow:0 4px 0 #dce0e6;cursor:pointer;user-select:none;transition:transform 0.1s}.cell:active{transform:translateY(4px);box-shadow:none}.target-display{font-size:1.2rem;color:#666;margin-bottom:10px;text-align:center}.target-number{font-size:2.5rem;color:var(--primary);font-weight:bold;margin-left:10px}.controls{display:flex;gap:15px;margin-top:30px}.btn-mode{border:none;padding:12px 24px;border-radius:10px;background:#E0E0E0;color:#555;font-weight:bold;font-size:1rem;cursor:pointer}.btn-mode.active{background:var(--primary);color:white;box-shadow:0 4px 10px rgba(33,150,243,0.3)}.btn-restart{background:#FF9800;color:white}.best-score{font-size:0.9rem;color:#FF9800;font-weight:bold;text-align:right}
+.schulte-grid{display:grid;gap:10px;width:92vw;max-width:400px;aspect-ratio:1;margin-top:20px}.schulte-grid.size-3{grid-template-columns:repeat(3,1fr)}.schulte-grid.size-5{grid-template-columns:repeat(5,1fr)}.cell{background:var(--card-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--text);box-shadow:0 4px 0 #dce0e6;cursor:pointer;user-select:none;transition:transform 0.1s}.cell:active{transform:translateY(4px);box-shadow:none}.target-display{font-size:1.2rem;color:var(--text);opacity:0.7;margin-bottom:10px;text-align:center}.target-number{font-size:2.5rem;color:var(--primary);font-weight:bold;margin-left:10px}.controls{display:flex;gap:15px;margin-top:30px}.btn-mode{border:none;padding:12px 24px;border-radius:10px;background:#E0E0E0;color:#555;font-weight:bold;font-size:1rem;cursor:pointer}.btn-mode.active{background:var(--primary);color:white;box-shadow:0 4px 10px rgba(33,150,243,0.3)}.btn-restart{background:var(--accent);color:white}.best-score{font-size:0.9rem;color:var(--accent);font-weight:bold;text-align:right}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/achievements.js"></script>
@@ -83,7 +87,7 @@
             }, 2000);
         }
         
-        // УБИРАЕМ РОБОТА НА МОБИЛЬНЮХ
+        // УБИРАЕМ РОБОТА НА МОБИЛЬНЫХ
         if(isMobile) {
             window.gameRobot = null;
             document.addEventListener('DOMContentLoaded', function() {
