@@ -402,16 +402,45 @@
       pointer-events: none;
     }
 
+    /* NEW: PNG Decoration styling */
     .decor-item {
-      font-size: 5rem;
-      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
+      width: 80px;
+      height: 80px;
+      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.25));
       animation: float 3s ease-in-out infinite;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
+      position: relative;
+    }
+
+    .decor-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    /* Special glow effects for certain items */
+    .decor-item.glow::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+      animation: pulseGlow 2s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
     }
 
     body.page-hidden .decor-item {
@@ -419,7 +448,8 @@
     }
 
     .decor-item:hover {
-      transform: translateY(-8px) scale(1.08) translateZ(0);
+      transform: translateY(-8px) scale(1.1) translateZ(0);
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,0.3));
     }
 
     .decor-item:nth-child(1) { animation-delay: 0s; }
@@ -446,10 +476,11 @@
     }
 
     .furniture-item {
-      font-size: 6rem;
-      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+      width: 100px;
+      height: 100px;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.35));
       animation: bounce 2.5s ease-in-out infinite;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
       will-change: transform;
@@ -457,12 +488,19 @@
       backface-visibility: hidden;
     }
 
+    .furniture-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
     body.page-hidden .furniture-item {
       animation-play-state: paused;
     }
 
     .furniture-item:hover {
-      transform: translateY(-6px) scale(1.05) translateZ(0);
+      transform: translateY(-6px) scale(1.08) translateZ(0);
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.4));
     }
 
     .furniture-item:nth-child(1) { animation-delay: 0s; }
@@ -571,7 +609,6 @@
       }
     }
 
-    /* DEBUG PANEL */
     .debug-panel {
       position: fixed;
       bottom: 90px;
@@ -588,9 +625,7 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
-    .debug-panel.active {
-      display: block;
-    }
+    .debug-panel.active { display: block; }
 
     .debug-panel h3 {
       margin: 0 0 8px 0;
@@ -607,22 +642,10 @@
       line-height: 1.4;
     }
 
-    .debug-label {
-      color: #0ff;
-    }
-
-    .debug-value {
-      color: #0f0;
-      font-weight: bold;
-    }
-
-    .debug-value.warning {
-      color: #ff0;
-    }
-
-    .debug-value.error {
-      color: #f00;
-    }
+    .debug-label { color: #0ff; }
+    .debug-value { color: #0f0; font-weight: bold; }
+    .debug-value.warning { color: #ff0; }
+    .debug-value.error { color: #f00; }
 
     .debug-toggle {
       position: fixed;
@@ -645,9 +668,7 @@
       transform: scale(1.05);
     }
 
-    .debug-toggle:active {
-      transform: scale(0.95);
-    }
+    .debug-toggle:active { transform: scale(0.95); }
 
     .room-controls {
       position: fixed;
@@ -655,7 +676,7 @@
       left: 0;
       right: 0;
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Changed from 3 to 2 columns */
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       padding: 12px;
       background: white;
@@ -703,9 +724,7 @@
       animation: fadeIn 0.3s;
     }
 
-    .modal-overlay.active {
-      display: flex;
-    }
+    .modal-overlay.active { display: flex; }
 
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -760,9 +779,7 @@
       transition: background 0.2s;
     }
 
-    .modal-close:active {
-      background: #f0f0f0;
-    }
+    .modal-close:active { background: #f0f0f0; }
 
     .category-tabs {
       display: flex;
@@ -806,9 +823,7 @@
       transition: all 0.2s;
     }
 
-    .decor-card:active {
-      transform: scale(0.95);
-    }
+    .decor-card:active { transform: scale(0.95); }
 
     .decor-card.owned {
       border-color: var(--primary);
@@ -822,8 +837,18 @@
     }
 
     .decor-icon {
-      font-size: 3rem;
-      margin-bottom: 8px;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .decor-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .decor-name {
@@ -910,7 +935,6 @@
       </div>
 
       <div class="wall-decor" id="wall-decor"></div>
-
       <div class="thought-bubble" id="bubble">Привет! 👋</div>
 
       <div class="robot-container" id="robot-container">
@@ -937,7 +961,6 @@
     </div>
   </div>
 
-  <!-- DEBUG PANEL -->
   <button class="debug-toggle" onclick="toggleDebug()">DEBUG</button>
   <div class="debug-panel" id="debug-panel">
     <h3>⚡ DEBUG INFO</h3>
@@ -967,7 +990,6 @@
     </div>
   </div>
 
-  <!-- ROOM CONTROLS - Removed clothing button -->
   <div class="room-controls">
     <button class="room-btn" onclick="openDecorShop()">
       <span class="btn-icon">🎨</span>
@@ -994,7 +1016,21 @@
   </div>
 
   <script>
-    /* ===== DEBUG SYSTEM ===== */
+    // Decoration images - using placeholder service for now
+    // You can replace these URLs with your own images later
+    const decorImages = {
+      'poster-star': 'https://api.iconify.design/twemoji/star.svg?width=80&height=80',
+      'poster-brain': 'https://api.iconify.design/twemoji/brain.svg?width=80&height=80',
+      'poster-rocket': 'https://api.iconify.design/twemoji/rocket.svg?width=80&height=80',
+      'poster-trophy': 'https://api.iconify.design/twemoji/trophy.svg?width=80&height=80',
+      'poster-books': 'https://api.iconify.design/twemoji/books.svg?width=80&height=80',
+      'poster-bulb': 'https://api.iconify.design/twemoji/light-bulb.svg?width=80&height=80',
+      'furniture-plant': 'https://api.iconify.design/twemoji/potted-plant.svg?width=100&height=100',
+      'furniture-sofa': 'https://api.iconify.design/twemoji/couch-and-lamp.svg?width=100&height=100',
+      'furniture-desk': 'https://api.iconify.design/twemoji/laptop.svg?width=100&height=100',
+      'furniture-bookshelf': 'https://api.iconify.design/twemoji/bookmark-tabs.svg?width=100&height=100'
+    };
+
     let debugEnabled = localStorage.getItem('debugEnabled') === 'true';
     let debugStats = {
       fps: 0,
@@ -1010,7 +1046,6 @@
       document.getElementById('debug-panel').classList.toggle('active', debugEnabled);
     }
 
-    // Ctrl+D to toggle debug
     document.addEventListener('keydown', (e) => {
       if (e.ctrlKey && e.key === 'd') {
         e.preventDefault();
@@ -1020,7 +1055,6 @@
 
     function updateDebugPanel() {
       if (!debugEnabled) return;
-
       const now = performance.now();
       debugStats.frameCount++;
       
@@ -1028,33 +1062,25 @@
         debugStats.fps = Math.round((debugStats.frameCount * 1000) / (now - debugStats.lastTime));
         debugStats.frameCount = 0;
         debugStats.lastTime = now;
-
         const fpsEl = document.getElementById('debug-fps');
         fpsEl.textContent = debugStats.fps;
         fpsEl.className = 'debug-value';
         if (debugStats.fps < 30) fpsEl.classList.add('error');
         else if (debugStats.fps < 50) fpsEl.classList.add('warning');
-
         document.getElementById('debug-visibility').textContent = isPageVisible ? 'visible' : 'hidden';
         document.getElementById('debug-animations').textContent = isPageVisible ? 'active' : 'paused';
         document.getElementById('debug-updates').textContent = debugStats.updateCount;
-        
         const particleCount = document.querySelectorAll('.particle').length;
         debugStats.particleCount = particleCount;
         document.getElementById('debug-particles').textContent = particleCount;
-
         const modelViewer = document.getElementById('robot-model');
         const modelLoaded = modelViewer && modelViewer.modelIsVisible;
         document.getElementById('debug-model').textContent = modelLoaded ? 'loaded' : 'loading';
       }
     }
 
-    // Show debug panel if it was enabled
-    if (debugEnabled) {
-      document.getElementById('debug-panel').classList.add('active');
-    }
+    if (debugEnabled) document.getElementById('debug-panel').classList.add('active');
 
-    /* ===== UTILITIES ===== */
     function throttle(func, delay) {
       let lastCall = 0;
       return function(...args) {
@@ -1090,15 +1116,12 @@
 
     document.addEventListener('visibilitychange', () => {
       isPageVisible = !document.hidden;
-      
       if (document.hidden) {
-        console.log('⏸️ Page hidden - pausing animations');
+        console.log('⏸️ Page hidden');
         document.body.classList.add('page-hidden');
-        if (window.statusInterval) {
-          clearInterval(window.statusInterval);
-        }
+        if (window.statusInterval) clearInterval(window.statusInterval);
       } else {
-        console.log('▶️ Page visible - resuming animations');
+        console.log('▶️ Page visible');
         document.body.classList.remove('page-hidden');
         startStatusDegradation();
       }
@@ -1106,12 +1129,12 @@
 
     const decorItems = {
       wall: [
-        { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
+        { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0, hasGlow: true },
         { id: 'poster-brain', icon: '🧠', name: 'Мозг', price: 50 },
         { id: 'poster-rocket', icon: '🚀', name: 'Ракета', price: 100 },
-        { id: 'poster-trophy', icon: '🏆', name: 'Кубок', price: 150 },
+        { id: 'poster-trophy', icon: '🏆', name: 'Кубок', price: 150, hasGlow: true },
         { id: 'poster-books', icon: '📚', name: 'Книги', price: 80 },
-        { id: 'poster-bulb', icon: '💡', name: 'Лампочка', price: 120 },
+        { id: 'poster-bulb', icon: '💡', name: 'Лампочка', price: 120, hasGlow: true },
       ],
       floor: [
         { id: 'furniture-plant', icon: '🌿', name: 'Растение', price: 0 },
@@ -1128,7 +1151,6 @@
       floor: ['furniture-plant']
     };
     let currentCategory = 'wall';
-
     let robotStatus = {
       mood: parseInt(localStorage.getItem('robotMood')) || 80,
       energy: parseInt(localStorage.getItem('robotEnergy')) || 70,
@@ -1136,7 +1158,6 @@
       level: parseInt(localStorage.getItem('robotLevel')) || 1,
       lastVisit: parseInt(localStorage.getItem('robotLastVisit')) || Date.now()
     };
-
     let updateQueue = [];
 
     function queueStatusUpdate(type, value) {
@@ -1147,38 +1168,26 @@
     function flushUpdates() {
       if (updateQueue.length === 0) return;
       if (!isPageVisible) return;
-      
       updateQueue.forEach(({ type, value }) => {
         robotStatus[type] = value;
       });
-      
       updateStatusBarsThrottled();
       saveDataDebounced();
-      
       updateQueue = [];
     }
 
     function updateRobotEmotion() {
       const moodIcon = document.getElementById('mood-icon');
-      
-      if (robotStatus.energy < 20) {
-        moodIcon.textContent = '😴';
-      } else if (robotStatus.mood > 80) {
-        moodIcon.textContent = '😊';
-      } else if (robotStatus.mood < 30) {
-        moodIcon.textContent = '😞';
-      } else if (robotStatus.hunger < 25) {
-        moodIcon.textContent = '😐';
-      } else if (robotStatus.energy < 40) {
-        moodIcon.textContent = '😪';
-      } else {
-        moodIcon.textContent = '🙂';
-      }
+      if (robotStatus.energy < 20) moodIcon.textContent = '😴';
+      else if (robotStatus.mood > 80) moodIcon.textContent = '😊';
+      else if (robotStatus.mood < 30) moodIcon.textContent = '😞';
+      else if (robotStatus.hunger < 25) moodIcon.textContent = '😐';
+      else if (robotStatus.energy < 40) moodIcon.textContent = '😪';
+      else moodIcon.textContent = '🙂';
     }
 
     function createParticles(emoji, count = 5) {
       const container = document.getElementById('robot-container');
-      
       for (let i = 0; i < count; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle side';
@@ -1187,7 +1196,6 @@
         particle.style.top = '50%';
         particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
         container.appendChild(particle);
-        
         setTimeout(() => particle.remove(), 2000);
       }
     }
@@ -1195,13 +1203,11 @@
     function updateRobotStatus() {
       const now = Date.now();
       const timePassed = (now - robotStatus.lastVisit) / 1000 / 60;
-      
       if (timePassed > 5) {
         robotStatus.energy = Math.max(10, robotStatus.energy - Math.floor(timePassed / 5));
         robotStatus.hunger = Math.max(10, robotStatus.hunger - Math.floor(timePassed / 3));
         robotStatus.mood = Math.max(20, robotStatus.mood - Math.floor(timePassed / 10));
       }
-      
       robotStatus.lastVisit = now;
       updateStatusBars();
       updateRobotEmotion();
@@ -1212,16 +1218,13 @@
       const moodBar = document.getElementById('mood-bar');
       const energyBar = document.getElementById('energy-bar');
       const hungerBar = document.getElementById('hunger-bar');
-      
       moodBar.style.width = robotStatus.mood + '%';
       energyBar.style.width = robotStatus.energy + '%';
       hungerBar.style.width = robotStatus.hunger + '%';
-      
       document.getElementById('mood-value').textContent = robotStatus.mood + '%';
       document.getElementById('energy-value').textContent = robotStatus.energy + '%';
       document.getElementById('hunger-value').textContent = robotStatus.hunger + '%';
       document.getElementById('robot-level').textContent = robotStatus.level;
-      
       moodBar.classList.toggle('low', robotStatus.mood < 30);
       energyBar.classList.toggle('low', robotStatus.energy < 30);
       hungerBar.classList.toggle('low', robotStatus.hunger < 30);
@@ -1252,8 +1255,12 @@
         const item = [...decorItems.wall, ...decorItems.floor].find(i => i.id === id);
         if (item) {
           const div = document.createElement('div');
-          div.className = 'decor-item';
-          div.textContent = item.icon;
+          div.className = 'decor-item' + (item.hasGlow ? ' glow' : '');
+          const img = document.createElement('img');
+          img.src = decorImages[id] || '';
+          img.alt = item.name;
+          img.loading = 'lazy';
+          div.appendChild(img);
           wallDecor.appendChild(div);
         }
       });
@@ -1263,7 +1270,11 @@
         if (item) {
           const div = document.createElement('div');
           div.className = 'furniture-item';
-          div.textContent = item.icon;
+          const img = document.createElement('img');
+          img.src = decorImages[id] || '';
+          img.alt = item.name;
+          img.loading = 'lazy';
+          div.appendChild(img);
           floorItems.appendChild(div);
         }
       });
@@ -1287,26 +1298,21 @@
     function renderShop() {
       const grid = document.getElementById('decor-grid');
       grid.innerHTML = '';
-
       decorItems[currentCategory].forEach(item => {
         const owned = ownedDecor.includes(item.id);
         const equipped = equippedDecor[currentCategory].includes(item.id);
-
         const card = document.createElement('div');
         card.className = 'decor-card' + (owned ? ' owned' : '') + (equipped ? ' equipped' : '');
         card.onclick = () => handleDecorClick(item, owned, equipped);
-
         let status = '';
         if (equipped) status = '✅ Установлено';
         else if (owned) status = '📦 Нажмите чтобы установить';
         else status = `${item.price} 💰`;
-
         card.innerHTML = `
-          <div class="decor-icon">${item.icon}</div>
+          <div class="decor-icon"><img src="${decorImages[item.id]}" alt="${item.name}" loading="lazy"></div>
           <div class="decor-name">${item.name}</div>
           <div class="decor-status">${status}</div>
         `;
-
         grid.appendChild(card);
       });
     }
@@ -1337,7 +1343,6 @@
         queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 10));
         createParticles('🎉', 5);
       }
-
       saveData();
       updateUI();
       renderShop();
@@ -1355,20 +1360,16 @@
         showBubble('Нужно 10 монет! 💰');
         return;
       }
-      
       coins -= 10;
       queueStatusUpdate('hunger', Math.min(100, robotStatus.hunger + 30));
       queueStatusUpdate('energy', Math.min(100, robotStatus.energy + 20));
       queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 15));
-      
       showBubble('Ням-ням! 😋🍔');
       createParticles('🍔', 4);
       createParticles('❤️', 3);
-      
       if (typeof confetti !== 'undefined') {
         confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
       }
-      
       updateRobotEmotion();
       saveData();
       updateUI();
@@ -1409,15 +1410,7 @@
     const saveDataDebounced = debounce(saveData, 500);
 
     document.getElementById('robot-model').addEventListener('click', function() {
-      const phrases = [
-        'Привет! 👋',
-        'Я тут! 🤖',
-        'Что делаем? 🎮',
-        'Укрась комнату! 🎨',
-        'Смотри в окно! 🤩',
-        'Покорми меня! 🍔',
-        'Давай играть! 🎯'
-      ];
+      const phrases = ['Привет! 👋', 'Я тут! 🤖', 'Что делаем? 🎮', 'Укрась комнату! 🎨', 'Смотри в окно! 🤩', 'Покорми меня! 🍔', 'Давай играть! 🎯'];
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
       queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 2));
       createParticles('❤️', 3);
@@ -1428,16 +1421,13 @@
     updateRobotStatus();
     
     setTimeout(() => {
-      if (robotStatus.mood < 40) {
-        showBubble('Мне грустно... 😞');
-      } else if (robotStatus.energy < 30) {
+      if (robotStatus.mood < 40) showBubble('Мне грустно... 😞');
+      else if (robotStatus.energy < 30) {
         showBubble('Я устал... 😴');
         createParticles('💤', 3);
-      } else if (robotStatus.hunger < 30) {
-        showBubble('Хочу кушать! 🍔');
-      } else {
-        showBubble('Привет! 👋');
       }
+      else if (robotStatus.hunger < 30) showBubble('Хочу кушать! 🍔');
+      else showBubble('Привет! 👋');
     }, 1000);
 
     function updateLoop() {
@@ -1448,13 +1438,9 @@
     updateLoop();
 
     function startStatusDegradation() {
-      if (window.statusInterval) {
-        clearInterval(window.statusInterval);
-      }
-      
+      if (window.statusInterval) clearInterval(window.statusInterval);
       window.statusInterval = setInterval(() => {
         if (!isPageVisible) return;
-        
         robotStatus.energy = Math.max(10, robotStatus.energy - 1);
         robotStatus.hunger = Math.max(10, robotStatus.hunger - 1);
         if (robotStatus.energy < 30 || robotStatus.hunger < 30) {
@@ -1465,7 +1451,6 @@
         saveRobotStatus();
       }, 60000);
     }
-    
     startStatusDegradation();
   </script>
 </body>
