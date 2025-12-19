@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🐛 Debug - Нейро Тренер</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  
+  <script src="/neuro-trainer/js/theme-loader.js?v=2"></script>
+  
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .debug-container {
+      padding: 70px 20px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .debug-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .debug-section h2 {
+      margin: 0 0 15px 0;
+      font-size: 1.3rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .debug-info {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .debug-info pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .debug-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .debug-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .debug-btn:active {
+      transform: scale(0.95);
+    }
+
+    .debug-btn.danger {
+      background: #f44336;
+    }
+
+    .debug-btn.success {
+      background: #4CAF50;
+    }
+
+    .debug-btn.warning {
+      background: #FF9800;
+    }
+
+    .debug-input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .debug-input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .debug-label {
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-indicator.active {
+      background: #4CAF50;
+    }
+
+    .status-indicator.inactive {
+      background: #f44336;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .data-key {
+      font-weight: bold;
+      color: #666;
+    }
+
+    .data-value {
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+    }
+
+    .log-entry {
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .log-time {
+      color: #999;
+      font-size: 0.8rem;
+    }
+
+    .btn-back {
+      font-size: 1.5rem;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .btn-back:active {
+      transform: scale(0.9);
+      background: rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <a href="index.html" class="btn-back">←</a>
+    <div class="game-info">🐛 Debug Console</div>
+    <div class="balance-badge">
+      <span id="current-coins">0</span> 💰
+    </div>
+  </div>
+
+  <div class="debug-container">
+    <!-- Основная информация -->
+    <div class="debug-section">
+      <h2>📊 Состояние игры</h2>
+      <div id="game-state" class="debug-info"></div>
+      <button class="debug-btn" onclick="refreshData()">🔄 Обновить данные</button>
+    </div>
+
+    <!-- Управление монетами -->
+    <div class="debug-section">
+      <h2>💰 Монеты</h2>
+      <div class="debug-input-group">
+        <input type="number" id="coins-input" class="debug-input" placeholder="Количество монет" value="1000">
+        <button class="debug-btn success" onclick="addCoins()">➕ Добавить</button>
+        <button class="debug-btn warning" onclick="setCoins()">✏️ Установить</button>
+      </div>
+    </div>
+
+    <!-- Управление роботом -->
+    <div class="debug-section">
+      <h2>🤖 Статус робота</h2>
+      <div class="debug-input-group">
+        <label class="debug-label">Настроение:</label>
+        <input type="range" id="mood-input" class="debug-input" min="0" max="100" value="80">
+        <span id="mood-value">80</span>%
+      </div>
+      <div class="debug-input-group">
+        <label class="debug-label">Энергия:</label>
+        <input type="range" id="energy-input" class="debug-input" min="0" max="100" value="70">
+        <span id="energy-value">70</span>%
+      </div>
+      <div class="debug-input-group">
+        <label class="debug-label">Голод:</label>
+        <input type="range" id="hunger-input" class="debug-input" min="0" max="100" value="60">
+        <span id="hunger-value">60</span>%
+      </div>
+      <div class="debug-input-group">
+        <label class="debug-label">Уровень:</label>
+        <input type="number" id="level-input" class="debug-input" min="1" max="100" value="1">
+      </div>
+      <button class="debug-btn success" onclick="applyRobotStatus()">✅ Применить изменения</button>
+    </div>
+
+    <!-- Управление прогрессом -->
+    <div class="debug-section">
+      <h2>📈 Прогресс и достижения</h2>
+      <div class="debug-controls">
+        <button class="debug-btn success" onclick="unlockAllGames()">🎮 Открыть все игры</button>
+        <button class="debug-btn success" onclick="unlockAllAchievements()">🏆 Все достижения</button>
+        <button class="debug-btn success" onclick="maxStats()">📊 Макс. статистика</button>
+        <button class="debug-btn warning" onclick="resetProgress()">🔄 Сброс прогресса</button>
+      </div>
+    </div>
+
+    <!-- Управление декором -->
+    <div class="debug-section">
+      <h2>🎨 Декор и одежда</h2>
+      <div class="debug-controls">
+        <button class="debug-btn success" onclick="unlockAllDecor()">🎨 Весь декор</button>
+        <button class="debug-btn success" onclick="unlockAllClothes()">👕 Вся одежда</button>
+        <button class="debug-btn warning" onclick="resetDecor()">🔄 Сброс декора</button>
+      </div>
+    </div>
+
+    <!-- LocalStorage -->
+    <div class="debug-section">
+      <h2>💾 LocalStorage</h2>
+      <div id="localStorage-data" class="debug-info"></div>
+      <div class="debug-controls">
+        <button class="debug-btn" onclick="exportData()">📤 Экспорт</button>
+        <button class="debug-btn" onclick="importData()">📥 Импорт</button>
+        <button class="debug-btn danger" onclick="clearAllData()">🗑️ Очистить всё</button>
+      </div>
+    </div>
+
+    <!-- Лог действий -->
+    <div class="debug-section">
+      <h2>📝 Лог действий</h2>
+      <div id="action-log" class="debug-info">
+        <div class="log-entry">
+          <span class="log-time">Загрузка...</span>
+        </div>
+      </div>
+      <button class="debug-btn warning" onclick="clearLog()">🧹 Очистить лог</button>
+    </div>
+  </div>
+
+  <script>
+    // Инициализация
+    let actionLog = [];
+
+    function log(message) {
+      const timestamp = new Date().toLocaleTimeString('ru-RU');
+      actionLog.unshift({ time: timestamp, message });
+      if (actionLog.length > 50) actionLog.pop();
+      updateLog();
+    }
+
+    function updateLog() {
+      const logEl = document.getElementById('action-log');
+      logEl.innerHTML = actionLog.map(entry => 
+        `<div class="log-entry"><span class="log-time">${entry.time}</span> - ${entry.message}</div>`
+      ).join('');
+    }
+
+    function clearLog() {
+      actionLog = [];
+      updateLog();
+      log('Лог очищен');
+    }
+
+    // Обновление данных
+    function refreshData() {
+      const gameState = {
+        coins: parseInt(localStorage.getItem('neuroCoins')) || 0,
+        robotMood: parseInt(localStorage.getItem('robotMood')) || 80,
+        robotEnergy: parseInt(localStorage.getItem('robotEnergy')) || 70,
+        robotHunger: parseInt(localStorage.getItem('robotHunger')) || 60,
+        robotLevel: parseInt(localStorage.getItem('robotLevel')) || 1,
+        totalGamesPlayed: parseInt(localStorage.getItem('totalGamesPlayed')) || 0,
+        highScores: JSON.parse(localStorage.getItem('highScores') || '{}'),
+        achievements: JSON.parse(localStorage.getItem('achievements') || '[]'),
+        ownedDecor: JSON.parse(localStorage.getItem('ownedDecor') || '[]'),
+        unlockedGames: JSON.parse(localStorage.getItem('unlockedGames') || '[]')
+      };
+
+      document.getElementById('game-state').innerHTML = '<pre>' + JSON.stringify(gameState, null, 2) + '</pre>';
+      document.getElementById('current-coins').textContent = gameState.coins;
+
+      // LocalStorage
+      const allData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        allData[key] = localStorage.getItem(key);
+      }
+      document.getElementById('localStorage-data').innerHTML = '<pre>' + JSON.stringify(allData, null, 2) + '</pre>';
+
+      // Обновление слайдеров
+      document.getElementById('mood-input').value = gameState.robotMood;
+      document.getElementById('energy-input').value = gameState.robotEnergy;
+      document.getElementById('hunger-input').value = gameState.robotHunger;
+      document.getElementById('level-input').value = gameState.robotLevel;
+      document.getElementById('mood-value').textContent = gameState.robotMood;
+      document.getElementById('energy-value').textContent = gameState.robotEnergy;
+      document.getElementById('hunger-value').textContent = gameState.robotHunger;
+
+      log('Данные обновлены');
+    }
+
+    // Монеты
+    function addCoins() {
+      const amount = parseInt(document.getElementById('coins-input').value) || 0;
+      const current = parseInt(localStorage.getItem('neuroCoins')) || 0;
+      localStorage.setItem('neuroCoins', current + amount);
+      refreshData();
+      log(`Добавлено ${amount} монет`);
+    }
+
+    function setCoins() {
+      const amount = parseInt(document.getElementById('coins-input').value) || 0;
+      localStorage.setItem('neuroCoins', amount);
+      refreshData();
+      log(`Монеты установлены на ${amount}`);
+    }
+
+    // Робот
+    function applyRobotStatus() {
+      const mood = document.getElementById('mood-input').value;
+      const energy = document.getElementById('energy-input').value;
+      const hunger = document.getElementById('hunger-input').value;
+      const level = document.getElementById('level-input').value;
+
+      localStorage.setItem('robotMood', mood);
+      localStorage.setItem('robotEnergy', energy);
+      localStorage.setItem('robotHunger', hunger);
+      localStorage.setItem('robotLevel', level);
+      localStorage.setItem('robotLastVisit', Date.now());
+
+      refreshData();
+      log(`Статус робота обновлён: Настроение ${mood}%, Энергия ${energy}%, Голод ${hunger}%, Уровень ${level}`);
+    }
+
+    // Обновление значений слайдеров
+    document.getElementById('mood-input').addEventListener('input', (e) => {
+      document.getElementById('mood-value').textContent = e.target.value;
+    });
+    document.getElementById('energy-input').addEventListener('input', (e) => {
+      document.getElementById('energy-value').textContent = e.target.value;
+    });
+    document.getElementById('hunger-input').addEventListener('input', (e) => {
+      document.getElementById('hunger-value').textContent = e.target.value;
+    });
+
+    // Игры и достижения
+    function unlockAllGames() {
+      const allGames = ['memory', 'math', 'words', 'reaction', 'attention', 'logic'];
+      localStorage.setItem('unlockedGames', JSON.stringify(allGames));
+      refreshData();
+      log('Все игры разблокированы');
+    }
+
+    function unlockAllAchievements() {
+      const achievements = [];
+      for (let i = 1; i <= 20; i++) {
+        achievements.push(`achievement-${i}`);
+      }
+      localStorage.setItem('achievements', JSON.stringify(achievements));
+      refreshData();
+      log('Все достижения разблокированы');
+    }
+
+    function maxStats() {
+      localStorage.setItem('totalGamesPlayed', '1000');
+      localStorage.setItem('totalScore', '100000');
+      localStorage.setItem('highScores', JSON.stringify({
+        memory: 1000,
+        math: 1000,
+        words: 1000,
+        reaction: 1000,
+        attention: 1000,
+        logic: 1000
+      }));
+      refreshData();
+      log('Статистика установлена на максимум');
+    }
+
+    function resetProgress() {
+      if (!confirm('Сбросить весь прогресс? Это действие нельзя отменить.')) return;
+      
+      localStorage.removeItem('totalGamesPlayed');
+      localStorage.removeItem('totalScore');
+      localStorage.removeItem('highScores');
+      localStorage.removeItem('achievements');
+      localStorage.removeItem('unlockedGames');
+      
+      refreshData();
+      log('Прогресс сброшен');
+    }
+
+    // Декор
+    function unlockAllDecor() {
+      const allDecor = [
+        'poster-star', 'poster-brain', 'poster-rocket', 'poster-trophy', 'poster-books', 'poster-bulb',
+        'furniture-plant', 'furniture-sofa', 'furniture-desk', 'furniture-bookshelf'
+      ];
+      localStorage.setItem('ownedDecor', JSON.stringify(allDecor));
+      refreshData();
+      log('Весь декор разблокирован');
+    }
+
+    function unlockAllClothes() {
+      const allClothes = [
+        'glasses', 'hat', 'bow', 'crown', 'hoodie', 'jacket', 'suit', 'tshirt'
+      ];
+      localStorage.setItem('ownedClothes', JSON.stringify(allClothes));
+      refreshData();
+      log('Вся одежда разблокирована');
+    }
+
+    function resetDecor() {
+      localStorage.setItem('ownedDecor', JSON.stringify(['poster-star', 'furniture-plant']));
+      localStorage.setItem('equippedDecor', JSON.stringify({wall: ['poster-star'], floor: ['furniture-plant']}));
+      refreshData();
+      log('Декор сброшен до начального состояния');
+    }
+
+    // LocalStorage
+    function exportData() {
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+      }
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `neuro-trainer-backup-${Date.now()}.json`;
+      a.click();
+      log('Данные экспортированы');
+    }
+
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            Object.keys(data).forEach(key => {
+              localStorage.setItem(key, data[key]);
+            });
+            refreshData();
+            log('Данные импортированы');
+            alert('Данные успешно импортированы!');
+          } catch (error) {
+            alert('Ошибка при импорте данных');
+            log('Ошибка импорта: ' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function clearAllData() {
+      if (!confirm('⚠️ Удалить ВСЕ данные игры? Это действие нельзя отменить!')) return;
+      if (!confirm('Вы уверены? Все достижения, монеты и прогресс будут удалены!')) return;
+      
+      localStorage.clear();
+      refreshData();
+      log('Все данные удалены');
+      alert('Все данные удалены. Страница будет перезагружена.');
+      setTimeout(() => location.reload(), 1000);
+    }
+
+    // Инициализация при загрузке
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshData();
+      log('Debug консоль загружена');
+    });
+  </script>
+</body>
+</html>
