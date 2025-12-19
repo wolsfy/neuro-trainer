@@ -459,24 +459,23 @@
       50% { transform: translateY(-15px) translateZ(0); }
     }
 
-    /* IMPROVED: Bigger, more realistic furniture */
     .floor-items {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 55%; /* Increased from 30% */
+      height: 55%;
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
-      padding: 0 30px 30px; /* Adjusted padding */
+      padding: 0 30px 30px;
       z-index: 5;
       pointer-events: none;
     }
 
     .furniture-item {
-      width: 220px;  /* Increased from 100px */
-      height: 220px; /* Increased from 100px */
+      width: 220px;
+      height: 220px;
       filter: drop-shadow(0 20px 35px rgba(0,0,0,0.4));
       animation: bounce 2.5s ease-in-out infinite;
       transition: all 0.3s ease;
@@ -487,7 +486,6 @@
       backface-visibility: hidden;
     }
 
-    /* Different sizes for different furniture types */
     .furniture-item.small {
       width: 150px;
       height: 150px;
@@ -530,6 +528,87 @@
       z-index: 10;
       width: 350px;
       height: 400px;
+    }
+
+    /* NEW: Robot head light */
+    .robot-head-light {
+      position: absolute;
+      top: 18%; /* Adjusted to match head position */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFD700 0%, #FFA500 60%, transparent 100%);
+      box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.8),
+        0 0 40px rgba(255, 215, 0, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.6);
+      z-index: 15;
+      animation: robotLightPulse 2s ease-in-out infinite;
+      will-change: opacity, transform;
+      transform-origin: center;
+      pointer-events: none;
+    }
+
+    /* Normal pulsing animation */
+    @keyframes robotLightPulse {
+      0%, 100% { 
+        opacity: 0.8;
+        box-shadow: 
+          0 0 15px rgba(255, 215, 0, 0.6),
+          0 0 30px rgba(255, 215, 0, 0.4),
+          inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+      50% { 
+        opacity: 1;
+        box-shadow: 
+          0 0 25px rgba(255, 215, 0, 0.9),
+          0 0 50px rgba(255, 215, 0, 0.6),
+          inset 0 0 12px rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    /* Flash animation for events */
+    @keyframes robotLightFlash {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      25% { opacity: 0.3; transform: translateX(-50%) scale(1.3); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1); }
+      75% { opacity: 0.3; transform: translateX(-50%) scale(1.3); }
+    }
+
+    .robot-head-light.flash {
+      animation: robotLightFlash 0.6s ease-in-out;
+    }
+
+    /* Color states based on robot status */
+    .robot-head-light.happy {
+      background: radial-gradient(circle, #4CAF50 0%, #8BC34A 60%, transparent 100%);
+      box-shadow: 
+        0 0 20px rgba(76, 175, 80, 0.8),
+        0 0 40px rgba(76, 175, 80, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    .robot-head-light.low-energy {
+      background: radial-gradient(circle, #FF5722 0%, #F44336 60%, transparent 100%);
+      box-shadow: 
+        0 0 20px rgba(244, 67, 54, 0.8),
+        0 0 40px rgba(244, 67, 54, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.6);
+      animation: robotLightPulse 1s ease-in-out infinite; /* Faster pulse when low */
+    }
+
+    .robot-head-light.excited {
+      background: radial-gradient(circle, #03A9F4 0%, #2196F3 60%, transparent 100%);
+      box-shadow: 
+        0 0 25px rgba(33, 150, 243, 0.9),
+        0 0 50px rgba(33, 150, 243, 0.6),
+        inset 0 0 12px rgba(255, 255, 255, 0.8);
+    }
+
+    body.page-hidden .robot-head-light {
+      animation-play-state: paused;
     }
 
     model-viewer {
@@ -948,6 +1027,9 @@
       <div class="thought-bubble" id="bubble">Привет! 👋</div>
 
       <div class="robot-container" id="robot-container">
+        <!-- NEW: Robot head light -->
+        <div class="robot-head-light" id="robot-light"></div>
+        
         <model-viewer
           id="robot-model"
           src="https://raw.githubusercontent.com/wolsfy/neuro-trainer/main/cute%20robot%203d%20model.glb"
@@ -1039,7 +1121,6 @@
       'furniture-bookshelf': 'https://api.iconify.design/twemoji/bookmark-tabs.svg?width=200&height=200'
     };
 
-    // Furniture sizes metadata
     const furnitureSizes = {
       'furniture-plant': 'small',
       'furniture-sofa': 'large',
@@ -1176,8 +1257,37 @@
       if (!isPageVisible) return;
       updateQueue.forEach(({ type, value }) => { robotStatus[type] = value; });
       updateStatusBarsThrottled();
+      updateRobotLightColor(); // Update light color
       saveDataDebounced();
       updateQueue = [];
+    }
+
+    // NEW: Update robot light color based on status
+    function updateRobotLightColor() {
+      const light = document.getElementById('robot-light');
+      light.classList.remove('happy', 'low-energy', 'excited');
+      
+      if (robotStatus.energy < 30) {
+        light.classList.add('low-energy'); // Red pulsing
+      } else if (robotStatus.mood > 80) {
+        light.classList.add('happy'); // Green
+      } else {
+        // Default yellow
+      }
+    }
+
+    // NEW: Flash robot light
+    function flashRobotLight(colorClass = '') {
+      const light = document.getElementById('robot-light');
+      light.classList.add('flash');
+      if (colorClass) {
+        light.classList.remove('happy', 'low-energy', 'excited');
+        light.classList.add(colorClass);
+      }
+      setTimeout(() => {
+        light.classList.remove('flash');
+        updateRobotLightColor(); // Return to status-based color
+      }, 600);
     }
 
     function updateRobotEmotion() {
@@ -1188,6 +1298,8 @@
       else if (robotStatus.hunger < 25) moodIcon.textContent = '😐';
       else if (robotStatus.energy < 40) moodIcon.textContent = '😪';
       else moodIcon.textContent = '🙂';
+      
+      updateRobotLightColor(); // Update light when emotion changes
     }
 
     function createParticles(emoji, count = 5) {
@@ -1335,6 +1447,7 @@
         showBubble('Установил! 🎉');
         queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 5));
         createParticles('✨', 3);
+        flashRobotLight('happy'); // Flash green
       } else {
         if (coins < item.price) {
           showBubble('Нет монет! 💰');
@@ -1347,6 +1460,7 @@
         playSound('buy');
         queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 10));
         createParticles('🎉', 5);
+        flashRobotLight('excited'); // Flash blue
       }
       saveData();
       updateUI();
@@ -1363,6 +1477,7 @@
     function feedRobot() {
       if (coins < 10) {
         showBubble('Нужно 10 монет! 💰');
+        flashRobotLight('low-energy'); // Flash red
         return;
       }
       coins -= 10;
@@ -1372,6 +1487,7 @@
       showBubble('Ням-ням! 😋🍔');
       createParticles('🍔', 4);
       createParticles('❤️', 3);
+      flashRobotLight('happy'); // Flash green
       if (typeof confetti !== 'undefined') {
         confetti({ particleCount: 80, spread: 70, origin: { x: 0.5, y: 0.6 } });
       }
@@ -1419,11 +1535,13 @@
       showBubble(phrases[Math.floor(Math.random() * phrases.length)]);
       queueStatusUpdate('mood', Math.min(100, robotStatus.mood + 2));
       createParticles('❤️', 3);
+      flashRobotLight(); // Flash current color
       updateRobotEmotion();
     });
 
     updateUI();
     updateRobotStatus();
+    updateRobotLightColor(); // Initialize light color
     
     setTimeout(() => {
       if (robotStatus.mood < 40) showBubble('Мне грустно... 😞');
