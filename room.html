@@ -402,7 +402,6 @@
       pointer-events: none;
     }
 
-    /* NEW: PNG Decoration styling */
     .decor-item {
       width: 80px;
       height: 80px;
@@ -424,7 +423,6 @@
       transition: transform 0.3s ease;
     }
 
-    /* Special glow effects for certain items */
     .decor-item.glow::before {
       content: '';
       position: absolute;
@@ -461,24 +459,25 @@
       50% { transform: translateY(-15px) translateZ(0); }
     }
 
+    /* IMPROVED: Bigger, more realistic furniture */
     .floor-items {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 30%;
+      height: 55%; /* Increased from 30% */
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
-      padding: 0 50px 40px;
+      padding: 0 30px 30px; /* Adjusted padding */
       z-index: 5;
       pointer-events: none;
     }
 
     .furniture-item {
-      width: 100px;
-      height: 100px;
-      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.35));
+      width: 220px;  /* Increased from 100px */
+      height: 220px; /* Increased from 100px */
+      filter: drop-shadow(0 20px 35px rgba(0,0,0,0.4));
       animation: bounce 2.5s ease-in-out infinite;
       transition: all 0.3s ease;
       pointer-events: auto;
@@ -486,6 +485,17 @@
       will-change: transform;
       transform: translateZ(0);
       backface-visibility: hidden;
+    }
+
+    /* Different sizes for different furniture types */
+    .furniture-item.small {
+      width: 150px;
+      height: 150px;
+    }
+
+    .furniture-item.large {
+      width: 250px;
+      height: 250px;
     }
 
     .furniture-item img {
@@ -499,8 +509,8 @@
     }
 
     .furniture-item:hover {
-      transform: translateY(-6px) scale(1.08) translateZ(0);
-      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.4));
+      transform: translateY(-6px) scale(1.05) translateZ(0);
+      filter: drop-shadow(0 22px 40px rgba(0,0,0,0.45));
     }
 
     .furniture-item:nth-child(1) { animation-delay: 0s; }
@@ -1016,8 +1026,6 @@
   </div>
 
   <script>
-    // Decoration images - using placeholder service for now
-    // You can replace these URLs with your own images later
     const decorImages = {
       'poster-star': 'https://api.iconify.design/twemoji/star.svg?width=80&height=80',
       'poster-brain': 'https://api.iconify.design/twemoji/brain.svg?width=80&height=80',
@@ -1025,20 +1033,22 @@
       'poster-trophy': 'https://api.iconify.design/twemoji/trophy.svg?width=80&height=80',
       'poster-books': 'https://api.iconify.design/twemoji/books.svg?width=80&height=80',
       'poster-bulb': 'https://api.iconify.design/twemoji/light-bulb.svg?width=80&height=80',
-      'furniture-plant': 'https://api.iconify.design/twemoji/potted-plant.svg?width=100&height=100',
-      'furniture-sofa': 'https://api.iconify.design/twemoji/couch-and-lamp.svg?width=100&height=100',
-      'furniture-desk': 'https://api.iconify.design/twemoji/laptop.svg?width=100&height=100',
-      'furniture-bookshelf': 'https://api.iconify.design/twemoji/bookmark-tabs.svg?width=100&height=100'
+      'furniture-plant': 'https://api.iconify.design/twemoji/potted-plant.svg?width=200&height=200',
+      'furniture-sofa': 'https://api.iconify.design/twemoji/couch-and-lamp.svg?width=250&height=250',
+      'furniture-desk': 'https://api.iconify.design/twemoji/laptop.svg?width=200&height=200',
+      'furniture-bookshelf': 'https://api.iconify.design/twemoji/bookmark-tabs.svg?width=200&height=200'
+    };
+
+    // Furniture sizes metadata
+    const furnitureSizes = {
+      'furniture-plant': 'small',
+      'furniture-sofa': 'large',
+      'furniture-desk': 'medium',
+      'furniture-bookshelf': 'medium'
     };
 
     let debugEnabled = localStorage.getItem('debugEnabled') === 'true';
-    let debugStats = {
-      fps: 0,
-      frameCount: 0,
-      lastTime: performance.now(),
-      updateCount: 0,
-      particleCount: 0
-    };
+    let debugStats = { fps: 0, frameCount: 0, lastTime: performance.now(), updateCount: 0, particleCount: 0 };
 
     function toggleDebug() {
       debugEnabled = !debugEnabled;
@@ -1057,7 +1067,6 @@
       if (!debugEnabled) return;
       const now = performance.now();
       debugStats.frameCount++;
-      
       if (now >= debugStats.lastTime + 1000) {
         debugStats.fps = Math.round((debugStats.frameCount * 1000) / (now - debugStats.lastTime));
         debugStats.frameCount = 0;
@@ -1138,7 +1147,7 @@
       ],
       floor: [
         { id: 'furniture-plant', icon: '🌿', name: 'Растение', price: 0 },
-        { id: 'furniture-sofa', icon: '🛌', name: 'Кровать', price: 200 },
+        { id: 'furniture-sofa', icon: '🛌', name: 'Диван', price: 200 },
         { id: 'furniture-desk', icon: '💻', name: 'Ноутбук', price: 300 },
         { id: 'furniture-bookshelf', icon: '📚', name: 'Книги', price: 250 },
       ]
@@ -1146,10 +1155,7 @@
 
     let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
     let ownedDecor = JSON.parse(localStorage.getItem('ownedDecor')) || ['poster-star', 'furniture-plant'];
-    let equippedDecor = JSON.parse(localStorage.getItem('equippedDecor')) || {
-      wall: ['poster-star'],
-      floor: ['furniture-plant']
-    };
+    let equippedDecor = JSON.parse(localStorage.getItem('equippedDecor')) || { wall: ['poster-star'], floor: ['furniture-plant'] };
     let currentCategory = 'wall';
     let robotStatus = {
       mood: parseInt(localStorage.getItem('robotMood')) || 80,
@@ -1168,9 +1174,7 @@
     function flushUpdates() {
       if (updateQueue.length === 0) return;
       if (!isPageVisible) return;
-      updateQueue.forEach(({ type, value }) => {
-        robotStatus[type] = value;
-      });
+      updateQueue.forEach(({ type, value }) => { robotStatus[type] = value; });
       updateStatusBarsThrottled();
       saveDataDebounced();
       updateQueue = [];
@@ -1269,7 +1273,8 @@
         const item = [...decorItems.wall, ...decorItems.floor].find(i => i.id === id);
         if (item) {
           const div = document.createElement('div');
-          div.className = 'furniture-item';
+          const sizeClass = furnitureSizes[id] || 'medium';
+          div.className = 'furniture-item ' + sizeClass;
           const img = document.createElement('img');
           img.src = decorImages[id] || '';
           img.alt = item.name;
