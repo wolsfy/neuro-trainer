@@ -216,8 +216,7 @@
       right: 40px;
       width: 180px;
       height: 200px;
-      background: linear-gradient(180deg, #87CEEB 0%, #B0D8F0 100%);
-      border-radius: 12px;
+      background: linear-gradient(180deg, #87CEEB 0%, #B0D8F0 100%); border-radius: 12px;
       border: 8px solid #8B7355;
       box-shadow: 
         inset 0 0 20px rgba(0,0,0,0.1),
@@ -453,7 +452,6 @@
       50% { transform: translateY(-8px); }
     }
 
-    /* === 3D РОБОТ === */
     .robot-container {
       position: absolute;
       top: 50%;
@@ -847,12 +845,12 @@
   <div class="modal-overlay" id="modal" onclick="closeModalOnOverlay(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">🎨 Магазин декора</div>
+        <div class="modal-title">🔮 Магазин декора</div>
         <button class="modal-close" onclick="closeDecorShop()">×</button>
       </div>
       <div class="category-tabs">
-        <button class="category-tab active" onclick="showCategory('wall')">🖼️ Стены</button>
-        <button class="category-tab" onclick="showCategory('floor')">📚 Мебель</button>
+        <button class="category-tab active" onclick="showCategory('wall')">🔮 Голограммы</button>
+        <button class="category-tab" onclick="showCategory('floor')">🔬 Технологии</button>
       </div>
       <div class="decor-grid" id="decor-grid"></div>
     </div>
@@ -861,26 +859,26 @@
   <script>
     const decorItems = {
       wall: [
-        { id: 'poster-star', icon: 'images/decor/star.svg', name: 'Звезда', price: 0 },
-        { id: 'poster-brain', icon: 'images/decor/brain.svg', name: 'Мозг', price: 50 },
-        { id: 'poster-rocket', icon: 'images/decor/rocket.svg', name: 'Ракета', price: 100 },
-        { id: 'poster-trophy', icon: 'images/decor/trophy.svg', name: 'Кубок', price: 150 },
-        { id: 'poster-books', icon: 'images/decor/books.svg', name: 'Книги', price: 80 },
-        { id: 'poster-bulb', icon: 'images/decor/bulb.svg', name: 'Лампочка', price: 120 },
+        { id: 'hologram', icon: 'images/decor/hologram.svg', name: 'Голограмма', price: 0 },
+        { id: 'neural', icon: 'images/decor/neural-network.svg', name: 'Нейросеть', price: 100 },
+        { id: 'dna', icon: 'images/decor/dna.svg', name: 'ДНК спираль', price: 120 },
+        { id: 'atom', icon: 'images/decor/atom.svg', name: 'Атом', price: 150 },
+        { id: 'formula', icon: 'images/decor/formula.svg', name: 'Формула', price: 80 },
+        { id: 'circuit', icon: 'images/decor/circuit.svg', name: 'Схема', price: 130 },
       ],
       floor: [
-        { id: 'furniture-plant', icon: 'images/furniture/plant.svg', name: 'Растение', price: 0 },
-        { id: 'furniture-sofa', icon: 'images/furniture/bed.svg', name: 'Кровать', price: 200 },
-        { id: 'furniture-desk', icon: 'images/furniture/laptop.svg', name: 'Ноутбук', price: 300 },
-        { id: 'furniture-bookshelf', icon: 'images/furniture/bookshelf.svg', name: 'Книги', price: 250 },
+        { id: 'levitation', icon: 'images/furniture/levitation.svg', name: 'Левитация', price: 0 },
+        { id: 'neon-plant', icon: 'images/furniture/neon-plant.svg', name: 'Неон растение', price: 180 },
+        { id: 'holo-desk', icon: 'images/furniture/holo-desk.svg', name: 'Голо-стол', price: 250 },
+        { id: 'cyber-shelf', icon: 'images/furniture/cyber-shelf.svg', name: 'Кибер-шкаф', price: 220 },
       ]
     };
 
     let coins = parseInt(localStorage.getItem('neuroCoins')) || 0;
-    let ownedDecor = JSON.parse(localStorage.getItem('ownedDecor')) || ['poster-star', 'furniture-plant'];
+    let ownedDecor = JSON.parse(localStorage.getItem('ownedDecor')) || ['hologram', 'levitation'];
     let equippedDecor = JSON.parse(localStorage.getItem('equippedDecor')) || {
-      wall: ['poster-star'],
-      floor: ['furniture-plant']
+      wall: ['hologram'],
+      floor: ['levitation']
     };
     let currentCategory = 'wall';
 
