@@ -53,12 +53,31 @@
       width: 100%;
       height: 100%;
       position: relative;
-      background:
-        linear-gradient(180deg, #c9def5 0%, #dbe7ff 45%, #e9edf5 45%, #f5f5f5 100%);
+      background: linear-gradient(180deg, 
+        #e8eef5 0%, 
+        #f0f4f8 40%, 
+        #f5f7fa 40%, 
+        #fafbfc 100%);
       overflow: hidden;
       transform-style: preserve-3d;
     }
 
+    /* Голографические панели на стенах */
+    .room-view::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 40%;
+      background: 
+        linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.05) 20%, transparent 40%),
+        linear-gradient(90deg, transparent 60%, rgba(124,77,255,0.05) 80%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Стеклянный пол с подсветкой */
     .room-view::after {
       content: '';
       position: absolute;
@@ -68,22 +87,96 @@
       width: 140%;
       height: 60%;
       background:
-        linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(0,0,0,0.06) 1px, transparent 1px);
-      background-size: 60px 60px;
-      background-color: #e0d4c5;
-      opacity: 0.8;
+        linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0,229,255,0.1) 1px, 
+          transparent 2px,
+          transparent calc(100% - 2px),
+          rgba(124,77,255,0.1) calc(100% - 1px),
+          transparent 100%
+        ),
+        linear-gradient(0deg, 
+          transparent 0%, 
+          rgba(0,229,255,0.08) 1px, 
+          transparent 2px
+        );
+      background-size: 80px 80px;
+      background-color: rgba(240,245,250,0.9);
+      box-shadow: 
+        inset 0 0 50px rgba(0,229,255,0.1),
+        0 -5px 30px rgba(124,77,255,0.05);
+      opacity: 0.95;
       z-index: 1;
+      animation: floorGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes floorGlow {
+      0%, 100% { 
+        box-shadow: inset 0 0 50px rgba(0,229,255,0.1), 0 -5px 30px rgba(124,77,255,0.05);
+      }
+      50% { 
+        box-shadow: inset 0 0 60px rgba(0,229,255,0.15), 0 -5px 40px rgba(124,77,255,0.1);
+      }
+    }
+
+    /* Светящиеся линии на стенах */
+    .wall-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .wall-line {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0,229,255,0.4) 50%, 
+        transparent 100%);
+      animation: linePulse 3s ease-in-out infinite;
+    }
+
+    .wall-line:nth-child(1) {
+      top: 15%;
+      left: 5%;
+      width: 30%;
+      animation-delay: 0s;
+    }
+
+    .wall-line:nth-child(2) {
+      top: 25%;
+      right: 10%;
+      width: 25%;
+      animation-delay: 1s;
+    }
+
+    .wall-line:nth-child(3) {
+      top: 35%;
+      left: 15%;
+      width: 20%;
+      animation-delay: 2s;
+    }
+
+    @keyframes linePulse {
+      0%, 100% { opacity: 0.3; transform: scaleX(1); }
+      50% { opacity: 0.8; transform: scaleX(1.1); }
     }
 
     .robot-status {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: white;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
       padding: 15px;
       border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 
+        0 6px 20px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(0,229,255,0.1);
       min-width: 200px;
       z-index: 20;
     }
@@ -94,7 +187,7 @@
       gap: 10px;
       margin-bottom: 12px;
       padding-bottom: 10px;
-      border-bottom: 2px solid #f0f0f0;
+      border-bottom: 2px solid rgba(0,229,255,0.1);
     }
 
     .robot-avatar {
@@ -151,7 +244,7 @@
 
     .status-bar {
       height: 8px;
-      background: #e0e0e0;
+      background: rgba(224,224,224,0.5);
       border-radius: 10px;
       overflow: hidden;
       position: relative;
@@ -175,7 +268,7 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255,255,255,0.3),
+        rgba(255,255,255,0.4),
         transparent
       );
       animation: shimmer 2s infinite;
@@ -191,7 +284,7 @@
     }
 
     .status-bar-fill.energy {
-      background: linear-gradient(90deg, #2196F3, #03A9F4);
+      background: linear-gradient(90deg, #00bcd4, #00E5FF);
     }
 
     .status-bar-fill.hunger {
@@ -210,19 +303,26 @@
       text-align: right;
     }
 
+    /* Био-купол окно */
     .window-container {
       position: absolute;
       top: 60px;
       right: 40px;
       width: 180px;
       height: 200px;
-      background: linear-gradient(180deg, #87CEEB 0%, #B0D8F0 100%); border-radius: 12px;
-      border: 8px solid #8B7355;
+      background: linear-gradient(180deg, 
+        rgba(135,206,235,0.3) 0%, 
+        rgba(144,238,144,0.2) 50%,
+        rgba(152,251,152,0.3) 100%);
+      border-radius: 16px;
+      border: 3px solid rgba(255,255,255,0.8);
       box-shadow: 
-        inset 0 0 20px rgba(0,0,0,0.1),
-        0 10px 30px rgba(0,0,0,0.3);
+        inset 0 0 30px rgba(0,229,255,0.1),
+        0 10px 40px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(0,229,255,0.2);
       overflow: hidden;
       z-index: 2;
+      backdrop-filter: blur(5px);
     }
 
     .window-frame {
@@ -238,10 +338,10 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 6px;
+      width: 3px;
       height: 100%;
-      background: #6B5644;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.6);
+      box-shadow: 0 0 10px rgba(0,229,255,0.3);
     }
 
     .window-cross-horizontal {
@@ -249,9 +349,9 @@
       top: 50%;
       transform: translateY(-50%);
       width: 100%;
-      height: 6px;
-      background: #6B5644;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      height: 3px;
+      background: rgba(255,255,255,0.6);
+      box-shadow: 0 0 10px rgba(0,229,255,0.3);
     }
 
     .window-sky {
@@ -259,111 +359,82 @@
       height: 100%;
       position: relative;
       overflow: hidden;
+      background: linear-gradient(180deg, 
+        rgba(135,206,250,0.3) 0%, 
+        rgba(152,251,152,0.2) 100%);
     }
 
-    .cloud {
+    /* Растения в био-куполе */
+    .bio-plant {
       position: absolute;
-      background: white;
-      border-radius: 50px;
-      opacity: 0.9;
-      animation: cloudFloat 20s linear infinite;
+      background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(34,139,34,0.6) 100%);
+      border-radius: 50% 50% 0 0;
+      animation: plantGrow 4s ease-in-out infinite;
     }
 
-    .cloud::before,
-    .cloud::after {
-      content: '';
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .cloud-1 {
-      width: 40px;
-      height: 15px;
-      top: 30%;
-      left: -60px;
-    }
-
-    .cloud-1::before {
-      width: 20px;
-      height: 20px;
-      top: -8px;
-      left: 8px;
-    }
-
-    .cloud-1::after {
-      width: 25px;
-      height: 18px;
-      top: -6px;
-      right: 8px;
-    }
-
-    .cloud-2 {
-      width: 35px;
-      height: 12px;
-      top: 60%;
-      left: -50px;
-      animation-delay: 8s;
-      animation-duration: 25s;
-    }
-
-    .cloud-2::before {
-      width: 18px;
-      height: 18px;
-      top: -7px;
-      left: 6px;
-    }
-
-    .cloud-2::after {
-      width: 22px;
-      height: 15px;
-      top: -5px;
-      right: 6px;
-    }
-
-    .cloud-3 {
-      width: 30px;
-      height: 10px;
-      top: 45%;
-      left: -40px;
-      animation-delay: 15s;
-      animation-duration: 30s;
-    }
-
-    .cloud-3::before {
+    .bio-plant:nth-child(1) {
+      bottom: 0;
+      left: 10%;
       width: 15px;
-      height: 15px;
-      top: -6px;
-      left: 5px;
+      height: 40px;
+      animation-delay: 0s;
     }
 
-    .cloud-3::after {
+    .bio-plant:nth-child(2) {
+      bottom: 0;
+      left: 30%;
+      width: 20px;
+      height: 50px;
+      animation-delay: 0.5s;
+    }
+
+    .bio-plant:nth-child(3) {
+      bottom: 0;
+      right: 25%;
       width: 18px;
-      height: 12px;
-      top: -4px;
-      right: 5px;
+      height: 45px;
+      animation-delay: 1s;
     }
 
-    @keyframes cloudFloat {
-      from { transform: translateX(0); }
-      to { transform: translateX(250px); }
+    .bio-plant:nth-child(4) {
+      bottom: 0;
+      right: 10%;
+      width: 22px;
+      height: 55px;
+      animation-delay: 1.5s;
     }
 
-    .sun {
+    @keyframes plantGrow {
+      0%, 100% { transform: scaleY(1); opacity: 0.6; }
+      50% { transform: scaleY(1.1); opacity: 0.8; }
+    }
+
+    /* Светящееся солнце */
+    .bio-sun {
       position: absolute;
-      top: 20px;
-      right: 25px;
-      width: 35px;
-      height: 35px;
-      background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+      top: 25px;
+      right: 30px;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, 
+        rgba(255,215,0,0.8) 0%, 
+        rgba(255,165,0,0.4) 100%);
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-      animation: sunGlow 3s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(255,215,0,0.5);
+      animation: bioSunGlow 3s ease-in-out infinite;
     }
 
-    @keyframes sunGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
-      50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.9); }
+    @keyframes bioSunGlow {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 30px rgba(255,215,0,0.7);
+        transform: scale(1.05);
+      }
     }
 
     .wall-decor {
@@ -383,7 +454,7 @@
     .decor-item {
       width: 80px;
       height: 80px;
-      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
+      filter: drop-shadow(0 5px 15px rgba(0,229,255,0.3));
       animation: float 3s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
@@ -398,6 +469,7 @@
 
     .decor-item:hover {
       transform: translateY(-8px) scale(1.08);
+      filter: drop-shadow(0 8px 20px rgba(0,229,255,0.5));
     }
 
     .decor-item:nth-child(1) { animation-delay: 0s; }
@@ -426,7 +498,7 @@
     .furniture-item {
       width: 100px;
       height: 100px;
-      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 10px 20px rgba(0,229,255,0.2));
       animation: bounce 2.5s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
@@ -441,6 +513,7 @@
 
     .furniture-item:hover {
       transform: translateY(-6px) scale(1.05);
+      filter: drop-shadow(0 15px 30px rgba(124,77,255,0.3));
     }
 
     .furniture-item:nth-child(1) { animation-delay: 0s; }
@@ -469,7 +542,7 @@
     }
 
     model-viewer::part(default-progress-bar) {
-      background: var(--primary);
+      background: linear-gradient(90deg, #00E5FF, #7C4DFF);
     }
 
     .thought-bubble {
@@ -477,10 +550,13 @@
       top: -20px;
       left: 50%;
       transform: translateX(-50%) scale(0);
-      background: white;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(10px);
       padding: 12px 20px;
       border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 
+        0 4px 15px rgba(0,0,0,0.15),
+        0 0 0 1px rgba(0,229,255,0.2);
       font-weight: bold;
       color: #444;
       font-size: 1rem;
@@ -500,7 +576,7 @@
       height: 0;
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
-      border-top: 10px solid white;
+      border-top: 10px solid rgba(255,255,255,0.98);
     }
 
     .thought-bubble.show {
@@ -551,8 +627,9 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       padding: 12px;
-      background: white;
-      border-top: 2px solid #f0f0f0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(10px);
+      border-top: 2px solid rgba(0,229,255,0.1);
       z-index: 100;
       height: 80px;
       box-sizing: border-box;
@@ -566,7 +643,7 @@
       font-size: 0.85rem;
       font-weight: bold;
       color: var(--text);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0,229,255,0.1);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -578,7 +655,7 @@
     
     .room-btn:active { 
       transform: scale(0.95);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,229,255,0.15);
     }
     
     .btn-icon { font-size: 1.6rem; }
@@ -606,12 +683,15 @@
     }
 
     .modal-content {
-      background: white;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
       width: 100%;
       max-height: 75vh;
       border-radius: 25px 25px 0 0;
       padding: 20px;
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+      box-shadow: 
+        0 -5px 20px rgba(0,0,0,0.2),
+        0 0 0 1px rgba(0,229,255,0.1);
       animation: slideUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       overflow-y: auto;
     }
@@ -627,7 +707,7 @@
       align-items: center;
       margin-bottom: 15px;
       padding-bottom: 15px;
-      border-bottom: 2px solid #f0f0f0;
+      border-bottom: 2px solid rgba(0,229,255,0.1);
     }
 
     .modal-title {
@@ -651,7 +731,7 @@
     }
 
     .modal-close:active {
-      background: #f0f0f0;
+      background: rgba(0,229,255,0.1);
     }
 
     .category-tabs {
@@ -663,7 +743,7 @@
     .category-tab {
       flex: 1;
       padding: 10px 16px;
-      background: #f0f0f0;
+      background: rgba(240,240,240,0.8);
       border: none;
       border-radius: 12px;
       font-weight: bold;
@@ -674,9 +754,10 @@
     }
 
     .category-tab.active {
-      background: var(--primary);
+      background: linear-gradient(135deg, #00E5FF, #7C4DFF);
       color: white;
       transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0,229,255,0.3);
     }
 
     .decor-grid {
@@ -687,8 +768,9 @@
     }
 
     .decor-card {
-      background: #f8f9fa;
-      border: 3px solid #e0e0e0;
+      background: rgba(248,249,250,0.8);
+      backdrop-filter: blur(10px);
+      border: 3px solid rgba(224,224,224,0.5);
       border-radius: 16px;
       padding: 15px;
       text-align: center;
@@ -701,14 +783,14 @@
     }
 
     .decor-card.owned {
-      border-color: var(--primary);
-      background: #e3f2fd;
+      border-color: rgba(0,229,255,0.5);
+      background: rgba(227,242,253,0.8);
     }
 
     .decor-card.equipped {
-      border-color: var(--accent);
-      background: #fff3e0;
-      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+      border-color: rgba(124,77,255,0.5);
+      background: rgba(243,229,255,0.8);
+      box-shadow: 0 0 0 3px rgba(124,77,255,0.2);
     }
 
     .decor-icon {
@@ -743,7 +825,7 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="btn-back">←</a>
-    <div class="game-info">🏠 Комната</div>
+    <div class="game-info">🔬 Лаборатория</div>
     <div class="balance-badge">
       <span id="coins">0</span> 💰
     </div>
@@ -751,6 +833,13 @@
 
   <div class="room-screen">
     <div class="room-view">
+      <!-- Голографические линии -->
+      <div class="wall-lines">
+        <div class="wall-line"></div>
+        <div class="wall-line"></div>
+        <div class="wall-line"></div>
+      </div>
+
       <div class="robot-status">
         <div class="status-header">
           <div class="robot-avatar">🤖</div>
@@ -793,12 +882,14 @@
         </div>
       </div>
 
+      <!-- Био-купол окно -->
       <div class="window-container">
         <div class="window-sky">
-          <div class="sun"></div>
-          <div class="cloud cloud-1"></div>
-          <div class="cloud cloud-2"></div>
-          <div class="cloud cloud-3"></div>
+          <div class="bio-sun"></div>
+          <div class="bio-plant"></div>
+          <div class="bio-plant"></div>
+          <div class="bio-plant"></div>
+          <div class="bio-plant"></div>
         </div>
         <div class="window-frame">
           <div class="window-cross-vertical"></div>
@@ -1148,7 +1239,7 @@
         'Я тут! 🤖',
         'Что делаем? 🎮',
         'Укрась комнату! 🎨',
-        'Смотри в окно! 🤩',
+        'Смотри в окно! 🌿',
         'Покорми меня! 🍔',
         'Давай играть! 🎯'
       ];
@@ -1172,7 +1263,7 @@
       } else if (robotStatus.hunger < 30) {
         showBubble('Хочу кушать! 🍔');
       } else {
-        showBubble('Привет! 👋');
+        showBubble('Добро пожаловать в лабораторию! 🔬');
       }
     }, 1000);
 
