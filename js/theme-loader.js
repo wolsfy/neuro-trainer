@@ -3,12 +3,11 @@
  * Автоматически загружает и применяет активную тему при загрузке страницы
  */
 
-// Темы оформления
+// Темы оформления (синхронизировано с shop.js)
 const themes = [
     {
-        id: 'standard',
+        id: 'theme-default',
         name: 'Стандарт',
-        desc: 'Бесплатно',
         color: '#2196F3',
         vars: {
             primary: '#2196F3',
@@ -21,9 +20,8 @@ const themes = [
         }
     },
     {
-        id: 'hacker',
+        id: 'theme-hacker',
         name: 'Хакер',
-        desc: '100 монет',
         color: '#000',
         vars: {
             primary: '#00FF00',
@@ -36,9 +34,8 @@ const themes = [
         }
     },
     {
-        id: 'unicorn',
+        id: 'theme-unicorn',
         name: 'Единорог',
-        desc: '150 монет',
         color: '#E1BEE7',
         vars: {
             primary: '#9C27B0',
@@ -51,9 +48,8 @@ const themes = [
         }
     },
     {
-        id: 'cosmos',
+        id: 'theme-space',
         name: 'Космос',
-        desc: '200 монет',
         color: '#1A237E',
         vars: {
             primary: '#3F51B5',
@@ -71,7 +67,13 @@ const themes = [
  * Получить текущую активную тему
  */
 function getActiveTheme() {
-    const activeThemeId = localStorage.getItem('neuroTheme') || 'standard';
+    const activeThemeId = localStorage.getItem('neuroTheme') || '';
+    
+    // Если тема не установлена или пустая строка - используем стандартную
+    if (!activeThemeId || activeThemeId === 'theme-default') {
+        return themes[0]; // Стандарт
+    }
+    
     return themes.find(t => t.id === activeThemeId) || themes[0];
 }
 
@@ -86,9 +88,11 @@ function applyTheme(theme) {
         root.style.setProperty(`--${key}`, value);
     }
     
-    // Добавляем класс темы на body
-    document.body.classList.remove('theme-standard', 'theme-hacker', 'theme-unicorn', 'theme-cosmos');
-    document.body.classList.add(`theme-${theme.id}`);
+    // Добавляем класс темы на body (для совместимости с shop.js)
+    document.body.classList.remove('theme-default', 'theme-hacker', 'theme-unicorn', 'theme-space');
+    if (theme.id && theme.id !== 'theme-default') {
+        document.body.classList.add(theme.id);
+    }
     
     console.log(`🎨 Тема применена: ${theme.name}`);
 }
