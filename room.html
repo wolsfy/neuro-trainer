@@ -655,7 +655,7 @@
       left: 0;
       right: 0;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr); /* Changed from 3 to 2 columns */
       gap: 10px;
       padding: 12px;
       background: white;
@@ -967,14 +967,11 @@
     </div>
   </div>
 
+  <!-- ROOM CONTROLS - Removed clothing button -->
   <div class="room-controls">
     <button class="room-btn" onclick="openDecorShop()">
       <span class="btn-icon">🎨</span>
       <span>Декор</span>
-    </button>
-    <button class="room-btn" onclick="window.location.href='shop.html'">
-      <span class="btn-icon">👕</span>
-      <span>Одежда</span>
     </button>
     <button class="room-btn" onclick="feedRobot()">
       <span class="btn-icon">⚡</span>
