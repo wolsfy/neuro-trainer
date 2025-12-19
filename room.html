@@ -482,7 +482,6 @@
       z-index: 10;
       width: 350px;
       height: 400px;
-      /* FIX: Убрал contain, чтобы не обрезало облачко */
     }
 
     model-viewer {
@@ -495,10 +494,9 @@
       background: var(--primary);
     }
 
-    /* FIX: Перенос облачко на уровень .room-view */
     .thought-bubble {
       position: absolute;
-      top: calc(50% - 220px); /* Позиционирование над роботом */
+      top: calc(50% - 220px);
       left: 50%;
       transform: translateX(-50%) scale(0) translateZ(0);
       background: white;
@@ -571,6 +569,84 @@
         opacity: 0;
         transform: translate(var(--x), -80px) scale(1.2) translateZ(0);
       }
+    }
+
+    /* DEBUG PANEL */
+    .debug-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      padding: 10px;
+      border-radius: 8px;
+      min-width: 200px;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .debug-panel.active {
+      display: block;
+    }
+
+    .debug-panel h3 {
+      margin: 0 0 8px 0;
+      color: #ff0;
+      font-size: 12px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 4px;
+    }
+
+    .debug-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+      line-height: 1.4;
+    }
+
+    .debug-label {
+      color: #0ff;
+    }
+
+    .debug-value {
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    .debug-value.warning {
+      color: #ff0;
+    }
+
+    .debug-value.error {
+      color: #f00;
+    }
+
+    .debug-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      z-index: 10000;
+      transition: all 0.2s;
+    }
+
+    .debug-toggle:hover {
+      background: rgba(0, 255, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    .debug-toggle:active {
+      transform: scale(0.95);
     }
 
     .room-controls {
@@ -835,7 +911,6 @@
 
       <div class="wall-decor" id="wall-decor"></div>
 
-      <!-- FIX: Облачко перенесено сюда, чтобы не обрезалось -->
       <div class="thought-bubble" id="bubble">Привет! 👋</div>
 
       <div class="robot-container" id="robot-container">
@@ -859,6 +934,36 @@
       </div>
 
       <div class="floor-items" id="floor-items"></div>
+    </div>
+  </div>
+
+  <!-- DEBUG PANEL -->
+  <button class="debug-toggle" onclick="toggleDebug()">DEBUG</button>
+  <div class="debug-panel" id="debug-panel">
+    <h3>⚡ DEBUG INFO</h3>
+    <div class="debug-row">
+      <span class="debug-label">FPS:</span>
+      <span class="debug-value" id="debug-fps">60</span>
+    </div>
+    <div class="debug-row">
+      <span class="debug-label">Page:</span>
+      <span class="debug-value" id="debug-visibility">visible</span>
+    </div>
+    <div class="debug-row">
+      <span class="debug-label">Animations:</span>
+      <span class="debug-value" id="debug-animations">active</span>
+    </div>
+    <div class="debug-row">
+      <span class="debug-label">Updates:</span>
+      <span class="debug-value" id="debug-updates">0</span>
+    </div>
+    <div class="debug-row">
+      <span class="debug-label">Particles:</span>
+      <span class="debug-value" id="debug-particles">0</span>
+    </div>
+    <div class="debug-row">
+      <span class="debug-label">Model:</span>
+      <span class="debug-value" id="debug-model">loading</span>
     </div>
   </div>
 
@@ -892,6 +997,67 @@
   </div>
 
   <script>
+    /* ===== DEBUG SYSTEM ===== */
+    let debugEnabled = localStorage.getItem('debugEnabled') === 'true';
+    let debugStats = {
+      fps: 0,
+      frameCount: 0,
+      lastTime: performance.now(),
+      updateCount: 0,
+      particleCount: 0
+    };
+
+    function toggleDebug() {
+      debugEnabled = !debugEnabled;
+      localStorage.setItem('debugEnabled', debugEnabled);
+      document.getElementById('debug-panel').classList.toggle('active', debugEnabled);
+    }
+
+    // Ctrl+D to toggle debug
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        toggleDebug();
+      }
+    });
+
+    function updateDebugPanel() {
+      if (!debugEnabled) return;
+
+      const now = performance.now();
+      debugStats.frameCount++;
+      
+      if (now >= debugStats.lastTime + 1000) {
+        debugStats.fps = Math.round((debugStats.frameCount * 1000) / (now - debugStats.lastTime));
+        debugStats.frameCount = 0;
+        debugStats.lastTime = now;
+
+        const fpsEl = document.getElementById('debug-fps');
+        fpsEl.textContent = debugStats.fps;
+        fpsEl.className = 'debug-value';
+        if (debugStats.fps < 30) fpsEl.classList.add('error');
+        else if (debugStats.fps < 50) fpsEl.classList.add('warning');
+
+        document.getElementById('debug-visibility').textContent = isPageVisible ? 'visible' : 'hidden';
+        document.getElementById('debug-animations').textContent = isPageVisible ? 'active' : 'paused';
+        document.getElementById('debug-updates').textContent = debugStats.updateCount;
+        
+        const particleCount = document.querySelectorAll('.particle').length;
+        debugStats.particleCount = particleCount;
+        document.getElementById('debug-particles').textContent = particleCount;
+
+        const modelViewer = document.getElementById('robot-model');
+        const modelLoaded = modelViewer && modelViewer.modelIsVisible;
+        document.getElementById('debug-model').textContent = modelLoaded ? 'loaded' : 'loading';
+      }
+    }
+
+    // Show debug panel if it was enabled
+    if (debugEnabled) {
+      document.getElementById('debug-panel').classList.add('active');
+    }
+
+    /* ===== UTILITIES ===== */
     function throttle(func, delay) {
       let lastCall = 0;
       return function(...args) {
@@ -978,6 +1144,7 @@
 
     function queueStatusUpdate(type, value) {
       updateQueue.push({ type, value });
+      debugStats.updateCount++;
     }
 
     function flushUpdates() {
@@ -1277,6 +1444,7 @@
     }, 1000);
 
     function updateLoop() {
+      updateDebugPanel();
       flushUpdates();
       requestAnimationFrame(updateLoop);
     }
