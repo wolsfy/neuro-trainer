@@ -495,19 +495,22 @@
       background: var(--primary);
     }
 
+    /* FIX: Увеличено облачко, чтобы текст не обрезался */
     .thought-bubble {
       position: absolute;
-      top: -20px;
+      top: -30px;
       left: 50%;
       transform: translateX(-50%) scale(0) translateZ(0);
       background: white;
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-radius: 20px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       font-weight: bold;
       color: #444;
-      font-size: 1rem;
-      white-space: nowrap;
+      font-size: 0.95rem;
+      /* FIX: Убрано white-space: nowrap, добавлен max-width */
+      max-width: 280px;
+      text-align: center;
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       z-index: 20;
@@ -834,7 +837,6 @@
 
       <div class="robot-container" id="robot-container">
         <div class="thought-bubble" id="bubble">Привет! 👋</div>
-        <!-- TEMP: Using CDN for original model to avoid deployment timeout -->
         <model-viewer
           id="robot-model"
           src="https://raw.githubusercontent.com/wolsfy/neuro-trainer/main/cute%20robot%203d%20model.glb"
