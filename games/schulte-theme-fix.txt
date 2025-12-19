@@ -1,0 +1,3 @@
+Add this line after <link rel="stylesheet" href="../css/style.css">:
+
+<script src="/neuro-trainer/js/theme-loader.js?v=2"></script>
