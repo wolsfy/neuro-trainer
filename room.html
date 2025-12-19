@@ -49,78 +49,40 @@
       overflow: hidden;
     }
 
+    /* Космическая станция */
     .room-view {
       width: 100%;
       height: 100%;
       position: relative;
       background: linear-gradient(180deg, 
-        #e8eef5 0%, 
-        #f0f4f8 40%, 
-        #f5f7fa 40%, 
-        #fafbfc 100%);
+        #0a1628 0%, 
+        #1a2744 40%, 
+        #1a2744 40%, 
+        #243552 100%);
       overflow: hidden;
       transform-style: preserve-3d;
     }
 
-    /* Голографические панели на стенах */
+    /* Металлические панели на стенах */
     .room-view::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 10%;
-      right: 10%;
+      left: 0;
+      right: 0;
       height: 40%;
-      background: 
-        linear-gradient(90deg, transparent 0%, rgba(0,229,255,0.05) 20%, transparent 40%),
-        linear-gradient(90deg, transparent 60%, rgba(124,77,255,0.05) 80%, transparent 100%);
+      background-image:
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0%, rgba(33,150,243,0.05) 15%, transparent 30%),
+        linear-gradient(90deg, transparent 70%, rgba(33,150,243,0.05) 85%, transparent 100%);
+      background-size: 100px 100px, 100px 100px, 100% 100%, 100% 100%;
       pointer-events: none;
       z-index: 1;
     }
 
-    /* Стеклянный пол с подсветкой */
-    .room-view::after {
-      content: '';
-      position: absolute;
-      bottom: -10%;
-      left: 50%;
-      transform: translateX(-50%) rotateX(60deg);
-      width: 140%;
-      height: 60%;
-      background:
-        linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(0,229,255,0.1) 1px, 
-          transparent 2px,
-          transparent calc(100% - 2px),
-          rgba(124,77,255,0.1) calc(100% - 1px),
-          transparent 100%
-        ),
-        linear-gradient(0deg, 
-          transparent 0%, 
-          rgba(0,229,255,0.08) 1px, 
-          transparent 2px
-        );
-      background-size: 80px 80px;
-      background-color: rgba(240,245,250,0.9);
-      box-shadow: 
-        inset 0 0 50px rgba(0,229,255,0.1),
-        0 -5px 30px rgba(124,77,255,0.05);
-      opacity: 0.95;
-      z-index: 1;
-      animation: floorGlow 4s ease-in-out infinite;
-    }
-
-    @keyframes floorGlow {
-      0%, 100% { 
-        box-shadow: inset 0 0 50px rgba(0,229,255,0.1), 0 -5px 30px rgba(124,77,255,0.05);
-      }
-      50% { 
-        box-shadow: inset 0 0 60px rgba(0,229,255,0.15), 0 -5px 40px rgba(124,77,255,0.1);
-      }
-    }
-
-    /* Светящиеся линии на стенах */
-    .wall-lines {
+    /* Ребра панелей */
+    .metal-panels {
       position: absolute;
       top: 0;
       left: 0;
@@ -130,53 +92,103 @@
       z-index: 2;
     }
 
-    .wall-line {
+    .panel-line {
       position: absolute;
-      height: 2px;
       background: linear-gradient(90deg, 
         transparent 0%, 
-        rgba(0,229,255,0.4) 50%, 
+        rgba(100,181,246,0.3) 50%, 
         transparent 100%);
-      animation: linePulse 3s ease-in-out infinite;
+      height: 1px;
+      box-shadow: 0 0 10px rgba(100,181,246,0.5);
     }
 
-    .wall-line:nth-child(1) {
-      top: 15%;
-      left: 5%;
-      width: 30%;
-      animation-delay: 0s;
+    .panel-line:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      width: 80%;
     }
 
-    .wall-line:nth-child(2) {
-      top: 25%;
-      right: 10%;
-      width: 25%;
-      animation-delay: 1s;
-    }
-
-    .wall-line:nth-child(3) {
+    .panel-line:nth-child(2) {
       top: 35%;
-      left: 15%;
-      width: 20%;
-      animation-delay: 2s;
+      left: 5%;
+      width: 90%;
     }
 
-    @keyframes linePulse {
-      0%, 100% { opacity: 0.3; transform: scaleX(1); }
-      50% { opacity: 0.8; transform: scaleX(1.1); }
+    .panel-rivet {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #4a5f7f 0%, #2c3e50 100%);
+      border-radius: 50%;
+      box-shadow: 
+        inset 0 1px 2px rgba(0,0,0,0.5),
+        0 0 3px rgba(100,181,246,0.3);
+    }
+
+    .panel-rivet:nth-child(3) { top: 15%; left: 8%; }
+    .panel-rivet:nth-child(4) { top: 15%; right: 8%; }
+    .panel-rivet:nth-child(5) { top: 30%; left: 15%; }
+    .panel-rivet:nth-child(6) { top: 30%; right: 15%; }
+
+    /* Футуристический пол */
+    .room-view::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: 50%;
+      transform: translateX(-50%) rotateX(60deg);
+      width: 140%;
+      height: 60%;
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 79px,
+          rgba(0,229,255,0.3) 79px,
+          rgba(0,229,255,0.3) 80px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 79px,
+          rgba(0,229,255,0.2) 79px,
+          rgba(0,229,255,0.2) 80px
+        ),
+        radial-gradient(circle at 50% 50%, 
+          rgba(0,229,255,0.1) 0%, 
+          transparent 70%);
+      background-size: 80px 80px, 80px 80px, 100% 100%;
+      background-color: rgba(26,39,68,0.8);
+      box-shadow: 
+        inset 0 0 80px rgba(0,229,255,0.2),
+        0 -10px 50px rgba(0,229,255,0.15);
+      opacity: 0.95;
+      z-index: 1;
+      animation: floorPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes floorPulse {
+      0%, 100% { 
+        box-shadow: inset 0 0 80px rgba(0,229,255,0.2), 0 -10px 50px rgba(0,229,255,0.15);
+      }
+      50% { 
+        box-shadow: inset 0 0 100px rgba(0,229,255,0.3), 0 -10px 60px rgba(0,229,255,0.25);
+      }
     }
 
     .robot-status {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: rgba(255,255,255,0.95);
+      background: rgba(26,39,68,0.95);
       backdrop-filter: blur(10px);
       padding: 15px;
       border-radius: 16px;
+      border: 2px solid rgba(0,229,255,0.3);
       box-shadow: 
-        0 6px 20px rgba(0,0,0,0.1),
-        0 0 0 1px rgba(0,229,255,0.1);
+        0 6px 20px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(100,181,246,0.2),
+        0 0 20px rgba(0,229,255,0.2);
       min-width: 200px;
       z-index: 20;
     }
@@ -187,11 +199,12 @@
       gap: 10px;
       margin-bottom: 12px;
       padding-bottom: 10px;
-      border-bottom: 2px solid rgba(0,229,255,0.1);
+      border-bottom: 2px solid rgba(0,229,255,0.2);
     }
 
     .robot-avatar {
       font-size: 2rem;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,0.5));
     }
 
     .robot-name {
@@ -201,13 +214,14 @@
     .robot-name-text {
       font-weight: bold;
       font-size: 1.1rem;
-      color: #333;
+      color: #e3f2fd;
       margin: 0;
+      text-shadow: 0 0 10px rgba(0,229,255,0.5);
     }
 
     .robot-level {
       font-size: 0.8rem;
-      color: #666;
+      color: #90caf9;
       margin: 2px 0 0 0;
     }
 
@@ -227,6 +241,7 @@
       font-size: 1.3rem;
       min-width: 24px;
       text-align: center;
+      filter: drop-shadow(0 0 3px rgba(0,229,255,0.3));
     }
 
     .status-bar-container {
@@ -238,16 +253,17 @@
 
     .status-label {
       font-size: 0.75rem;
-      color: #666;
+      color: #90caf9;
       font-weight: 600;
     }
 
     .status-bar {
       height: 8px;
-      background: rgba(224,224,224,0.5);
+      background: rgba(13,27,42,0.6);
       border-radius: 10px;
       overflow: hidden;
       position: relative;
+      border: 1px solid rgba(0,229,255,0.2);
     }
 
     .status-bar-fill {
@@ -256,6 +272,7 @@
       transition: width 0.5s ease, background 0.3s;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 0 10px currentColor;
     }
 
     .status-bar-fill::after {
@@ -281,160 +298,163 @@
 
     .status-bar-fill.mood {
       background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      box-shadow: 0 0 10px #4CAF50;
     }
 
     .status-bar-fill.energy {
       background: linear-gradient(90deg, #00bcd4, #00E5FF);
+      box-shadow: 0 0 10px #00E5FF;
     }
 
     .status-bar-fill.hunger {
       background: linear-gradient(90deg, #FF9800, #FFC107);
+      box-shadow: 0 0 10px #FF9800;
     }
 
     .status-bar-fill.low {
       background: linear-gradient(90deg, #f44336, #FF5722) !important;
+      box-shadow: 0 0 10px #f44336 !important;
     }
 
     .status-value {
       font-size: 0.7rem;
-      color: #999;
+      color: #64b5f6;
       font-weight: bold;
       min-width: 35px;
       text-align: right;
     }
 
-    /* Био-купол окно */
+    /* Иллюминатор */
     .window-container {
       position: absolute;
       top: 60px;
       right: 40px;
       width: 180px;
-      height: 200px;
-      background: linear-gradient(180deg, 
-        rgba(135,206,235,0.3) 0%, 
-        rgba(144,238,144,0.2) 50%,
-        rgba(152,251,152,0.3) 100%);
-      border-radius: 16px;
-      border: 3px solid rgba(255,255,255,0.8);
+      height: 180px;
+      background: radial-gradient(circle, 
+        rgba(10,22,40,0.9) 0%, 
+        rgba(5,11,20,0.95) 100%);
+      border-radius: 50%;
+      border: 8px solid #2c3e50;
       box-shadow: 
+        inset 0 0 50px rgba(0,0,0,0.8),
         inset 0 0 30px rgba(0,229,255,0.1),
-        0 10px 40px rgba(0,0,0,0.1),
-        0 0 0 1px rgba(0,229,255,0.2);
+        0 0 30px rgba(0,229,255,0.3),
+        0 10px 40px rgba(0,0,0,0.5);
       overflow: hidden;
       z-index: 2;
-      backdrop-filter: blur(5px);
     }
 
-    .window-frame {
+    /* Рефлексы на стекле */
+    .window-container::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 15%;
+      width: 40%;
+      height: 30%;
+      background: radial-gradient(ellipse, 
+        rgba(255,255,255,0.15) 0%, 
+        transparent 60%);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Космос */
+    .space-view {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: radial-gradient(ellipse at center, 
+        #0a1628 0%, 
+        #000814 100%);
+      overflow: hidden;
+    }
+
+    /* Звезды */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    .star:nth-child(1) { width: 2px; height: 2px; top: 20%; left: 15%; animation-delay: 0s; }
+    .star:nth-child(2) { width: 1px; height: 1px; top: 35%; left: 80%; animation-delay: 0.5s; }
+    .star:nth-child(3) { width: 2px; height: 2px; top: 60%; left: 25%; animation-delay: 1s; }
+    .star:nth-child(4) { width: 1px; height: 1px; top: 75%; left: 70%; animation-delay: 1.5s; }
+    .star:nth-child(5) { width: 2px; height: 2px; top: 45%; left: 55%; animation-delay: 2s; }
+    .star:nth-child(6) { width: 1px; height: 1px; top: 15%; left: 45%; animation-delay: 2.5s; }
+    .star:nth-child(7) { width: 2px; height: 2px; top: 85%; left: 35%; animation-delay: 0.8s; }
+    .star:nth-child(8) { width: 1px; height: 1px; top: 50%; left: 90%; animation-delay: 1.8s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Планета */
+    .planet {
+      position: absolute;
+      bottom: -20%;
+      right: -15%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle at 35% 35%, 
+        #ff6b9d 0%, 
+        #c44569 40%, 
+        #6a3d62 100%);
+      border-radius: 50%;
+      box-shadow: 
+        inset -15px -15px 30px rgba(0,0,0,0.5),
+        0 0 40px rgba(255,107,157,0.4);
+      animation: planetFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes planetFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    /* Далекая планета */
+    .distant-planet {
+      position: absolute;
+      top: 25%;
+      left: 20%;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle at 30% 30%, 
+        #64b5f6 0%, 
+        #1976d2 60%, 
+        #0d47a1 100%);
+      border-radius: 50%;
+      box-shadow: 
+        inset -5px -5px 10px rgba(0,0,0,0.4),
+        0 0 20px rgba(100,181,246,0.3);
+      opacity: 0.8;
+    }
+
+    /* Млечный путь */
+    .nebula {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      pointer-events: none;
+      background: radial-gradient(ellipse at 60% 40%, 
+        rgba(138,43,226,0.15) 0%, 
+        transparent 50%),
+        radial-gradient(ellipse at 30% 70%, 
+        rgba(0,229,255,0.1) 0%, 
+        transparent 40%);
+      animation: nebulaShift 10s ease-in-out infinite;
     }
 
-    .window-cross-vertical {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3px;
-      height: 100%;
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 0 10px rgba(0,229,255,0.3);
-    }
-
-    .window-cross-horizontal {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 100%;
-      height: 3px;
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 0 10px rgba(0,229,255,0.3);
-    }
-
-    .window-sky {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, 
-        rgba(135,206,250,0.3) 0%, 
-        rgba(152,251,152,0.2) 100%);
-    }
-
-    /* Растения в био-куполе */
-    .bio-plant {
-      position: absolute;
-      background: linear-gradient(180deg, 
-        transparent 0%, 
-        rgba(34,139,34,0.6) 100%);
-      border-radius: 50% 50% 0 0;
-      animation: plantGrow 4s ease-in-out infinite;
-    }
-
-    .bio-plant:nth-child(1) {
-      bottom: 0;
-      left: 10%;
-      width: 15px;
-      height: 40px;
-      animation-delay: 0s;
-    }
-
-    .bio-plant:nth-child(2) {
-      bottom: 0;
-      left: 30%;
-      width: 20px;
-      height: 50px;
-      animation-delay: 0.5s;
-    }
-
-    .bio-plant:nth-child(3) {
-      bottom: 0;
-      right: 25%;
-      width: 18px;
-      height: 45px;
-      animation-delay: 1s;
-    }
-
-    .bio-plant:nth-child(4) {
-      bottom: 0;
-      right: 10%;
-      width: 22px;
-      height: 55px;
-      animation-delay: 1.5s;
-    }
-
-    @keyframes plantGrow {
-      0%, 100% { transform: scaleY(1); opacity: 0.6; }
-      50% { transform: scaleY(1.1); opacity: 0.8; }
-    }
-
-    /* Светящееся солнце */
-    .bio-sun {
-      position: absolute;
-      top: 25px;
-      right: 30px;
-      width: 30px;
-      height: 30px;
-      background: radial-gradient(circle, 
-        rgba(255,215,0,0.8) 0%, 
-        rgba(255,165,0,0.4) 100%);
-      border-radius: 50%;
-      box-shadow: 0 0 20px rgba(255,215,0,0.5);
-      animation: bioSunGlow 3s ease-in-out infinite;
-    }
-
-    @keyframes bioSunGlow {
-      0%, 100% { 
-        box-shadow: 0 0 20px rgba(255,215,0,0.5);
-        transform: scale(1);
-      }
-      50% { 
-        box-shadow: 0 0 30px rgba(255,215,0,0.7);
-        transform: scale(1.05);
-      }
+    @keyframes nebulaShift {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.9; }
     }
 
     .wall-decor {
@@ -454,7 +474,7 @@
     .decor-item {
       width: 80px;
       height: 80px;
-      filter: drop-shadow(0 5px 15px rgba(0,229,255,0.3));
+      filter: drop-shadow(0 0 15px rgba(0,229,255,0.5));
       animation: float 3s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
@@ -469,7 +489,7 @@
 
     .decor-item:hover {
       transform: translateY(-8px) scale(1.08);
-      filter: drop-shadow(0 8px 20px rgba(0,229,255,0.5));
+      filter: drop-shadow(0 0 25px rgba(0,229,255,0.8));
     }
 
     .decor-item:nth-child(1) { animation-delay: 0s; }
@@ -498,7 +518,7 @@
     .furniture-item {
       width: 100px;
       height: 100px;
-      filter: drop-shadow(0 10px 20px rgba(0,229,255,0.2));
+      filter: drop-shadow(0 0 20px rgba(0,229,255,0.4));
       animation: bounce 2.5s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
@@ -513,7 +533,7 @@
 
     .furniture-item:hover {
       transform: translateY(-6px) scale(1.05);
-      filter: drop-shadow(0 15px 30px rgba(124,77,255,0.3));
+      filter: drop-shadow(0 0 30px rgba(0,229,255,0.7));
     }
 
     .furniture-item:nth-child(1) { animation-delay: 0s; }
@@ -542,7 +562,7 @@
     }
 
     model-viewer::part(default-progress-bar) {
-      background: linear-gradient(90deg, #00E5FF, #7C4DFF);
+      background: linear-gradient(90deg, #00E5FF, #2196F3);
     }
 
     .thought-bubble {
@@ -550,18 +570,21 @@
       top: -20px;
       left: 50%;
       transform: translateX(-50%) scale(0);
-      background: rgba(255,255,255,0.98);
+      background: rgba(26,39,68,0.95);
       backdrop-filter: blur(10px);
       padding: 12px 20px;
       border-radius: 20px;
+      border: 2px solid rgba(0,229,255,0.4);
       box-shadow: 
-        0 4px 15px rgba(0,0,0,0.15),
-        0 0 0 1px rgba(0,229,255,0.2);
+        0 4px 15px rgba(0,0,0,0.5),
+        0 0 20px rgba(0,229,255,0.3),
+        inset 0 1px 0 rgba(100,181,246,0.2);
       font-weight: bold;
-      color: #444;
+      color: #e3f2fd;
       font-size: 1rem;
       white-space: nowrap;
       opacity: 0;
+      text-shadow: 0 0 10px rgba(0,229,255,0.5);
       transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       z-index: 20;
     }
@@ -569,14 +592,15 @@
     .thought-bubble::after {
       content: '';
       position: absolute;
-      bottom: -8px;
+      bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
       border-left: 10px solid transparent;
       border-right: 10px solid transparent;
-      border-top: 10px solid rgba(255,255,255,0.98);
+      border-top: 10px solid rgba(26,39,68,0.95);
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
     }
 
     .thought-bubble.show {
@@ -590,6 +614,7 @@
       pointer-events: none;
       z-index: 20;
       animation: particleFloat 2s ease-out forwards;
+      filter: drop-shadow(0 0 5px currentColor);
     }
 
     @keyframes particleFloat {
@@ -627,23 +652,26 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       padding: 12px;
-      background: rgba(255,255,255,0.98);
+      background: rgba(26,39,68,0.98);
       backdrop-filter: blur(10px);
-      border-top: 2px solid rgba(0,229,255,0.1);
+      border-top: 2px solid rgba(0,229,255,0.3);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
       z-index: 100;
       height: 80px;
       box-sizing: border-box;
     }
 
     .room-btn {
-      background: var(--card-bg);
-      border: none;
+      background: rgba(36,53,82,0.8);
+      border: 2px solid rgba(0,229,255,0.3);
       padding: 10px 8px;
       border-radius: 16px;
       font-size: 0.85rem;
       font-weight: bold;
-      color: var(--text);
-      box-shadow: 0 3px 10px rgba(0,229,255,0.1);
+      color: #e3f2fd;
+      box-shadow: 
+        0 3px 10px rgba(0,229,255,0.2),
+        inset 0 1px 0 rgba(100,181,246,0.1);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -651,14 +679,20 @@
       gap: 5px;
       cursor: pointer;
       transition: all 0.15s;
+      text-shadow: 0 0 10px rgba(0,229,255,0.5);
     }
     
     .room-btn:active { 
       transform: scale(0.95);
-      box-shadow: 0 2px 5px rgba(0,229,255,0.15);
+      box-shadow: 
+        0 2px 5px rgba(0,229,255,0.3),
+        inset 0 1px 0 rgba(100,181,246,0.2);
     }
     
-    .btn-icon { font-size: 1.6rem; }
+    .btn-icon { 
+      font-size: 1.6rem;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,0.5));
+    }
 
     .modal-overlay {
       position: fixed;
@@ -666,7 +700,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.8);
       display: none;
       align-items: flex-end;
       z-index: 1000;
@@ -683,15 +717,18 @@
     }
 
     .modal-content {
-      background: rgba(255,255,255,0.98);
+      background: rgba(26,39,68,0.98);
       backdrop-filter: blur(20px);
       width: 100%;
       max-height: 75vh;
       border-radius: 25px 25px 0 0;
       padding: 20px;
+      border: 2px solid rgba(0,229,255,0.3);
+      border-bottom: none;
       box-shadow: 
-        0 -5px 20px rgba(0,0,0,0.2),
-        0 0 0 1px rgba(0,229,255,0.1);
+        0 -5px 30px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(100,181,246,0.2),
+        0 0 40px rgba(0,229,255,0.2);
       animation: slideUp 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       overflow-y: auto;
     }
@@ -707,13 +744,14 @@
       align-items: center;
       margin-bottom: 15px;
       padding-bottom: 15px;
-      border-bottom: 2px solid rgba(0,229,255,0.1);
+      border-bottom: 2px solid rgba(0,229,255,0.2);
     }
 
     .modal-title {
       font-size: 1.4rem;
       font-weight: bold;
-      color: #333;
+      color: #e3f2fd;
+      text-shadow: 0 0 10px rgba(0,229,255,0.5);
     }
 
     .modal-close {
@@ -727,11 +765,13 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      transition: background 0.2s;
+      color: #90caf9;
+      transition: all 0.2s;
     }
 
     .modal-close:active {
-      background: rgba(0,229,255,0.1);
+      background: rgba(0,229,255,0.2);
+      color: #e3f2fd;
     }
 
     .category-tabs {
@@ -743,21 +783,27 @@
     .category-tab {
       flex: 1;
       padding: 10px 16px;
-      background: rgba(240,240,240,0.8);
-      border: none;
+      background: rgba(36,53,82,0.6);
+      border: 2px solid rgba(0,229,255,0.2);
       border-radius: 12px;
       font-weight: bold;
       font-size: 0.9rem;
-      color: #666;
+      color: #90caf9;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .category-tab.active {
-      background: linear-gradient(135deg, #00E5FF, #7C4DFF);
-      color: white;
+      background: linear-gradient(135deg, 
+        rgba(0,229,255,0.3) 0%, 
+        rgba(33,150,243,0.3) 100%);
+      border-color: #00E5FF;
+      color: #e3f2fd;
       transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(0,229,255,0.3);
+      box-shadow: 
+        0 4px 15px rgba(0,229,255,0.4),
+        inset 0 1px 0 rgba(100,181,246,0.3);
+      text-shadow: 0 0 10px rgba(0,229,255,0.8);
     }
 
     .decor-grid {
@@ -768,9 +814,9 @@
     }
 
     .decor-card {
-      background: rgba(248,249,250,0.8);
+      background: rgba(36,53,82,0.6);
       backdrop-filter: blur(10px);
-      border: 3px solid rgba(224,224,224,0.5);
+      border: 2px solid rgba(0,229,255,0.2);
       border-radius: 16px;
       padding: 15px;
       text-align: center;
@@ -784,13 +830,16 @@
 
     .decor-card.owned {
       border-color: rgba(0,229,255,0.5);
-      background: rgba(227,242,253,0.8);
+      background: rgba(0,229,255,0.1);
+      box-shadow: inset 0 0 20px rgba(0,229,255,0.1);
     }
 
     .decor-card.equipped {
-      border-color: rgba(124,77,255,0.5);
-      background: rgba(243,229,255,0.8);
-      box-shadow: 0 0 0 3px rgba(124,77,255,0.2);
+      border-color: #00E5FF;
+      background: rgba(0,229,255,0.2);
+      box-shadow: 
+        0 0 20px rgba(0,229,255,0.4),
+        inset 0 0 20px rgba(0,229,255,0.2);
     }
 
     .decor-icon {
@@ -803,17 +852,18 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,0.3));
     }
 
     .decor-name {
       font-weight: bold;
-      color: #333;
+      color: #e3f2fd;
       font-size: 0.95rem;
       margin-bottom: 4px;
     }
 
     .decor-status {
-      color: #666;
+      color: #90caf9;
       font-size: 0.8rem;
       margin-top: 4px;
     }
@@ -825,7 +875,7 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="btn-back">←</a>
-    <div class="game-info">🔬 Лаборатория</div>
+    <div class="game-info">🚀 Станция</div>
     <div class="balance-badge">
       <span id="coins">0</span> 💰
     </div>
@@ -833,11 +883,14 @@
 
   <div class="room-screen">
     <div class="room-view">
-      <!-- Голографические линии -->
-      <div class="wall-lines">
-        <div class="wall-line"></div>
-        <div class="wall-line"></div>
-        <div class="wall-line"></div>
+      <!-- Металлические панели -->
+      <div class="metal-panels">
+        <div class="panel-line"></div>
+        <div class="panel-line"></div>
+        <div class="panel-rivet"></div>
+        <div class="panel-rivet"></div>
+        <div class="panel-rivet"></div>
+        <div class="panel-rivet"></div>
       </div>
 
       <div class="robot-status">
@@ -882,18 +935,20 @@
         </div>
       </div>
 
-      <!-- Био-купол окно -->
+      <!-- Иллюминатор -->
       <div class="window-container">
-        <div class="window-sky">
-          <div class="bio-sun"></div>
-          <div class="bio-plant"></div>
-          <div class="bio-plant"></div>
-          <div class="bio-plant"></div>
-          <div class="bio-plant"></div>
-        </div>
-        <div class="window-frame">
-          <div class="window-cross-vertical"></div>
-          <div class="window-cross-horizontal"></div>
+        <div class="space-view">
+          <div class="nebula"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="distant-planet"></div>
+          <div class="planet"></div>
         </div>
       </div>
 
@@ -1238,8 +1293,8 @@
         'Привет! 👋',
         'Я тут! 🤖',
         'Что делаем? 🎮',
-        'Укрась комнату! 🎨',
-        'Смотри в окно! 🌿',
+        'Укрась станцию! 🎨',
+        'Смотри в иллюминатор! 🚀',
         'Покорми меня! 🍔',
         'Давай играть! 🎯'
       ];
@@ -1263,7 +1318,7 @@
       } else if (robotStatus.hunger < 30) {
         showBubble('Хочу кушать! 🍔');
       } else {
-        showBubble('Добро пожаловать в лабораторию! 🔬');
+        showBubble('Добро пожаловать на станцию! 🚀');
       }
     }, 1000);
 
