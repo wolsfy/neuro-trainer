@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Матрица Памяти</title>
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Загрузка темы -->
+    <script src="/neuro-trainer/js/theme-loader.js?v=2"></script>
+    
     <link rel="stylesheet" href="../css/mobile.css?v=5">
     <link rel="stylesheet" href="../css/robot-animations.css">
     <style>
@@ -19,7 +23,7 @@
 .mobile-hint.success { background: linear-gradient(135deg, #4CAF50, #45a049); }
 .mobile-hint.error { background: linear-gradient(135deg, #F44336, #D32F2F); }
 .mobile-hint.level { background: linear-gradient(135deg, #FF9800, #F57C00); }
-.memory-grid{display:grid;gap:10px;width:85vw;max-width:350px;aspect-ratio:1;transition:all 0.3s ease;margin-top:20px}.cell{background:#cfd8dc;border-radius:12px;cursor:pointer;transition:transform 0.1s,background-color 0.2s;box-shadow:0 4px 0 #b0bec5}.cell:active{transform:scale(0.95)}.cell.active{background:var(--primary)!important;box-shadow:0 4px 0 #1976D2;transform:scale(1.05)}.cell.correct{background:var(--success)!important;box-shadow:0 4px 0 #388E3C;animation:pop 0.2s}.cell.wrong{background:var(--error)!important;box-shadow:0 4px 0 #D32F2F;animation:shake 0.4s}.level-badge{background:var(--accent);color:white;padding:8px 20px;border-radius:20px;font-size:1.2rem;font-weight:bold;box-shadow:0 4px 10px rgba(255,152,0,0.3);margin-bottom:20px}.status-text{height:20px;color:#777;font-size:0.9rem;margin-top:10px}
+.memory-grid{display:grid;gap:10px;width:85vw;max-width:350px;aspect-ratio:1;transition:all 0.3s ease;margin-top:20px}.cell{background:#cfd8dc;border-radius:12px;cursor:pointer;transition:transform 0.1s,background-color 0.2s;box-shadow:0 4px 0 #b0bec5}.cell:active{transform:scale(0.95)}.cell.active{background:var(--primary)!important;box-shadow:0 4px 0 #1976D2;transform:scale(1.05)}.cell.correct{background:var(--success)!important;box-shadow:0 4px 0 #388E3C;animation:pop 0.2s}.cell.wrong{background:var(--danger)!important;box-shadow:0 4px 0 #D32F2F;animation:shake 0.4s}.level-badge{background:var(--accent);color:white;padding:8px 20px;border-radius:20px;font-size:1.2rem;font-weight:bold;box-shadow:0 4px 10px rgba(255,152,0,0.3);margin-bottom:20px}.status-text{height:20px;color:var(--text);opacity:0.7;font-size:0.9rem;margin-top:10px}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../js/achievements.js"></script>
