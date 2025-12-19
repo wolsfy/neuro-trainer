@@ -482,7 +482,7 @@
       z-index: 10;
       width: 350px;
       height: 400px;
-      contain: layout paint;
+      /* FIX: Убрал contain, чтобы не обрезало облачко */
     }
 
     model-viewer {
@@ -495,10 +495,10 @@
       background: var(--primary);
     }
 
-    /* FIX: Оставляем nowrap, но увеличиваем min-width */
+    /* FIX: Перенос облачко на уровень .room-view */
     .thought-bubble {
       position: absolute;
-      top: -20px;
+      top: calc(50% - 220px); /* Позиционирование над роботом */
       left: 50%;
       transform: translateX(-50%) scale(0) translateZ(0);
       background: white;
@@ -515,6 +515,7 @@
       z-index: 20;
       will-change: transform, opacity;
       backface-visibility: hidden;
+      pointer-events: none;
     }
 
     .thought-bubble::after {
@@ -834,8 +835,10 @@
 
       <div class="wall-decor" id="wall-decor"></div>
 
+      <!-- FIX: Облачко перенесено сюда, чтобы не обрезалось -->
+      <div class="thought-bubble" id="bubble">Привет! 👋</div>
+
       <div class="robot-container" id="robot-container">
-        <div class="thought-bubble" id="bubble">Привет! 👋</div>
         <model-viewer
           id="robot-model"
           src="https://raw.githubusercontent.com/wolsfy/neuro-trainer/main/cute%20robot%203d%20model.glb"
