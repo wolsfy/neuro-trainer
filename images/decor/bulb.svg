@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="bulbGlow">
+      <stop offset="0%" style="stop-color:#FFF59D;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#FFEB3B;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FFA000;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <circle cx="50" cy="40" r="35" fill="url(#bulbGlow)" opacity="0.5"/>
+  <circle cx="50" cy="40" r="18" fill="#FFEB3B" stroke="#F57F17" stroke-width="2"/>
+  <path d="M42 55 L42 62 Q42 65 45 65 L55 65 Q58 65 58 62 L58 55" fill="#9E9E9E" stroke="#616161" stroke-width="1"/>
+  <rect x="45" y="65" width="10" height="8" rx="1" fill="#757575" stroke="#424242" stroke-width="1"/>
+  <line x1="38" y1="30" x2="32" y2="24" stroke="#FDD835" stroke-width="2" stroke-linecap="round"/>
+  <line x1="62" y1="30" x2="68" y2="24" stroke="#FDD835" stroke-width="2" stroke-linecap="round"/>
+  <line x1="35" y1="40" x2="25" y2="40" stroke="#FDD835" stroke-width="2" stroke-linecap="round"/>
+  <line x1="65" y1="40" x2="75" y2="40" stroke="#FDD835" stroke-width="2" stroke-linecap="round"/>
+</svg>
