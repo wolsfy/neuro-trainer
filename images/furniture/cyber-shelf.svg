@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="shelfGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7C4DFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6EC7;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shelfGlow">
+      <feGaussianBlur stdDeviation="2"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Рама -->
+  <rect x="20" y="20" width="60" height="65" rx="3" fill="#1A237E" stroke="url(#shelfGrad)" stroke-width="2" opacity="0.8"/>
+  <!-- Полки -->
+  <rect x="22" y="35" width="56" height="2" fill="url(#shelfGrad)" filter="url(#shelfGlow)"/>
+  <rect x="22" y="55" width="56" height="2" fill="url(#shelfGrad)" filter="url(#shelfGlow)"/>
+  <rect x="22" y="75" width="56" height="2" fill="url(#shelfGrad)" filter="url(#shelfGlow)"/>
+  <!-- Голографические предметы -->
+  <!-- Полка 1 -->
+  <rect x="28" y="25" width="8" height="10" rx="1" fill="#00E5FF" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="42" y="25" width="8" height="10" rx="1" fill="#FF6EC7" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="56" y="25" width="8" height="10" rx="1" fill="#7C4DFF" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  <!-- Полка 2 -->
+  <circle cx="32" cy="47" r="5" fill="#00E676" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="50" cy="47" r="5" fill="#FFD600" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.7s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="68" cy="47" r="5" fill="#FF6EC7" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3.2s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Полка 3 -->
+  <polygon points="32,65 28,70 36,70" fill="#00E5FF" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.4s" repeatCount="indefinite"/>
+  </polygon>
+  <polygon points="50,65 46,70 54,70" fill="#7C4DFF" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.9s" repeatCount="indefinite"/>
+  </polygon>
+  <polygon points="68,65 64,70 72,70" fill="#FF6EC7" opacity="0.6" filter="url(#shelfGlow)">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3.4s" repeatCount="indefinite"/>
+  </polygon>
+  <!-- Индикаторы -->
+  <circle cx="25" cy="24" r="1.5" fill="#00E676">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="25" cy="44" r="1.5" fill="#00E676">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="25" cy="64" r="1.5" fill="#00E676">
+    <animate attributeName="opacity" values="1;0.3;1" dur="1.4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

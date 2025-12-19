@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="deskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E5FF;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#2979FF;stop-opacity:0.4" />
+    </linearGradient>
+    <filter id="deskGlow">
+      <feGaussianBlur stdDeviation="2"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Столешница -->
+  <path d="M20,55 L80,55 L75,60 L25,60 Z" fill="#263238" stroke="#00E5FF" stroke-width="2" opacity="0.8"/>
+  <!-- Ножки -->
+  <rect x="22" y="60" width="4" height="30" fill="#1A237E" stroke="#00E5FF" stroke-width="1"/>
+  <rect x="74" y="60" width="4" height="30" fill="#1A237E" stroke="#00E5FF" stroke-width="1"/>
+  <!-- Голографический экран -->
+  <rect x="30" y="25" width="40" height="25" rx="2" fill="url(#deskGrad)" opacity="0.5" filter="url(#deskGlow)">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  <!-- Данные на экране -->
+  <line x1="35" y1="30" x2="55" y2="30" stroke="#00E5FF" stroke-width="1.5" opacity="0.7">
+    <animate attributeName="x2" values="55;45;55" dur="3s" repeatCount="indefinite"/>
+  </line>
+  <line x1="35" y1="35" x2="60" y2="35" stroke="#FF6EC7" stroke-width="1.5" opacity="0.7">
+    <animate attributeName="x2" values="60;50;60" dur="2.5s" repeatCount="indefinite"/>
+  </line>
+  <line x1="35" y1="40" x2="50" y2="40" stroke="#7C4DFF" stroke-width="1.5" opacity="0.7">
+    <animate attributeName="x2" values="50;40;50" dur="2.8s" repeatCount="indefinite"/>
+  </line>
+  <!-- График -->
+  <polyline points="35,45 40,42 45,44 50,40 55,43 60,38 65,42" stroke="#00E676" stroke-width="2" fill="none" opacity="0.8" filter="url(#deskGlow)">
+    <animate attributeName="points" 
+      values="35,45 40,42 45,44 50,40 55,43 60,38 65,42;
+              35,45 40,44 45,40 50,43 55,39 60,42 65,38;
+              35,45 40,42 45,44 50,40 55,43 60,38 65,42" 
+      dur="3s" repeatCount="indefinite"/>
+  </animate>
+  </polyline>
+  <!-- Проекционные лучи -->
+  <line x1="30" y1="50" x2="30" y2="55" stroke="#00E5FF" stroke-width="1" opacity="0.4"/>
+  <line x1="50" y1="50" x2="50" y2="55" stroke="#00E5FF" stroke-width="1" opacity="0.4"/>
+  <line x1="70" y1="50" x2="70" y2="55" stroke="#00E5FF" stroke-width="1" opacity="0.4"/>
+  <!-- Частицы -->
+  <circle cx="32" cy="28" r="1" fill="#00E5FF">
+    <animate attributeName="cy" values="28;22;28" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="68" cy="32" r="1" fill="#FF6EC7">
+    <animate attributeName="cy" values="32;26;32" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0;1" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

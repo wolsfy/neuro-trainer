@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="levGrad">
+      <stop offset="0%" style="stop-color:#7C4DFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6EC7;stop-opacity:0.6" />
+    </radialGradient>
+    <filter id="levGlow">
+      <feGaussianBlur stdDeviation="3"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Проектор снизу -->
+  <ellipse cx="50" cy="85" rx="25" ry="8" fill="#1A237E" opacity="0.5"/>
+  <path d="M40,85 L50,60 L60,85 Z" fill="#263238" opacity="0.7"/>
+  <!-- Энергетическое поле -->
+  <ellipse cx="50" cy="45" rx="30" ry="5" fill="none" stroke="#7C4DFF" stroke-width="2" opacity="0.4" filter="url(#levGlow)">
+    <animate attributeName="ry" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="50" cy="40" rx="28" ry="4" fill="none" stroke="#FF6EC7" stroke-width="1.5" opacity="0.3" filter="url(#levGlow)">
+    <animate attributeName="ry" values="4;6;4" dur="2.5s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Левитирующий куб -->
+  <g transform="translate(50, 35)">
+    <animateTransform attributeName="transform" type="translate" values="50,35;50,30;50,35" dur="3s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur="8s" repeatCount="indefinite" additive="sum"/>
+    <!-- Грани куба -->
+    <polygon points="0,-15 -12,-8 -12,8 0,15" fill="url(#levGrad)" opacity="0.8"/>
+    <polygon points="0,-15 12,-8 12,8 0,15" fill="#7C4DFF" opacity="0.9"/>
+    <polygon points="-12,-8 0,-15 12,-8 0,-1" fill="#FF6EC7" opacity="0.7"/>
+  </g>
+  <!-- Частицы энергии -->
+  <circle cx="35" cy="50" r="2" fill="#7C4DFF" opacity="0.8">
+    <animate attributeName="cy" values="50;30;50" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="65" cy="55" r="2" fill="#FF6EC7" opacity="0.8">
+    <animate attributeName="cy" values="55;35;55" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="50" cy="60" r="2" fill="#00E5FF" opacity="0.8">
+    <animate attributeName="cy" values="60;40;60" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>
