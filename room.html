@@ -382,12 +382,19 @@
     }
 
     .decor-item {
-      font-size: 5rem;
+      width: 80px;
+      height: 80px;
       filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
       animation: float 3s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
+    }
+
+    .decor-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .decor-item:hover {
@@ -418,12 +425,19 @@
     }
 
     .furniture-item {
-      font-size: 6rem;
+      width: 100px;
+      height: 100px;
       filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
       animation: bounce 2.5s ease-in-out infinite;
       transition: transform 0.3s ease;
       pointer-events: auto;
       cursor: pointer;
+    }
+
+    .furniture-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .furniture-item:hover {
@@ -700,8 +714,15 @@
     }
 
     .decor-icon {
-      font-size: 3rem;
-      margin-bottom: 8px;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 8px;
+    }
+
+    .decor-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .decor-name {
@@ -840,18 +861,18 @@
   <script>
     const decorItems = {
       wall: [
-        { id: 'poster-star', icon: '⭐', name: 'Звезда', price: 0 },
-        { id: 'poster-brain', icon: '🧠', name: 'Мозг', price: 50 },
-        { id: 'poster-rocket', icon: '🚀', name: 'Ракета', price: 100 },
-        { id: 'poster-trophy', icon: '🏆', name: 'Кубок', price: 150 },
-        { id: 'poster-books', icon: '📚', name: 'Книги', price: 80 },
-        { id: 'poster-bulb', icon: '💡', name: 'Лампочка', price: 120 },
+        { id: 'poster-star', icon: 'images/decor/star.svg', name: 'Звезда', price: 0 },
+        { id: 'poster-brain', icon: 'images/decor/brain.svg', name: 'Мозг', price: 50 },
+        { id: 'poster-rocket', icon: 'images/decor/rocket.svg', name: 'Ракета', price: 100 },
+        { id: 'poster-trophy', icon: 'images/decor/trophy.svg', name: 'Кубок', price: 150 },
+        { id: 'poster-books', icon: 'images/decor/books.svg', name: 'Книги', price: 80 },
+        { id: 'poster-bulb', icon: 'images/decor/bulb.svg', name: 'Лампочка', price: 120 },
       ],
       floor: [
-        { id: 'furniture-plant', icon: '🌿', name: 'Растение', price: 0 },
-        { id: 'furniture-sofa', icon: '🛌', name: 'Кровать', price: 200 },
-        { id: 'furniture-desk', icon: '💻', name: 'Ноутбук', price: 300 },
-        { id: 'furniture-bookshelf', icon: '📚', name: 'Книги', price: 250 },
+        { id: 'furniture-plant', icon: 'images/furniture/plant.svg', name: 'Растение', price: 0 },
+        { id: 'furniture-sofa', icon: 'images/furniture/bed.svg', name: 'Кровать', price: 200 },
+        { id: 'furniture-desk', icon: 'images/furniture/laptop.svg', name: 'Ноутбук', price: 300 },
+        { id: 'furniture-bookshelf', icon: 'images/furniture/bookshelf.svg', name: 'Книги', price: 250 },
       ]
     };
 
@@ -965,7 +986,7 @@
         if (item) {
           const div = document.createElement('div');
           div.className = 'decor-item';
-          div.textContent = item.icon;
+          div.innerHTML = `<img src="${item.icon}" alt="${item.name}">`;
           wallDecor.appendChild(div);
         }
       });
@@ -975,7 +996,7 @@
         if (item) {
           const div = document.createElement('div');
           div.className = 'furniture-item';
-          div.textContent = item.icon;
+          div.innerHTML = `<img src="${item.icon}" alt="${item.name}">`;
           floorItems.appendChild(div);
         }
       });
@@ -1012,7 +1033,7 @@
         else status = `${item.price} 💰`;
 
         card.innerHTML = `
-          <div class="decor-icon">${item.icon}</div>
+          <div class="decor-icon"><img src="${item.icon}" alt="${item.name}"></div>
           <div class="decor-name">${item.name}</div>
           <div class="decor-status">${status}</div>
         `;
@@ -1123,7 +1144,6 @@
       localStorage.setItem('equippedDecor', JSON.stringify(equippedDecor));
     }
 
-    // Клик по 3D роботу
     document.getElementById('robot-model').addEventListener('click', function() {
       const phrases = [
         'Привет! 👋',
