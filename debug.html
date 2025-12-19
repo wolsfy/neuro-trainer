@@ -179,6 +179,59 @@
       transform: scale(0.9);
       background: rgba(255,255,255,0.2);
     }
+
+    /* Информация о сочетаниях клавиш */
+    .shortcuts-info {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+    }
+
+    .shortcuts-info h3 {
+      margin: 0 0 10px 0;
+      font-size: 1rem;
+    }
+
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      opacity: 0.9;
+    }
+
+    .shortcut-key {
+      font-family: 'Courier New', monospace;
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* Индикатор нажатия клавиш */
+    .key-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .key-indicator.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 
@@ -192,6 +245,39 @@
   </div>
 
   <div class="debug-container">
+    <!-- Информация о сочетаниях клавиш -->
+    <div class="shortcuts-info">
+      <h3>⌨️ Сочетания клавиш:</h3>
+      <div class="shortcut-item">
+        <span>Обновить данные</span>
+        <span class="shortcut-key">Ctrl+R</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Добавить 1000 монет</span>
+        <span class="shortcut-key">Ctrl+M</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Открыть все игры</span>
+        <span class="shortcut-key">Ctrl+G</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Экспорт данных</span>
+        <span class="shortcut-key">Ctrl+E</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Импорт данных</span>
+        <span class="shortcut-key">Ctrl+I</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Весь декор</span>
+        <span class="shortcut-key">Ctrl+D</span>
+      </div>
+      <div class="shortcut-item">
+        <span>Все достижения</span>
+        <span class="shortcut-key">Ctrl+A</span>
+      </div>
+    </div>
+
     <!-- Основная информация -->
     <div class="debug-section">
       <h2>📊 Состояние игры</h2>
@@ -277,6 +363,9 @@
       <button class="debug-btn warning" onclick="clearLog()">🧹 Очистить лог</button>
     </div>
   </div>
+
+  <!-- Индикатор нажатия клавиш -->
+  <div id="key-indicator" class="key-indicator"></div>
 
   <script>
     // Инициализация
@@ -433,8 +522,8 @@
     // Декор
     function unlockAllDecor() {
       const allDecor = [
-        'poster-star', 'poster-brain', 'poster-rocket', 'poster-trophy', 'poster-books', 'poster-bulb',
-        'furniture-plant', 'furniture-sofa', 'furniture-desk', 'furniture-bookshelf'
+        'hologram', 'neural', 'dna', 'atom', 'formula', 'circuit',
+        'levitation', 'neon-plant', 'holo-desk', 'cyber-shelf'
       ];
       localStorage.setItem('ownedDecor', JSON.stringify(allDecor));
       refreshData();
@@ -451,8 +540,8 @@
     }
 
     function resetDecor() {
-      localStorage.setItem('ownedDecor', JSON.stringify(['poster-star', 'furniture-plant']));
-      localStorage.setItem('equippedDecor', JSON.stringify({wall: ['poster-star'], floor: ['furniture-plant']}));
+      localStorage.setItem('ownedDecor', JSON.stringify(['hologram', 'levitation']));
+      localStorage.setItem('equippedDecor', JSON.stringify({wall: ['hologram'], floor: ['levitation']}));
       refreshData();
       log('Декор сброшен до начального состояния');
     }
@@ -511,10 +600,85 @@
       setTimeout(() => location.reload(), 1000);
     }
 
+    // ====================
+    // СОЧЕТАНИЯ КЛАВИШ
+    // ====================
+
+    function showKeyIndicator(text) {
+      const indicator = document.getElementById('key-indicator');
+      indicator.textContent = text;
+      indicator.classList.add('show');
+      setTimeout(() => {
+        indicator.classList.remove('show');
+      }, 1500);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      // Ctrl + R - Обновить данные
+      if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        refreshData();
+        showKeyIndicator('🔄 Ctrl+R: Данные обновлены');
+        return;
+      }
+
+      // Ctrl + M - Добавить 1000 монет
+      if (e.ctrlKey && e.key === 'm') {
+        e.preventDefault();
+        const current = parseInt(localStorage.getItem('neuroCoins')) || 0;
+        localStorage.setItem('neuroCoins', current + 1000);
+        refreshData();
+        showKeyIndicator('💰 Ctrl+M: +1000 монет');
+        log('Добавлено 1000 монет (горячая клавиша)');
+        return;
+      }
+
+      // Ctrl + G - Открыть все игры
+      if (e.ctrlKey && e.key === 'g') {
+        e.preventDefault();
+        unlockAllGames();
+        showKeyIndicator('🎮 Ctrl+G: Все игры открыты');
+        return;
+      }
+
+      // Ctrl + E - Экспорт
+      if (e.ctrlKey && e.key === 'e') {
+        e.preventDefault();
+        exportData();
+        showKeyIndicator('📤 Ctrl+E: Данные экспортированы');
+        return;
+      }
+
+      // Ctrl + I - Импорт
+      if (e.ctrlKey && e.key === 'i') {
+        e.preventDefault();
+        importData();
+        showKeyIndicator('📥 Ctrl+I: Импорт данных');
+        return;
+      }
+
+      // Ctrl + D - Весь декор
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        unlockAllDecor();
+        showKeyIndicator('🎨 Ctrl+D: Весь декор разблокирован');
+        return;
+      }
+
+      // Ctrl + A - Все достижения
+      if (e.ctrlKey && e.key === 'a') {
+        e.preventDefault();
+        unlockAllAchievements();
+        showKeyIndicator('🏆 Ctrl+A: Все достижения');
+        return;
+      }
+    });
+
     // Инициализация при загрузке
     window.addEventListener('DOMContentLoaded', () => {
       refreshData();
       log('Debug консоль загружена');
+      log('⌨️ Сочетания клавиш активированы');
     });
   </script>
 </body>
